@@ -1661,40 +1661,621 @@
             alert(`Payment record for ${tenantName} (${month}) updated to ${status} successfully!`);
         }
 
-        function approvePayment(id) {
-            const pass = prompt("Enter Landlord PIN to approve caretaker payment:");
-            if(pass !== LANDLORD_PASSWORD) { alert("Incorrect PIN! Access denied."); return; }
+        function populatePublicRoomDropdown() {
+            const select = document.getElementById('pub-room-select');
+            const soldoutMsg = document.getElementById('pub-room-soldout-msg');
+            const submitBtn = document.getElementById('pub-submit-btn');
+            if(!select) return;
+            select.innerHTML = '';
 
-            const p = pendingPayments.find(item => item.id === id);
-            if(!p) return;
-            p.status = 'APPROVED';
+            const availableRooms = rooms.filter(r => r.status === 'Available');
+            if(availableRooms.length === 0) {
+                select.innerHTML = `<option value="">-- No Rooms Available --</option>`;
+                select.disabled = true;
+                soldoutMsg.classList.remove('hidden');
+                submitBtn.disabled = true;
+                submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                document.getElementById('pub-rent').value = '₱0.00';
+                return;
+            }
 
-            const matchMonth = monthlyFinancials.find(m => m.month.toLowerCase().includes(p.month.toLowerCase().split(' ')[0]));
-            if(matchMonth) { matchMonth.rent += p.amount; }
+            select.disabled = false;
+            soldoutMsg.classList.add('hidden');
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
 
-            const monthName = p.month.split(' ')[0];
-            if(!annualPayments[p.tenantName]) annualPayments[p.tenantName] = {};
-            annualPayments[p.tenantName][monthName] = 'PAID';
-
-            saveToStorage();
-            renderAll();
-            alert(`Payment of ₱${p.amount.toLocaleString()} for ${p.tenantName} approved and recorded successfully!`);
+            availableRooms.forEach(r => {
+                select.innerHTML += `<option value="${r.id}" data-unit="${r.unit}" data-name="${r.name}" data-rate="${r.rate}">${r.unit} - ${r.name} (${r.type}) - ₱${r.rate.toLocaleString()}/mo</option>`;
+            });
+            onPublicRoomSelected();
         }
 
-        function approveExpense(id) {
-            const pass = prompt("Enter Landlord PIN to approve expense:");
-            if(pass !== LANDLORD_PASSWORD) { alert("Incorrect PIN! Access denied."); return; }
+        function onPublicRoomSelected() {
+            const select = document.getElementById('pub-room-select');
+            const selectedOpt = select.options[select.selectedIndex];
+            if(selectedOpt && selectedOpt.dataset.rate) {
+                document.getElementById('pub-rent').value = `₱${parseFloat(selectedOpt.dataset.rate).toLocaleString()}.00`;
+            }
+        }
 
-            const exp = pendingExpenses.find(item => item.id === id);
-            if(!exp) return;
-            exp.status = 'APPROVED';
+        function submitPublicApplication(e) {
+            e.preventDefault();
+            const select = document.getElementById('pub-room-select');
+            const selectedOpt = select.options[select.selectedIndex];
+            if(!selectedOpt || !selectedOpt.dataset.name) return;
 
-            const matchMonth = monthlyFinancials.find(m => m.month.toLowerCase().includes(exp.date.toLowerCase().split(' ')[0]));
-            if(matchMonth) { matchMonth.expense += exp.amount; }
+            applications.push({
+                id: applications.length ? Math.max(...applications.map(a => a.id)) + 1 : 1,
+                name: document.getElementById('pub-name').value,
+                contact: document.getElementById('pub-contact').value,
+                unit: selectedOpt.dataset.unit,
+                room: selectedOpt.dataset.name,
+                rent: parseFloat(selectedOpt.dataset.rate),
+                movein: document.getElementById('pub-movein').value,
+                prevAddress: document.getElementById('pub-prev-address').value,
+                reason: document.getElementById('pub-reason').value,
+                statusDetail: `${document.getElementById('pub-status').value}: ${document.getElementById('pub-employer').value}`,
+                emergency: `${document.getElementById('pub-emerg-name').value} (${document.getElementById('pub-emerg-rel').value})`,
+                advance: "1 Month Advance, 2 Months Deposit",
+                status: 'PENDING'
+            });
 
             saveToStorage();
-            renderAll();
-            alert("Expense approved successfully!");
+            document.getElementById('public-form-card').classList.add('hidden');
+            document.getElementById('public-success-card').classList.remove('hidden');
+        }
+
+        function renderRoomsTable() {
+            const tbody = document.getElementById('rooms-table-body');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            rooms.forEach(r => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/50 transition">
+                        <td class="px-4 py-3 font-medium text-white">${r.unit}</td>
+                        <td class="px-4 py-3 text-slate-200 font-bold">${r.name}</td>
+                        <td class="px-4 py-3 text-slate-300">${r.type}</td>
+                        <td class="px-4 py-3 font-semibold text-brand-400">₱${r.rate.toLocaleString()}.00</td>
+                        <td class="px-4 py-3"><span class="px-2 py-1 ${r.status === 'Available' ? 'bg-emerald-950 text-emerald-400 border border-emerald-900' : 'bg-slate-800 text-slate-400'} rounded text-xs font-semibold">${r.status}</span></td>
+                        <td class="px-4 py-3 text-right space-x-2">
+                            <button onclick="editRoom(${r.id})" class="text-blue-400 hover:text-blue-300" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="deleteRoom(${r.id})" class="text-rose-400 hover:text-rose-300" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function openAddRoomModal() {
+            const pass = prompt("Enter Landlord PIN to add new room & rate:");
+            if(pass !== LANDLORD_PASSWORD) { alert("Incorrect password! Access denied."); return; }
+
+            document.getElementById('room-modal-title').innerText = "Add New Room";
+            document.getElementById('room-form').reset();
+            document.getElementById('edit-room-id').value = "";
+            document.getElementById('room-modal').classList.remove('hidden');
+        }
+        function closeAddRoomModal() { document.getElementById('room-modal').classList.add('hidden'); }
+
+        function saveRoom(e) {
+            e.preventDefault();
+            const idVal = document.getElementById('edit-room-id').value;
+            const roomObj = {
+                id: idVal ? parseInt(idVal) : (rooms.length ? Math.max(...rooms.map(r => r.id)) + 1 : 1),
+                unit: document.getElementById('room-unit').value,
+                name: document.getElementById('room-name').value,
+                type: document.getElementById('room-type').value,
+                rate: parseFloat(document.getElementById('room-rate').value),
+                status: document.getElementById('room-status').value
+            };
+            if(idVal) {
+                const index = rooms.findIndex(r => r.id === roomObj.id);
+                if(index !== -1) rooms[index] = roomObj;
+            } else { rooms.push(roomObj); }
+            saveToStorage(); closeAddRoomModal(); renderAll();
+        }
+
+        function editRoom(id) {
+            const pass = prompt("Enter Landlord PIN to edit room details:");
+            if(pass !== LANDLORD_PASSWORD) { alert("Incorrect password! Access denied."); return; }
+
+            const r = rooms.find(item => item.id === id);
+            if(!r) return;
+            document.getElementById('room-modal-title').innerText = "Edit Room & Rate";
+            document.getElementById('edit-room-id').value = r.id;
+            document.getElementById('room-unit').value = r.unit;
+            document.getElementById('room-name').value = r.name;
+            document.getElementById('room-type').value = r.type;
+            document.getElementById('room-rate').value = r.rate;
+            document.getElementById('room-status').value = r.status;
+            document.getElementById('room-modal').classList.remove('hidden');
+        }
+
+        function deleteRoom(id) {
+            const pass = prompt("Enter Landlord PIN to delete room:");
+            if(pass !== LANDLORD_PASSWORD) { alert("Incorrect password! Access denied."); return; }
+
+            if(confirm("Delete this room?")) { rooms = rooms.filter(r => r.id !== id); saveToStorage(); renderAll(); }
+        }
+
+        function renderTenantTable() {
+            const tbody = document.getElementById('full-tenant-table-body');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            tenants.forEach(t => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/50 transition">
+                        <td class="px-4 py-3 font-semibold text-slate-400">#${t.id}</td>
+                        <td class="px-4 py-3 font-medium text-white">${t.name}</td>
+                        <td class="px-4 py-3 text-slate-300">${t.contact}</td>
+                        <td class="px-4 py-3 text-slate-300">${t.movein}</td>
+                        <td class="px-4 py-3 text-slate-300">${t.unit}</td>
+                        <td class="px-4 py-3 font-medium text-slate-200">${t.room}</td>
+                        <td class="px-4 py-3 font-bold text-brand-400">₱${t.rent.toLocaleString()}.00</td>
+                        <td class="px-4 py-3 text-slate-300">${t.advance}</td>
+                        <td class="px-4 py-3 text-slate-400">${t.notes}</td>
+                        <td class="px-4 py-3 text-right space-x-2">
+                            <button onclick="editTenant(${t.id})" class="text-blue-400 hover:text-blue-300" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="terminateTenantContract(${t.id})" class="bg-rose-950 text-rose-400 border border-rose-900 hover:bg-rose-900 px-2.5 py-1 rounded text-xs font-semibold" title="End / Terminate Contract"><i class="fa-solid fa-ban mr-1"></i> Terminate</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function populateContractSelect() {
+            const select = document.getElementById('contract-tenant-select');
+            if(!select) return;
+            select.innerHTML = '';
+            tenants.forEach(t => { select.innerHTML += `<option value="${t.id}">${t.name} (${t.unit} - ${t.room})</option>`; });
+            generateContract();
+        }
+
+        function generateContract() {
+            const tenantId = parseInt(document.getElementById('contract-tenant-select').value);
+            const t = tenants.find(item => item.id === tenantId);
+            if(!t) return;
+
+            document.getElementById('con-tenant-name').innerText = t.name;
+            document.getElementById('con-sig-name').innerText = t.name;
+            document.getElementById('con-contact').innerText = t.contact;
+            document.getElementById('con-unit').innerText = t.unit;
+            document.getElementById('con-room').innerText = t.room;
+            document.getElementById('con-movein').innerText = t.movein;
+            document.getElementById('con-rent').innerText = `₱${t.rent.toLocaleString()}.00`;
+            document.getElementById('con-advance').innerText = t.advance || '1 Month Advance, 2 Months Deposit';
+            clearSignature();
+        }
+
+        function renderPendingPaymentsTable() {
+            const tbody = document.getElementById('pending-payment-table-body');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            if(pendingPayments.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-6 text-center text-slate-500">No pending caretaker payment entries.</td></tr>`;
+                return;
+            }
+            pendingPayments.forEach(p => {
+                let actionHtml = '';
+                if(p.status === 'PENDING') {
+                    actionHtml = `<button onclick="approvePayment(${p.id})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-semibold shadow">Landlord Approve</button>`;
+                } else {
+                    actionHtml = `<span class="text-xs text-emerald-400 font-medium">Approved by Landlord</span>`;
+                }
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/50 transition">
+                        <td class="px-4 py-3 text-slate-300">${p.date}</td>
+                        <td class="px-4 py-3 font-medium text-white">${p.tenantName}</td>
+                        <td class="px-4 py-3 text-slate-300">${p.room}</td>
+                        <td class="px-4 py-3 text-slate-300">${p.month}</td>
+                        <td class="px-4 py-3 font-bold text-brand-400">₱${p.amount.toLocaleString()}.00</td>
+                        <td class="px-4 py-3 text-slate-300">${p.method}</td>
+                        <td class="px-4 py-3 text-right space-x-2">${actionHtml} <button onclick="deletePayment(${p.id})" class="text-rose-400 hover:text-rose-300 ml-1"><i class="fa-solid fa-trash"></i></button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderPendingExpensesTable() {
+            const tbody = document.getElementById('pending-expense-table-body');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            if(pendingExpenses.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="px-4 py-6 text-center text-slate-500">No expense receipts.</td></tr>`;
+                return;
+            }
+            pendingExpenses.forEach(e => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/50 transition">
+                        <td class="px-4 py-3 text-slate-300">${e.date}</td>
+                        <td class="px-4 py-3 text-blue-400 font-semibold">${e.category}</td>
+                        <td class="px-4 py-3 font-medium text-white">${e.description}</td>
+                        <td class="px-4 py-3 font-bold text-rose-400">₱${e.amount.toLocaleString()}.00</td>
+                        <td class="px-4 py-3 text-slate-300">${e.paidBy}</td>
+                        <td class="px-4 py-3 text-right space-x-2">
+                            ${e.status === 'PENDING' ? `<button onclick="approveExpense(${e.id})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-semibold shadow">Landlord Approve</button>` : `<span class="text-xs text-emerald-400 font-medium">Approved</span>`}
+                            <button onclick="deleteExpense(${e.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderApplicationTable() {
+            const tbody = document.getElementById('application-table-body');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            if(applications.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="px-4 py-6 text-center text-slate-500">No pending tenant applications.</td></tr>`;
+                return;
+            }
+            applications.forEach(app => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/50 transition">
+                        <td class="px-4 py-3 font-medium text-white">${app.name}</td>
+                        <td class="px-4 py-3 text-slate-300">${app.contact}</td>
+                        <td class="px-4 py-3 text-slate-300">${app.unit} - ${app.room}</td>
+                        <td class="px-4 py-3 text-slate-300">${app.statusDetail || 'N/A'}</td>
+                        <td class="px-4 py-3 text-slate-400 text-[11px]">Prev: ${app.prevAddress || 'N/A'}<br>Reason: ${app.reason || 'N/A'}</td>
+                        <td class="px-4 py-3 text-slate-300">${app.emergency || 'N/A'}</td>
+                        <td class="px-4 py-3"><span class="px-2 py-1 bg-amber-950 text-amber-400 border border-amber-900 rounded text-xs">${app.status}</span></td>
+                        <td class="px-4 py-3 text-right space-x-2">
+                            ${app.status === 'PENDING' ? `<button onclick="approveApplication(${app.id})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-semibold shadow">Landlord Approve</button>` : `<span class="text-xs text-emerald-400 font-medium">Approved</span>`}
+                            <button onclick="deleteApplication(${app.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function approveApplication(id) {
+            const pass = prompt("Enter Landlord PIN to approve tenant application:");
+            if(pass !== LANDLORD_PASSWORD) { alert("Incorrect password! Access denied. Only the Landlord can approve applications."); return; }
+
+            const app = applications.find(a => a.id === id);
+            if(!app) return;
+            app.status = 'APPROVED';
+
+            tenants.push({
+                id: tenants.length ? Math.max(...tenants.map(t => t.id)) + 1 : 1,
+                name: app.name,
+                contact: app.contact,
+                movein: app.movein,
+                unit: app.unit,
+                room: app.room,
+                rent: app.rent,
+                advance: "1 Mo. Adv, 2 Mo. Dep",
+                notes: `Screened. ${app.statusDetail}`
+            });
+
+            const matchingRoom = rooms.find(r => r.unit === app.unit && r.name === app.room);
+            if(matchingRoom) { matchingRoom.status = 'Occupied'; }
+
+            saveToStorage(); renderAll();
+            alert(`Application for ${app.name} approved by Landlord & successfully enrolled into Tenant Database!`);
+        }
+
+        function deleteApplication(id) {
+            if(confirm("Delete this application?")) { applications = applications.filter(a => a.id !== id); saveToStorage(); renderAll(); }
+        }
+
+        function renderUtilityTable() {
+            const tbody = document.getElementById('utility-table-body');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            if(utilities.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" class="px-4 py-6 text-center text-slate-500">No utility readings recorded.</td></tr>`;
+                return;
+            }
+            utilities.forEach(u => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/50 transition">
+                        <td class="px-4 py-3 font-medium text-white">${u.tenantName}</td>
+                        <td class="px-4 py-3 text-slate-300">${u.room}</td>
+                        <td class="px-4 py-3 text-blue-400 font-semibold">${u.type}</td>
+                        <td class="px-4 py-3 text-slate-300">${u.month}</td>
+                        <td class="px-4 py-3 text-slate-300">${u.prev}</td>
+                        <td class="px-4 py-3 text-slate-300">${u.new}</td>
+                        <td class="px-4 py-3 text-slate-200">${u.usage}</td>
+                        <td class="px-4 py-3 font-bold text-brand-400">₱${u.amount.toLocaleString()}.00</td>
+                        <td class="px-4 py-3 text-right"><button onclick="deleteUtility(${u.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function openAddUtilityModal() {
+            const select = document.getElementById('utility-tenant-select');
+            if(!select) return;
+            select.innerHTML = '';
+            tenants.forEach(t => { select.innerHTML += `<option value="${t.id}" data-room="${t.room}">${t.name} (${t.room})</option>`; });
+            document.getElementById('utility-modal').classList.remove('hidden');
+        }
+        function closeAddUtilityModal() { document.getElementById('utility-modal').classList.add('hidden'); }
+
+        function saveUtility(e) {
+            e.preventDefault();
+            const tenantId = parseInt(document.getElementById('utility-tenant-select').value);
+            const t = tenants.find(item => item.id === tenantId);
+            if(!t) return;
+
+            const prevVal = parseFloat(document.getElementById('util-prev').value) || 0;
+            const newVal = parseFloat(document.getElementById('util-new').value) || 0;
+            const usageVal = newVal >= prevVal ? newVal - prevVal : 0;
+
+            utilities.push({
+                id: utilities.length ? Math.max(...utilities.map(u => u.id)) + 1 : 1,
+                tenantName: t.name,
+                room: t.room,
+                type: document.getElementById('util-type').value,
+                month: document.getElementById('util-month').value,
+                prev: prevVal,
+                new: newVal,
+                usage: usageVal,
+                amount: parseFloat(document.getElementById('util-amount').value) || 0
+            });
+
+            saveToStorage();
+            closeAddUtilityModal();
+            renderUtilityTable();
+            alert("Utility reading saved successfully!");
+        }
+
+        function deleteUtility(id) {
+            if(confirm("Delete this utility reading?")) {
+                utilities = utilities.filter(u => u.id !== id);
+                saveToStorage();
+                renderUtilityTable();
+            }
+        }
+
+        function renderMaintenanceTable() {
+            const tbody = document.getElementById('maintenance-table-body');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            if(maintenance.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="px-4 py-6 text-center text-slate-500">No repair tickets logged.</td></tr>`;
+                return;
+            }
+            maintenance.forEach(m => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/50 transition">
+                        <td class="px-4 py-3 text-slate-300">${m.date}</td>
+                        <td class="px-4 py-3 text-white font-medium">${m.unit}</td>
+                        <td class="px-4 py-3 text-slate-300">${m.issue}</td>
+                        <td class="px-4 py-3 text-slate-300">${m.action}</td>
+                        <td class="px-4 py-3 text-rose-400 font-semibold">₱${parseFloat(m.cost).toLocaleString()}.00</td>
+                        <td class="px-4 py-3"><span class="px-2 py-1 bg-emerald-950 text-emerald-400 border border-emerald-900 rounded text-xs">${m.status}</span></td>
+                        <td class="px-4 py-3 text-slate-400">${m.notes}</td>
+                        <td class="px-4 py-3 text-right"><button onclick="deleteMaintenance(${m.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function openAddMaintenanceModal() {
+            document.getElementById('maintenance-form').reset();
+            document.getElementById('maint-date').value = "October 7, 2026";
+            document.getElementById('maintenance-modal').classList.remove('hidden');
+        }
+        function closeAddMaintenanceModal() { document.getElementById('maintenance-modal').classList.add('hidden'); }
+
+        function saveMaintenance(e) {
+            e.preventDefault();
+            maintenance.push({
+                id: maintenance.length ? Math.max(...maintenance.map(m => m.id)) + 1 : 1,
+                date: document.getElementById('maint-date').value,
+                unit: document.getElementById('maint-unit').value,
+                issue: document.getElementById('maint-issue').value,
+                action: document.getElementById('maint-action').value || 'Pending action',
+                cost: parseFloat(document.getElementById('maint-cost').value) || 0,
+                status: document.getElementById('maint-status').value,
+                notes: document.getElementById('maint-notes').value || 'Logged via portal'
+            });
+
+            saveToStorage();
+            closeAddMaintenanceModal();
+            renderMaintenanceTable();
+            alert("Repair ticket logged successfully!");
+        }
+
+        function deleteMaintenance(id) {
+            if(confirm("Delete this maintenance ticket?")) {
+                maintenance = maintenance.filter(m => m.id !== id);
+                saveToStorage();
+                renderMaintenanceTable();
+            }
+        }
+
+        function renderFinancialTable() {
+            const tbody = document.getElementById('monthly-financial-table');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            monthlyFinancials.forEach(m => {
+                const net = m.rent - m.expense;
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/50">
+                        <td class="px-3 py-2.5 font-medium text-slate-200">${m.month}</td>
+                        <td class="px-3 py-2.5 text-right font-semibold text-emerald-400">₱${m.rent.toLocaleString()}.00</td>
+                        <td class="px-3 py-2.5 text-right text-rose-400">₱${m.expense.toLocaleString()}</td>
+                        <td class="px-3 py-2.5 text-right font-bold ${net >= 0 ? 'text-brand-400' : 'text-rose-400'}">₱${net.toLocaleString()}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function openCaretakerPaymentModal() {
+            const select = document.getElementById('pay-tenant-select');
+            if(!select) return;
+            select.innerHTML = '';
+            tenants.forEach(t => { select.innerHTML += `<option value="${t.id}">${t.name} (${t.room})</option>`; });
+            document.getElementById('caretaker-payment-modal').classList.remove('hidden');
+        }
+        function closeCaretakerPaymentModal() { document.getElementById('caretaker-payment-modal').classList.add('hidden'); }
+
+        function openCaretakerExpenseModal() {
+            document.getElementById('caretaker-expense-modal').classList.remove('hidden');
+        }
+        function closeCaretakerExpenseModal() { document.getElementById('caretaker-expense-modal').classList.add('hidden'); }
+
+        function submitCaretakerPayment(e) {
+            e.preventDefault();
+            const tenantId = parseInt(document.getElementById('pay-tenant-select').value);
+            const t = tenants.find(item => item.id === tenantId);
+            if(!t) return;
+
+            pendingPayments.push({
+                id: pendingPayments.length ? Math.max(...pendingPayments.map(p => p.id)) + 1 : 1,
+                tenantName: t.name, room: t.room,
+                month: document.getElementById('pay-month').value,
+                amount: parseFloat(document.getElementById('pay-amount').value),
+                method: document.getElementById('pay-method').value,
+                date: document.getElementById('pay-date').value,
+                notes: document.getElementById('pay-notes').value || 'Caretaker payment',
+                status: 'PENDING'
+            });
+
+            saveToStorage(); closeCaretakerPaymentModal(); renderAll();
+            alert("Payment submitted successfully! Awaiting Landlord password approval.");
+        }
+
+        function submitCaretakerExpense(e) {
+            e.preventDefault();
+            pendingExpenses.push({
+                id: pendingExpenses.length ? Math.max(...pendingExpenses.map(e => e.id)) + 1 : 1,
+                date: document.getElementById('exp-date').value,
+                category: document.getElementById('exp-category').value,
+                description: document.getElementById('exp-desc').value,
+                amount: parseFloat(document.getElementById('exp-amount').value),
+                paidBy: document.getElementById('exp-paidby').value,
+                notes: document.getElementById('exp-notes').value || 'Caretaker expense',
+                status: 'PENDING'
+            });
+
+            saveToStorage(); closeCaretakerExpenseModal(); renderAll();
+            alert("Expense receipt submitted successfully! Awaiting Landlord password approval.");
+        }
+
+        function deletePayment(id) {
+            if(confirm("Delete payment entry?")) { pendingPayments = pendingPayments.filter(p => p.id !== id); saveToStorage(); renderAll(); }
+        }
+        function deleteExpense(id) {
+            if(confirm("Delete expense entry?")) { pendingExpenses = pendingExpenses.filter(e => e.id !== id); saveToStorage(); renderAll(); }
+        }
+
+        function openAddTenantModal() {
+            const pass = prompt("Enter Landlord PIN to register new tenant:");
+            if(pass !== LANDLORD_PASSWORD) { alert("Incorrect password! Access denied."); return; }
+
+            document.getElementById('modal-title').innerText = "Register New Tenant";
+            document.getElementById('tenant-form').reset();
+            document.getElementById('edit-tenant-id').value = "";
+            document.getElementById('tenant-modal').classList.remove('hidden');
+        }
+        function closeAddTenantModal() { document.getElementById('tenant-modal').classList.add('hidden'); }
+
+        function saveTenant(e) {
+            e.preventDefault();
+            const idVal = document.getElementById('edit-tenant-id').value;
+            const tenantObj = {
+                id: idVal ? parseInt(idVal) : (tenants.length ? Math.max(...tenants.map(t => t.id)) + 1 : 1),
+                name: document.getElementById('form-name').value,
+                contact: document.getElementById('form-contact').value,
+                unit: document.getElementById('form-unit').value,
+                room: document.getElementById('form-room').value,
+                rent: parseFloat(document.getElementById('form-rent').value),
+                advance: document.getElementById('form-advance').value,
+                movein: document.getElementById('form-movein').value,
+                notes: document.getElementById('form-notes').value
+            };
+            if(idVal) {
+                const index = tenants.findIndex(t => t.id === tenantObj.id);
+                if(index !== -1) tenants[index] = tenantObj;
+            } else { tenants.push(tenantObj); }
+            saveToStorage(); closeAddTenantModal(); renderAll();
+            alert("Tenant saved successfully!");
+        }
+
+        function editTenant(id) {
+            const pass = prompt("Enter Landlord PIN to edit tenant record:");
+            if(pass !== LANDLORD_PASSWORD) { alert("Incorrect password! Access denied."); return; }
+
+            const t = tenants.find(item => item.id === id);
+            if(!t) return;
+            document.getElementById('modal-title').innerText = "Edit Tenant Record";
+            document.getElementById('edit-tenant-id').value = t.id;
+            document.getElementById('form-name').value = t.name;
+            document.getElementById('form-contact').value = t.contact;
+            document.getElementById('form-unit').value = t.unit;
+            document.getElementById('form-room').value = t.room;
+            document.getElementById('form-rent').value = t.rent;
+            document.getElementById('form-advance').value = t.advance;
+            document.getElementById('form-movein').value = t.movein;
+            document.getElementById('form-notes').value = t.notes;
+            document.getElementById('tenant-modal').classList.remove('hidden');
+        }
+
+        function filterTenants() {
+            const query = document.getElementById('tenant-search').value.toLowerCase();
+            const tbody = document.getElementById('full-tenant-table-body');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            tenants.filter(t => t.name.toLowerCase().includes(query) || t.room.toLowerCase().includes(query) || t.unit.toLowerCase().includes(query)).forEach(t => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/50 transition">
+                        <td class="px-4 py-3 font-semibold text-slate-400">#${t.id}</td>
+                        <td class="px-4 py-3 font-medium text-white">${t.name}</td>
+                        <td class="px-4 py-3 text-slate-300">${t.contact}</td>
+                        <td class="px-4 py-3 text-slate-300">${t.movein}</td>
+                        <td class="px-4 py-3 text-slate-300">${t.unit}</td>
+                        <td class="px-4 py-3 font-medium text-slate-200">${t.room}</td>
+                        <td class="px-4 py-3 font-bold text-brand-400">₱${t.rent.toLocaleString()}.00</td>
+                        <td class="px-4 py-3 text-slate-300">${t.advance}</td>
+                        <td class="px-4 py-3 text-slate-400">${t.notes}</td>
+                        <td class="px-4 py-3 text-right space-x-2">
+                            <button onclick="editTenant(${t.id})" class="text-blue-400 hover:text-blue-300" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="terminateTenantContract(${t.id})" class="bg-rose-950 text-rose-400 border border-rose-900 hover:bg-rose-900 px-2.5 py-1 rounded text-xs font-semibold" title="End / Terminate Contract"><i class="fa-solid fa-ban mr-1"></i> Terminate</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function populateSOASelect() {
+            const select = document.getElementById('soa-tenant-select');
+            if(!select) return;
+            select.innerHTML = '';
+            tenants.forEach(t => { select.innerHTML += `<option value="${t.id}">${t.name} (${t.unit} - ${t.room})</option>`; });
+            generateSOA();
+        }
+
+        function generateSOA() {
+            const tenantId = parseInt(document.getElementById('soa-tenant-select').value);
+            const t = tenants.find(item => item.id === tenantId);
+            if(!t) return;
+            const tenantUtils = utilities.filter(u => u.tenantName === t.name);
+            let elecAmt = tenantUtils.filter(u => u.type.includes('Meralco')).reduce((acc, curr) => acc + curr.amount, 0);
+            let waterAmt = tenantUtils.filter(u => u.type.includes('Maynilad')).reduce((acc, curr) => acc + curr.amount, 0);
+
+            document.getElementById('soa-tenant-name').innerText = t.name;
+            document.getElementById('soa-contact').innerText = t.contact;
+            document.getElementById('soa-room').innerText = `${t.unit} - ${t.room}`;
+            document.getElementById('soa-rent-amount').innerText = `₱${t.rent.toLocaleString()}.00`;
+            document.getElementById('soa-charge-rent').innerText = `₱${t.rent.toLocaleString()}.00`;
+            document.getElementById('soa-charge-elec').innerText = `₱${elecAmt.toLocaleString()}.00`;
+            document.getElementById('soa-charge-water').innerText = `₱${waterAmt.toLocaleString()}.00`;
+            document.getElementById('soa-total-due').innerText = `₱${(t.rent + elecAmt + waterAmt + 1000).toLocaleString()}.00`;
+        }
+
+        function backupData() {
+            const backupObj = { tenants, rooms, utilities, maintenance, applications, pendingPayments, pendingExpenses, annualPayments };
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupObj, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", "Celou_Rental_Property_Backup.json");
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
         }
 
         window.addEventListener('DOMContentLoaded', () => {
