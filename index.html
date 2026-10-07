@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Celou Rental Property Manager</title>
     <link rel="icon" href="https://i.imgur.com/IIpzDAj.png" type="image/png">
+    
+    <!-- Firebase SDK Scripts (Compat v10) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -50,7 +55,7 @@
                 <img src="https://i.imgur.com/IIpzDAj.png" alt="Celou Logo" class="w-10 h-10 object-contain rounded-lg bg-slate-800 p-1 border border-slate-700 shadow-inner">
                 <div>
                     <h1 class="text-lg font-bold tracking-tight">Celou Rental Property</h1>
-                    <p class="text-xs text-slate-400">Management & Payment Approval System</p>
+                    <p class="text-xs text-slate-400">Live Cloud Sync & Approval System</p>
                 </div>
             </div>
             
@@ -120,7 +125,6 @@
 
             <!-- TAB 1: DASHBOARD -->
             <section id="tab-dashboard" class="space-y-6">
-                <!-- KPI Cards -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-sm flex items-center justify-between">
                         <div>
@@ -156,7 +160,6 @@
                     </div>
                 </div>
 
-                <!-- Chart and Quick Actions -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl shadow-sm lg:col-span-2">
                         <div class="flex items-center justify-between mb-4">
@@ -191,7 +194,6 @@
                     </div>
                 </div>
 
-                <!-- Due Summary Table -->
                 <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm overflow-hidden">
                     <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
                         <div>
@@ -270,40 +272,33 @@
                         </div>
                     </div>
 
-                    <!-- Printable Contract Area -->
                     <div id="printable-contract" class="bg-white text-slate-900 p-10 rounded-xl shadow-md space-y-6 max-w-3xl mx-auto text-xs leading-relaxed">
                         <div class="text-center border-b border-slate-300 pb-4">
                             <h1 class="text-lg font-extrabold text-emerald-900 tracking-wide">CELOU RENTAL PROPERTY</h1>
                             <p class="text-xs text-slate-600 font-medium">BF Resort Village &bull; GreenMark Homes &bull; GreenPlace Homes 3</p>
                             <h2 class="text-sm font-bold uppercase tracking-wider text-slate-800 mt-3">RESIDENTIAL LEASE AGREEMENT</h2>
                         </div>
-
                         <div class="space-y-3">
                             <p><span class="font-bold">This Residential Lease Agreement</span> is made and entered into as of <span id="con-date" class="font-semibold">October 7, 2026</span>, by and between:</p>
                             <p class="pl-4"><span class="font-semibold">Landlord:</span> Tuhamie A. Dimanang and/or Maria Lee A. Dimanang</p>
                             <p class="pl-4"><span class="font-semibold">Tenant:</span> <span id="con-tenant-name" class="font-bold uppercase text-slate-900">-</span> (Contact: <span id="con-contact">-</span>)</p>
                         </div>
-
                         <div class="space-y-2">
                             <h3 class="font-bold uppercase tracking-wider text-slate-800">1. PREMISES & UNIT TYPE</h3>
                             <p>Landlord hereby leases to Tenant and Tenant rents the property located at Unit: <span id="con-unit" class="font-semibold">-</span>, Room/Space Designation: <span id="con-room" class="font-semibold">-</span> (classified as Residential Apartment / Studio Type Unit).</p>
                         </div>
-
                         <div class="space-y-2">
                             <h3 class="font-bold uppercase tracking-wider text-slate-800">2. TERM & MOVE-IN</h3>
                             <p>The lease term shall commence on <span id="con-movein" class="font-semibold">-</span> on a monthly renewal basis unless terminated by either party with a 30-day written notice.</p>
                         </div>
-
                         <div class="space-y-2">
                             <h3 class="font-bold uppercase tracking-wider text-slate-800">3. RENT & DEPOSITS</h3>
                             <p>Tenant agrees to pay a monthly rent of <span id="con-rent" class="font-bold text-emerald-800">-</span> payable on or before the agreed due date every month. Advance rent and security deposits paid: <span id="con-advance" class="font-semibold">-</span>.</p>
                         </div>
-
                         <div class="space-y-2">
                             <h3 class="font-bold uppercase tracking-wider text-slate-800">4. UTILITIES & HOUSE RULES</h3>
                             <p>&bull; Utilities (Electricity and Water) shall be billed based on submeter readings or standard unit sharing agreements.<br>&bull; Property caretaker shall collect payments and issue official receipts.<br>&bull; Strict observance of quiet hours, cleanliness, and proper waste disposal is required.<br>&bull; Unauthorized sub-leasing, illegal substances, and hazardous materials are strictly prohibited.</p>
                         </div>
-
                         <div class="grid grid-cols-2 gap-12 pt-12 border-t border-slate-300 text-center">
                             <div>
                                 <div class="border-b border-slate-400 pb-8 mb-2 font-bold uppercase">Tuhamie A. Dimanang</div>
@@ -318,7 +313,7 @@
                 </div>
             </section>
 
-            <!-- TAB 4: CARETAKER PORTAL (PAYMENTS & EXPENSES) -->
+            <!-- TAB 4: CARETAKER PORTAL -->
             <section id="tab-caretaker" class="space-y-6 hidden">
                 <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm p-6 space-y-6">
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-slate-800 gap-4">
@@ -336,7 +331,6 @@
                         </div>
                     </div>
 
-                    <!-- Pending Payments Queue -->
                     <div>
                         <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Pending & Approved Payments</h3>
                         <div class="overflow-x-auto">
@@ -357,7 +351,6 @@
                         </div>
                     </div>
 
-                    <!-- Pending Expenses Queue -->
                     <div class="pt-4 border-t border-slate-800">
                         <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Pending & Approved Expenses</h3>
                         <div class="overflow-x-auto">
@@ -528,7 +521,7 @@
                 </div>
             </section>
 
-            <!-- TAB 9: FINANCES (LANDLORD LOCKED & CSV EXPORT) -->
+            <!-- TAB 9: FINANCES (LANDLORD LOCKED & LIVE SYNC) -->
             <section id="tab-finances" class="space-y-6 hidden">
                 <div id="finances-locked-banner" class="bg-slate-900 border border-slate-800 rounded-xl p-8 text-center space-y-4">
                     <div class="text-amber-400 text-4xl"><i class="fa-solid fa-lock"></i></div>
@@ -581,7 +574,7 @@
         </main>
     </div>
 
-    <!-- Modals -->
+    <!-- Modals (Caretaker, Tenant, Application, Utilities, Maintenance) -->
     <div id="caretaker-payment-modal" class="fixed inset-0 bg-slate-950 bg-opacity-80 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-xl max-w-md w-full overflow-hidden text-slate-100">
             <div class="px-6 py-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
@@ -799,11 +792,25 @@
 
     <!-- Footer -->
     <footer class="bg-slate-900 border-t border-slate-800 mt-auto py-4 text-center text-xs text-slate-500 no-print">
-        <p>Celou Rental Property Management System (Dark Edition) &bull; Integrated Local Storage & Cloud Backup</p>
+        <p>Celou Rental Property Management System (Dark Edition) &bull; Live Firebase Cloud Sync</p>
     </footer>
 
-    <!-- App JavaScript Logic -->
+    <!-- App JavaScript Logic with Firebase Integration -->
     <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+          apiKey: "AIzaSyCgP1eo039-OY3q7WLFo7pk7BgDpBHoHzg",
+          authDomain: "celourentalmanager.firebaseapp.com",
+          databaseURL: "https://celourentalmanager-default-rtdb.asia-southeast1.firebasedatabase.app",
+          projectId: "celourentalmanager",
+          storageBucket: "celourentalmanager.firebasestorage.app",
+          messagingSenderId: "848070464608",
+          appId: "1:848070464608:web:eca76251bb7ce0ff06df05",
+          measurementId: "G-9KEZLYR2VN"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
         const LANDLORD_PASSWORD = "caretaker123";
         let isFinancialsUnlocked = false;
 
@@ -823,16 +830,12 @@
             { id: 13, name: "Jescel & Sharmaine macalisang", contact: "09205075110", movein: "September 1, 2026", unit: "BF Resort Village", room: "Apartment-A", rent: 10000, advance: "₱20,000.00", notes: "20k deposit paid 7/24/26" }
         ];
 
-        let tenants = JSON.parse(localStorage.getItem('celou_tenants')) || defaultTenants;
-        let utilities = JSON.parse(localStorage.getItem('celou_utilities')) || [];
-        let maintenance = JSON.parse(localStorage.getItem('celou_maintenance')) || [];
-        let applications = JSON.parse(localStorage.getItem('celou_applications')) || [];
-        let pendingPayments = JSON.parse(localStorage.getItem('celou_pending_payments')) || [
-            { id: 1, tenantName: "Resalyn Dasig", room: "B1L28", month: "October 2026", amount: 8000, method: "GCASH", date: "October 7, 2026", notes: "Ref. 0042022442", status: "APPROVED" }
-        ];
-        let pendingExpenses = JSON.parse(localStorage.getItem('celou_pending_expenses')) || [
-            { id: 1, date: "October 7, 2026", category: "Maintenance", description: "Hardware supplies for restroom door", amount: 1200, paidBy: "CASH", notes: "Hardware store receipt", status: "APPROVED" }
-        ];
+        let tenants = defaultTenants;
+        let utilities = [];
+        let maintenance = [];
+        let applications = [];
+        let pendingPayments = [];
+        let pendingExpenses = [];
 
         const monthlyFinancials = [
             { month: "January 2026", rent: 0, expense: 0 },
@@ -850,12 +853,8 @@
         ];
 
         function saveToStorage() {
-            localStorage.setItem('celou_tenants', JSON.stringify(tenants));
-            localStorage.setItem('celou_utilities', JSON.stringify(utilities));
-            localStorage.setItem('celou_maintenance', JSON.stringify(maintenance));
-            localStorage.setItem('celou_applications', JSON.stringify(applications));
-            localStorage.setItem('celou_pending_payments', JSON.stringify(pendingPayments));
-            localStorage.setItem('celou_pending_expenses', JSON.stringify(pendingExpenses));
+            const payload = { tenants, utilities, maintenance, applications, pendingPayments, pendingExpenses };
+            db.ref('celouPropertyData').set(payload);
         }
 
         function switchTab(tabId) {
@@ -1471,8 +1470,37 @@
             }
         }
 
+        // Real-time Firebase Sync on Load
         window.addEventListener('DOMContentLoaded', () => {
-            renderAll();
+            db.ref('celouPropertyData').once('value').then((snapshot) => {
+                const serverData = snapshot.val();
+                if (serverData) {
+                    tenants = serverData.tenants || defaultTenants;
+                    utilities = serverData.utilities || [];
+                    maintenance = serverData.maintenance || [];
+                    applications = serverData.applications || [];
+                    pendingPayments = serverData.pendingPayments || [];
+                    pendingExpenses = serverData.pendingExpenses || [];
+                }
+                renderAll();
+            }).catch(() => {
+                renderAll();
+            });
+
+            // Listen for live updates across devices
+            db.ref('celouPropertyData').on('value', (snapshot) => {
+                const serverData = snapshot.val();
+                if (serverData) {
+                    tenants = serverData.tenants || tenants;
+                    utilities = serverData.utilities || utilities;
+                    maintenance = serverData.maintenance || maintenance;
+                    applications = serverData.applications || applications;
+                    pendingPayments = serverData.pendingPayments || pendingPayments;
+                    pendingExpenses = serverData.pendingExpenses || pendingExpenses;
+                    renderAll();
+                }
+            });
+
             const ctx = document.getElementById('financialChart').getContext('2d');
             new Chart(ctx, {
                 type: 'bar',
