@@ -86,7 +86,7 @@
                 </button>
                 <button onclick="switchTab('caretaker')" id="nav-caretaker" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-300 hover:bg-slate-800 hover:text-white relative">
                     <i class="fa-solid fa-cash-register w-5 text-center"></i>
-                    <span>Caretaker Payments</span>
+                    <span>Caretaker Portal</span>
                     <span id="pending-pay-badge" class="absolute right-3 px-2 py-0.5 text-[10px] bg-amber-500 text-slate-950 font-bold rounded-full hidden">0</span>
                 </button>
                 <button onclick="switchTab('applications')" id="nav-applications" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-300 hover:bg-slate-800 hover:text-white">
@@ -169,7 +169,7 @@
                             <p class="text-xs text-slate-400 mb-4">Manage caretakers, tenants, and properties.</p>
                             <div class="space-y-3">
                                 <button onclick="switchTab('caretaker')" class="w-full bg-brand-600 hover:bg-brand-500 text-white py-2.5 px-4 rounded-lg text-sm font-medium transition flex items-center justify-center shadow-sm">
-                                    <i class="fa-solid fa-cash-register mr-2"></i> Caretaker Payment Portal
+                                    <i class="fa-solid fa-cash-register mr-2"></i> Caretaker Portal (Payments & Expenses)
                                 </button>
                                 <button onclick="openApplicationModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 py-2.5 px-4 rounded-lg text-sm font-medium transition flex items-center justify-center shadow-sm">
                                     <i class="fa-solid fa-file-pen mr-2"></i> Tenant Application Form
@@ -251,21 +251,27 @@
                 </div>
             </section>
 
-            <!-- TAB 3: CARETAKER PAYMENT PORTAL -->
+            <!-- TAB 3: CARETAKER PORTAL (PAYMENTS & EXPENSES) -->
             <section id="tab-caretaker" class="space-y-6 hidden">
-                <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm p-6 space-y-4">
-                    <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm p-6 space-y-6">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-slate-800 gap-4">
                         <div>
-                            <h2 class="text-base font-bold text-white">Caretaker Payment & Collection Portal</h2>
-                            <p class="text-xs text-slate-400">Caretakers can encode tenant payments here. Requires Landlord approval before recording.</p>
+                            <h2 class="text-base font-bold text-white">Caretaker Submission Portal</h2>
+                            <p class="text-xs text-slate-400">Encode tenant payments and property expenses. Requires Landlord password approval.</p>
                         </div>
-                        <button onclick="openCaretakerModal()" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm flex items-center">
-                            <i class="fa-solid fa-cash-register mr-1.5"></i> Encode Tenant Payment
-                        </button>
+                        <div class="flex items-center space-x-3">
+                            <button onclick="openCaretakerPaymentModal()" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm flex items-center">
+                                <i class="fa-solid fa-cash-register mr-1.5"></i> Encode Payment
+                            </button>
+                            <button onclick="openCaretakerExpenseModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm flex items-center">
+                                <i class="fa-solid fa-receipt mr-1.5"></i> Submit Expense Receipt
+                            </button>
+                        </div>
                     </div>
 
+                    <!-- Pending Payments Queue -->
                     <div>
-                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Pending Payment Approvals (Requires Landlord Password)</h3>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Pending & Approved Payments</h3>
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-slate-800 text-left text-xs">
                                 <thead class="bg-slate-950 font-semibold text-slate-400 uppercase">
@@ -276,11 +282,30 @@
                                         <th class="px-4 py-3">Month Covered</th>
                                         <th class="px-4 py-3">Amount Paid</th>
                                         <th class="px-4 py-3">Method</th>
-                                        <th class="px-4 py-3">Reference / Notes</th>
-                                        <th class="px-4 py-3 text-right">Approval Actions</th>
+                                        <th class="px-4 py-3">Status / Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="pending-payment-table-body" class="divide-y divide-slate-800 bg-slate-900 text-slate-300"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Pending Expenses Queue -->
+                    <div class="pt-4 border-t border-slate-800">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Pending & Approved Expenses</h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-slate-800 text-left text-xs">
+                                <thead class="bg-slate-950 font-semibold text-slate-400 uppercase">
+                                    <tr>
+                                        <th class="px-4 py-3">Date</th>
+                                        <th class="px-4 py-3">Category</th>
+                                        <th class="px-4 py-3">Description</th>
+                                        <th class="px-4 py-3">Amount</th>
+                                        <th class="px-4 py-3">Paid By</th>
+                                        <th class="px-4 py-3">Status / Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pending-expense-table-body" class="divide-y divide-slate-800 bg-slate-900 text-slate-300"></tbody>
                             </table>
                         </div>
                     </div>
@@ -458,7 +483,7 @@
                                     <div><p class="text-xs text-slate-400">Total Collected</p><h4 class="text-xl font-bold text-emerald-400 mt-1">₱199,000.00</h4></div>
                                 </div>
                                 <div class="bg-slate-950 p-4 rounded-lg flex items-center justify-between border border-slate-800">
-                                    <div><p class="text-xs text-slate-400">Total Expenses</p><h4 class="text-xl font-bold text-rose-400 mt-1">₱134,034.95</h4></div>
+                                    <div><p class="text-xs text-slate-400">Total Expenses</p><h4 id="fin-total-expense" class="text-xl font-bold text-rose-400 mt-1">₱134,034.95</h4></div>
                                 </div>
                             </div>
                         </div>
@@ -470,13 +495,13 @@
     </div>
 
     <!-- Caretaker Payment Modal -->
-    <div id="caretaker-modal" class="fixed inset-0 bg-slate-950 bg-opacity-80 z-50 hidden flex items-center justify-center p-4">
+    <div id="caretaker-payment-modal" class="fixed inset-0 bg-slate-950 bg-opacity-80 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-xl max-w-md w-full overflow-hidden text-slate-100">
             <div class="px-6 py-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
-                <h3 class="text-base font-bold">Caretaker: Submit Payment Entry</h3>
-                <button onclick="closeCaretakerModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+                <h3 class="text-base font-bold">Caretaker: Encode Payment Entry</h3>
+                <button onclick="closeCaretakerPaymentModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-            <form id="caretaker-form" onsubmit="submitCaretakerPayment(event)" class="p-6 space-y-4 text-sm">
+            <form id="caretaker-payment-form" onsubmit="submitCaretakerPayment(event)" class="p-6 space-y-4 text-sm">
                 <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-1">Select Tenant *</label>
                     <select id="pay-tenant-select" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></select>
@@ -510,8 +535,61 @@
                     <input type="text" id="pay-notes" placeholder="e.g. GCash Ref 123456" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
                 </div>
                 <div class="flex justify-end space-x-3 pt-4 border-t border-slate-800">
-                    <button type="button" onclick="closeCaretakerModal()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-xs">Cancel</button>
+                    <button type="button" onclick="closeCaretakerPaymentModal()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-xs">Cancel</button>
                     <button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-medium">Submit for Landlord Approval</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Caretaker Expense Modal -->
+    <div id="caretaker-expense-modal" class="fixed inset-0 bg-slate-950 bg-opacity-80 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-xl max-w-md w-full overflow-hidden text-slate-100">
+            <div class="px-6 py-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
+                <h3 class="text-base font-bold">Caretaker: Submit Expense Receipt</h3>
+                <button onclick="closeCaretakerExpenseModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="caretaker-expense-form" onsubmit="submitCaretakerExpense(event)" class="p-6 space-y-4 text-sm">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Date *</label>
+                        <input type="text" id="exp-date" value="October 7, 2026" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Category *</label>
+                        <select id="exp-category" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                            <option value="Maintenance">Maintenance & Repairs</option>
+                            <option value="Utilities">Utilities</option>
+                            <option value="Taxes">Taxes / Fees</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Description *</label>
+                    <input type="text" id="exp-desc" required placeholder="e.g. Restroom door materials" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Amount (₱) *</label>
+                        <input type="number" step="any" id="exp-amount" required placeholder="1200" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Paid By</label>
+                        <select id="exp-paidby" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                            <option value="CASH">CASH</option>
+                            <option value="GCASH">GCASH</option>
+                            <option value="BANK TRANSFER">BANK TRANSFER</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Notes / Vendor</label>
+                    <input type="text" id="exp-notes" placeholder="e.g. Hardware store purchase" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                </div>
+                <div class="flex justify-end space-x-3 pt-4 border-t border-slate-800">
+                    <button type="button" onclick="closeCaretakerExpenseModal()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-xs">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-medium">Submit for Approval</button>
                 </div>
             </form>
         </div>
@@ -662,7 +740,10 @@
         let maintenance = JSON.parse(localStorage.getItem('celou_maintenance')) || [];
         let applications = JSON.parse(localStorage.getItem('celou_applications')) || [];
         let pendingPayments = JSON.parse(localStorage.getItem('celou_pending_payments')) || [
-            { id: 1, tenantName: "Resalyn Dasig", room: "B1L28", month: "October 2026", amount: 8000, method: "GCASH", date: "October 7, 2026", notes: "Ref. 0042022442", status: "PENDING" }
+            { id: 1, tenantName: "Resalyn Dasig", room: "B1L28", month: "October 2026", amount: 8000, method: "GCASH", date: "October 7, 2026", notes: "Ref. 0042022442", status: "APPROVED" }
+        ];
+        let pendingExpenses = JSON.parse(localStorage.getItem('celou_pending_expenses')) || [
+            { id: 1, date: "October 7, 2026", category: "Maintenance", description: "Hardware supplies for restroom door", amount: 1200, paidBy: "CASH", notes: "Hardware store receipt", status: "APPROVED" }
         ];
 
         const monthlyFinancials = [
@@ -675,7 +756,7 @@
             { month: "July 2026", rent: 47500, expense: 59551.95 },
             { month: "August 2026", rent: 40000, expense: 16100 },
             { month: "September 2026", rent: 42000, expense: 0 },
-            { month: "October 2026", rent: 20000, expense: 0 },
+            { month: "October 2026", rent: 28000, expense: 13200 },
             { month: "November 2026", rent: 0, expense: 0 },
             { month: "December 2026", rent: 0, expense: 0 }
         ];
@@ -686,6 +767,7 @@
             localStorage.setItem('celou_maintenance', JSON.stringify(maintenance));
             localStorage.setItem('celou_applications', JSON.stringify(applications));
             localStorage.setItem('celou_pending_payments', JSON.stringify(pendingPayments));
+            localStorage.setItem('celou_pending_expenses', JSON.stringify(pendingExpenses));
         }
 
         function switchTab(tabId) {
@@ -704,13 +786,14 @@
             if(tabId === 'utilities') renderUtilityTable();
             if(tabId === 'maintenance') renderMaintenanceTable();
             if(tabId === 'applications') renderApplicationTable();
-            if(tabId === 'caretaker') renderPendingPaymentsTable();
+            if(tabId === 'caretaker') { renderPendingPaymentsTable(); renderPendingExpensesTable(); }
         }
 
         function renderAll() {
             renderDashboardSummary();
             renderTenantTable();
             renderPendingPaymentsTable();
+            renderPendingExpensesTable();
             renderApplicationTable();
             renderUtilityTable();
             renderMaintenanceTable();
@@ -736,11 +819,16 @@
             document.getElementById('dash-active-count').innerText = tenants.length;
 
             const pendingPayCount = pendingPayments.filter(p => p.status === 'PENDING').length;
+            const pendingExpCount = pendingExpenses.filter(e => e.status === 'PENDING').length;
+            const totalPending = pendingPayCount + pendingExpCount;
             const badge = document.getElementById('pending-pay-badge');
-            if(pendingPayCount > 0) {
-                badge.innerText = pendingPayCount;
+            if(totalPending > 0) {
+                badge.innerText = totalPending;
                 badge.classList.remove('hidden');
             } else { badge.classList.add('hidden'); }
+
+            let totalExpYTD = monthlyFinancials.reduce((acc, m) => acc + m.expense, 0);
+            document.getElementById('fin-total-expense').innerText = `₱${totalExpYTD.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
         }
 
         function renderTenantTable() {
@@ -771,10 +859,23 @@
             const tbody = document.getElementById('pending-payment-table-body');
             tbody.innerHTML = '';
             if(pendingPayments.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="px-4 py-6 text-center text-slate-500">No payment entries submitted by caretaker.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" class="px-4 py-6 text-center text-slate-500">No payment entries.</td></tr>`;
                 return;
             }
             pendingPayments.forEach(p => {
+                let actionHtml = '';
+                if(p.status === 'PENDING') {
+                    actionHtml = `<button onclick="approvePayment(${p.id})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-semibold shadow">Approve & Record</button>`;
+                } else {
+                    actionHtml = `
+                        <div class="flex items-center justify-end space-x-2">
+                            <span class="text-xs text-emerald-400 font-medium">Approved</span>
+                            <button onclick="copyPaymentSMS('${p.tenantName}', '${p.room}', ${p.amount}, '${p.month}', '${p.method}')" class="bg-blue-600 hover:bg-blue-500 text-white px-2.5 py-1 rounded text-xs shadow flex items-center" title="Copy SMS Receipt Template">
+                                <i class="fa-solid fa-copy mr-1"></i> Copy SMS
+                            </button>
+                        </div>
+                    `;
+                }
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-800/50 transition">
                         <td class="px-4 py-3 text-slate-300">${p.date}</td>
@@ -783,13 +884,42 @@
                         <td class="px-4 py-3 text-slate-300">${p.month}</td>
                         <td class="px-4 py-3 font-bold text-brand-400">₱${p.amount.toLocaleString()}.00</td>
                         <td class="px-4 py-3 text-slate-300">${p.method}</td>
-                        <td class="px-4 py-3 text-slate-400">${p.notes}</td>
+                        <td class="px-4 py-3 text-right space-x-2">${actionHtml} <button onclick="deletePayment(${p.id})" class="text-rose-400 hover:text-rose-300 ml-1"><i class="fa-solid fa-trash"></i></button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderPendingExpensesTable() {
+            const tbody = document.getElementById('pending-expense-table-body');
+            tbody.innerHTML = '';
+            if(pendingExpenses.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-6 text-center text-slate-500">No expense receipts.</td></tr>`;
+                return;
+            }
+            pendingExpenses.forEach(e => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/50 transition">
+                        <td class="px-4 py-3 text-slate-300">${e.date}</td>
+                        <td class="px-4 py-3 text-blue-400 font-semibold">${e.category}</td>
+                        <td class="px-4 py-3 font-medium text-white">${e.description}</td>
+                        <td class="px-4 py-3 font-bold text-rose-400">₱${e.amount.toLocaleString()}.00</td>
+                        <td class="px-4 py-3 text-slate-300">${e.paidBy}</td>
                         <td class="px-4 py-3 text-right space-x-2">
-                            ${p.status === 'PENDING' ? `<button onclick="approvePayment(${p.id})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-semibold shadow">Approve & Record</button>` : `<span class="text-xs text-emerald-400 font-medium">Approved</span>`}
-                            <button onclick="deletePayment(${p.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button>
+                            ${e.status === 'PENDING' ? `<button onclick="approveExpense(${e.id})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-semibold shadow">Approve & Record</button>` : `<span class="text-xs text-emerald-400 font-medium">Approved</span>`}
+                            <button onclick="deleteExpense(${e.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button>
                         </td>
                     </tr>
                 `;
+            });
+        }
+
+        function copyPaymentSMS(name, room, amount, month, method) {
+            const smsText = `Hello ${name}, thank you! We have received your payment of ₱${amount.toLocaleString()}.00 via ${method} covering ${month} for ${room} at Celou Rental Property. Your account is settled. God bless!`;
+            navigator.clipboard.writeText(smsText).then(() => {
+                alert(`Payment confirmation text copied to clipboard!\n\n---\n${smsText}`);
+            }).catch(err => {
+                alert("Failed to copy text. Please try again.");
             });
         }
 
@@ -869,13 +999,18 @@
             });
         }
 
-        function openCaretakerModal() {
+        function openCaretakerPaymentModal() {
             const select = document.getElementById('pay-tenant-select');
             select.innerHTML = '';
             tenants.forEach(t => { select.innerHTML += `<option value="${t.id}">${t.name} (${t.room})</option>`; });
-            document.getElementById('caretaker-modal').classList.remove('hidden');
+            document.getElementById('caretaker-payment-modal').classList.remove('hidden');
         }
-        function closeCaretakerModal() { document.getElementById('caretaker-modal').classList.add('hidden'); }
+        function closeCaretakerPaymentModal() { document.getElementById('caretaker-payment-modal').classList.add('hidden'); }
+
+        function openCaretakerExpenseModal() {
+            document.getElementById('caretaker-expense-modal').classList.remove('hidden');
+        }
+        function closeCaretakerExpenseModal() { document.getElementById('caretaker-expense-modal').classList.add('hidden'); }
 
         function submitCaretakerPayment(e) {
             e.preventDefault();
@@ -885,26 +1020,39 @@
 
             pendingPayments.push({
                 id: pendingPayments.length ? Math.max(...pendingPayments.map(p => p.id)) + 1 : 1,
-                tenantName: t.name,
-                room: t.room,
+                tenantName: t.name, room: t.room,
                 month: document.getElementById('pay-month').value,
                 amount: parseFloat(document.getElementById('pay-amount').value),
                 method: document.getElementById('pay-method').value,
                 date: document.getElementById('pay-date').value,
-                notes: document.getElementById('pay-notes').value || 'Caretaker encoded payment',
+                notes: document.getElementById('pay-notes').value || 'Caretaker payment',
                 status: 'PENDING'
             });
 
-            saveToStorage(); closeCaretakerModal(); renderAll();
-            alert("Payment successfully submitted! Awaiting Landlord password approval to record into system.");
+            saveToStorage(); closeCaretakerPaymentModal(); renderAll();
+            alert("Payment submitted successfully! Awaiting Landlord password approval.");
+        }
+
+        function submitCaretakerExpense(e) {
+            e.preventDefault();
+            pendingExpenses.push({
+                id: pendingExpenses.length ? Math.max(...pendingExpenses.map(e => e.id)) + 1 : 1,
+                date: document.getElementById('exp-date').value,
+                category: document.getElementById('exp-category').value,
+                description: document.getElementById('exp-desc').value,
+                amount: parseFloat(document.getElementById('exp-amount').value),
+                paidBy: document.getElementById('exp-paidby').value,
+                notes: document.getElementById('exp-notes').value || 'Caretaker expense',
+                status: 'PENDING'
+            });
+
+            saveToStorage(); closeCaretakerExpenseModal(); renderAll();
+            alert("Expense receipt submitted successfully! Awaiting Landlord password approval.");
         }
 
         function approvePayment(id) {
             const pass = prompt("Enter Landlord Password to Approve Payment:");
-            if(pass !== LANDLORD_PASSWORD) {
-                alert("Incorrect password! Access denied.");
-                return;
-            }
+            if(pass !== LANDLORD_PASSWORD) { alert("Incorrect password! Access denied."); return; }
 
             const payment = pendingPayments.find(p => p.id === id);
             if(!payment) return;
@@ -914,14 +1062,29 @@
             if(matchMonth) { matchMonth.rent += payment.amount; }
 
             saveToStorage(); renderAll();
-            alert(`Payment of ₱${payment.amount.toLocaleString()} for ${payment.tenantName} approved and successfully recorded into the financial ledger!`);
+            alert(`Payment of ₱${payment.amount.toLocaleString()} approved & recorded!`);
+        }
+
+        function approveExpense(id) {
+            const pass = prompt("Enter Landlord Password to Approve Expense:");
+            if(pass !== LANDLORD_PASSWORD) { alert("Incorrect password! Access denied."); return; }
+
+            const expense = pendingExpenses.find(e => e.id === id);
+            if(!expense) return;
+            expense.status = 'APPROVED';
+
+            const matchMonth = monthlyFinancials.find(m => m.month.toLowerCase().includes(expense.date.toLowerCase().split(' ')[0]));
+            if(matchMonth) { matchMonth.expense += expense.amount; }
+
+            saveToStorage(); renderAll();
+            alert(`Expense receipt of ₱${expense.amount.toLocaleString()} approved & recorded into ledger!`);
         }
 
         function deletePayment(id) {
-            if(confirm("Delete this payment entry?")) {
-                pendingPayments = pendingPayments.filter(p => p.id !== id);
-                saveToStorage(); renderAll();
-            }
+            if(confirm("Delete payment entry?")) { pendingPayments = pendingPayments.filter(p => p.id !== id); saveToStorage(); renderAll(); }
+        }
+        function deleteExpense(id) {
+            if(confirm("Delete expense entry?")) { pendingExpenses = pendingExpenses.filter(e => e.id !== id); saveToStorage(); renderAll(); }
         }
 
         function openAddTenantModal() {
@@ -970,10 +1133,7 @@
         }
 
         function deleteTenant(id) {
-            if(confirm("Delete tenant record?")) {
-                tenants = tenants.filter(t => t.id !== id);
-                saveToStorage(); renderAll();
-            }
+            if(confirm("Delete tenant record?")) { tenants = tenants.filter(t => t.id !== id); saveToStorage(); renderAll(); }
         }
 
         function filterTenants() {
@@ -1060,10 +1220,7 @@
         }
 
         function deleteUtility(id) {
-            if(confirm("Delete utility record?")) {
-                utilities = utilities.filter(u => u.id !== id);
-                saveToStorage(); renderUtilityTable();
-            }
+            if(confirm("Delete utility record?")) { utilities = utilities.filter(u => u.id !== id); saveToStorage(); renderUtilityTable(); }
         }
 
         function openAddMaintenanceModal() { document.getElementById('maintenance-modal').classList.remove('hidden'); }
@@ -1085,10 +1242,7 @@
         }
 
         function deleteMaintenance(id) {
-            if(confirm("Delete ticket?")) {
-                maintenance = maintenance.filter(m => m.id !== id);
-                saveToStorage(); renderMaintenanceTable();
-            }
+            if(confirm("Delete ticket?")) { maintenance = maintenance.filter(m => m.id !== id); saveToStorage(); renderMaintenanceTable(); }
         }
 
         function populateSOASelect() {
@@ -1117,7 +1271,7 @@
         }
 
         function backupData() {
-            const backupObj = { tenants, utilities, maintenance, applications, pendingPayments };
+            const backupObj = { tenants, utilities, maintenance, applications, pendingPayments, pendingExpenses };
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupObj, null, 2));
             const downloadAnchor = document.createElement('a');
             downloadAnchor.setAttribute("href", dataStr);
@@ -1140,6 +1294,7 @@
                             maintenance = parsed.maintenance || [];
                             applications = parsed.applications || [];
                             pendingPayments = parsed.pendingPayments || [];
+                            pendingExpenses = parsed.pendingExpenses || [];
                             saveToStorage(); renderAll();
                             alert("Data successfully restored from backup!");
                         } else { alert("Invalid backup structure."); }
