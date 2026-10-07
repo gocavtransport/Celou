@@ -6,7 +6,7 @@
     <title>Celou Rental Property Manager</title>
     <link rel="icon" href="https://i.imgur.com/IIpzDAj.png" type="image/png">
     
-    <!-- PWA Manifest Link (Step 4) -->
+    <!-- PWA Manifest Link -->
     <link rel="manifest" href="/Celou/manifest.json">
     <meta name="theme-color" content="#020617">
 
@@ -41,6 +41,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
         .print-only { display: none; }
+        canvas.sig-pad { touch-action: none; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 6px; }
         @media print {
             body * { visibility: hidden; }
             #printable-soa, #printable-soa *, #printable-contract, #printable-contract * { visibility: visible; }
@@ -59,21 +60,17 @@
                 <img src="https://i.imgur.com/IIpzDAj.png" alt="Celou Logo" class="w-10 h-10 object-contain rounded-lg bg-slate-800 p-1 border border-slate-700 shadow-inner">
                 <div>
                     <h1 class="text-lg font-bold tracking-tight">Celou Rental Property</h1>
-                    <p class="text-xs text-slate-400">Live Cloud Sync & Installable App</p>
+                    <p class="text-xs text-slate-400">Live Cloud Sync & E-Signatures</p>
                 </div>
             </div>
             
             <div class="flex items-center space-x-3">
-                <span class="hidden sm:inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-slate-800 text-slate-300 border border-slate-700">
-                    <i class="fa-regular fa-calendar mr-1.5 text-brand-500"></i> October 7, 2026
-                </span>
-                <button onclick="backupData()" class="bg-brand-700 hover:bg-brand-600 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition shadow flex items-center">
+                <button onclick="copyPublicApplyLink()" class="bg-brand-600 hover:bg-brand-500 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition shadow flex items-center">
+                    <i class="fa-solid fa-share-nodes mr-1.5"></i> Copy Tenant Apply Link
+                </button>
+                <button onclick="backupData()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-medium transition shadow flex items-center">
                     <i class="fa-solid fa-cloud-arrow-down mr-1.5"></i> Backup JSON
                 </button>
-                <label class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-medium transition shadow flex items-center cursor-pointer">
-                    <i class="fa-solid fa-cloud-arrow-up mr-1.5 text-brand-500"></i> Restore
-                    <input type="file" id="restore-file-input" accept=".json" class="hidden" onchange="restoreData(event)">
-                </label>
             </div>
         </div>
     </header>
@@ -92,18 +89,23 @@
                     <i class="fa-solid fa-users w-5 text-center"></i>
                     <span>Tenant Database</span>
                 </button>
+                <button onclick="switchTab('rooms')" id="nav-rooms" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-300 hover:bg-slate-800 hover:text-white">
+                    <i class="fa-solid fa-door-open w-5 text-center"></i>
+                    <span>Rooms & Rates Manager</span>
+                </button>
                 <button onclick="switchTab('contracts')" id="nav-contracts" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-300 hover:bg-slate-800 hover:text-white">
                     <i class="fa-solid fa-file-contract w-5 text-center"></i>
-                    <span>Lease Contracts</span>
+                    <span>Lease Contracts & E-Sign</span>
                 </button>
                 <button onclick="switchTab('caretaker')" id="nav-caretaker" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-300 hover:bg-slate-800 hover:text-white relative">
                     <i class="fa-solid fa-cash-register w-5 text-center"></i>
                     <span>Caretaker Portal</span>
                     <span id="pending-pay-badge" class="absolute right-3 px-2 py-0.5 text-[10px] bg-amber-500 text-slate-950 font-bold rounded-full hidden">0</span>
                 </button>
-                <button onclick="switchTab('applications')" id="nav-applications" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-300 hover:bg-slate-800 hover:text-white">
+                <button onclick="switchTab('applications')" id="nav-applications" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-300 hover:bg-slate-800 hover:text-white relative">
                     <i class="fa-solid fa-user-clock w-5 text-center"></i>
                     <span>Applications</span>
+                    <span id="pending-app-badge" class="absolute right-3 px-2 py-0.5 text-[10px] bg-amber-500 text-slate-950 font-bold rounded-full hidden">0</span>
                 </button>
                 <button onclick="switchTab('utilities')" id="nav-utilities" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-300 hover:bg-slate-800 hover:text-white">
                     <i class="fa-solid fa-bolt w-5 text-center"></i>
@@ -133,16 +135,16 @@
                     <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-sm flex items-center justify-between">
                         <div>
                             <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Rooms</p>
-                            <h3 class="text-2xl font-bold text-white mt-1">19</h3>
-                            <p class="text-xs text-slate-400 mt-1"><span class="font-medium text-brand-400">68.42%</span> Occupancy</p>
+                            <h3 id="kpi-total-rooms" class="text-2xl font-bold text-white mt-1">19</h3>
+                            <p class="text-xs text-slate-400 mt-1">Managed units</p>
                         </div>
                         <div class="p-3 bg-blue-950 text-blue-400 rounded-xl border border-blue-900/50"><i class="fa-solid fa-building text-xl"></i></div>
                     </div>
                     <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-sm flex items-center justify-between">
                         <div>
-                            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Occupied / Vacant</p>
-                            <h3 class="text-2xl font-bold text-white mt-1"><span id="kpi-occupied">13</span> / <span class="text-amber-400">6</span></h3>
-                            <p class="text-xs text-slate-400 mt-1">Active units</p>
+                            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Occupied / Available</p>
+                            <h3 class="text-2xl font-bold text-white mt-1"><span id="kpi-occupied">13</span> / <span id="kpi-available" class="text-brand-400">6</span></h3>
+                            <p class="text-xs text-slate-400 mt-1">Room status</p>
                         </div>
                         <div class="p-3 bg-emerald-950 text-emerald-400 rounded-xl border border-emerald-900/50"><i class="fa-solid fa-door-open text-xl"></i></div>
                     </div>
@@ -176,16 +178,16 @@
                     <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl shadow-sm flex flex-col justify-between">
                         <div>
                             <h2 class="text-base font-bold text-white mb-2">Quick Actions</h2>
-                            <p class="text-xs text-slate-400 mb-4">Manage leases, tenants, and properties.</p>
+                            <p class="text-xs text-slate-400 mb-4">Manage tenant applications & rooms.</p>
                             <div class="space-y-3">
                                 <button onclick="switchTab('contracts')" class="w-full bg-brand-600 hover:bg-brand-500 text-white py-2.5 px-4 rounded-lg text-sm font-medium transition flex items-center justify-center shadow-sm">
-                                    <i class="fa-solid fa-file-contract mr-2"></i> Generate Lease Contract
+                                    <i class="fa-solid fa-file-contract mr-2"></i> E-Sign Lease Contract
                                 </button>
-                                <button onclick="switchTab('caretaker')" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 py-2.5 px-4 rounded-lg text-sm font-medium transition flex items-center justify-center shadow-sm">
-                                    <i class="fa-solid fa-cash-register mr-2"></i> Caretaker Portal
+                                <button onclick="switchTab('rooms')" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 py-2.5 px-4 rounded-lg text-sm font-medium transition flex items-center justify-center shadow-sm">
+                                    <i class="fa-solid fa-door-open mr-2"></i> Manage Rooms & Rates
                                 </button>
                                 <button onclick="switchTab('finances')" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-2.5 px-4 rounded-lg text-sm font-medium transition flex items-center justify-center shadow-sm">
-                                    <i class="fa-solid fa-lock mr-2"></i> Unlock Financials (Landlord PIN)
+                                    <i class="fa-solid fa-lock mr-2"></i> Unlock Financials (PIN)
                                 </button>
                             </div>
                         </div>
@@ -198,6 +200,7 @@
                     </div>
                 </div>
 
+                <!-- Due Summary Table -->
                 <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm overflow-hidden">
                     <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
                         <div>
@@ -220,6 +223,60 @@
                             <tbody id="dashboard-tenant-list" class="divide-y divide-slate-800 bg-slate-900 text-slate-300"></tbody>
                         </table>
                     </div>
+                </div>
+            </section>
+
+            <!-- PUBLIC TENANT APPLICATION VIEW (#apply) -->
+            <section id="tab-apply" class="space-y-6 hidden max-w-2xl mx-auto py-4">
+                <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-xl p-8 space-y-6">
+                    <div class="text-center space-y-2 border-b border-slate-800 pb-4">
+                        <img src="https://i.imgur.com/IIpzDAj.png" alt="Celou Logo" class="w-14 h-14 object-contain mx-auto rounded-xl bg-slate-800 p-1.5 border border-slate-700 shadow-inner">
+                        <h2 class="text-xl font-bold text-white">Celou Rental Property - Tenant Application</h2>
+                        <p class="text-xs text-slate-400">Please select an available room and fill out your details to apply.</p>
+                    </div>
+
+                    <form id="public-apply-form" onsubmit="submitPublicApplication(event)" class="space-y-4 text-sm">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Full Name *</label>
+                                <input type="text" id="pub-name" required placeholder="Juan Dela Cruz" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Contact Number *</label>
+                                <input type="text" id="pub-contact" required placeholder="09123456789" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Select Available Room *</label>
+                                <select id="pub-room-select" onchange="onPublicRoomSelected()" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                                    <!-- Populated dynamically -->
+                                </select>
+                                <p id="pub-room-soldout-msg" class="text-xs text-rose-400 mt-1 hidden"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Sorry, no available rooms as of now.</p>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Monthly Rent (₱)</label>
+                                <input type="text" id="pub-rent" readonly class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-brand-400 font-bold">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Target Move-in Date *</label>
+                                <input type="text" id="pub-movein" value="October 2026" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Advance / Deposit Info</label>
+                                <input type="text" id="pub-advance" placeholder="e.g. 1 Month Advance" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                            </div>
+                        </div>
+
+                        <div class="pt-4 flex items-center justify-between border-t border-slate-800">
+                            <button type="button" onclick="switchTab('dashboard')" class="text-xs text-slate-400 hover:text-white"><i class="fa-solid fa-arrow-left mr-1"></i> Back to Dashboard</button>
+                            <button type="submit" id="pub-submit-btn" class="bg-brand-600 hover:bg-brand-500 text-white px-6 py-2.5 rounded-lg text-sm font-medium transition shadow">Submit Rental Application</button>
+                        </div>
+                    </form>
                 </div>
             </section>
 
@@ -260,58 +317,117 @@
                 </div>
             </section>
 
-            <!-- TAB 3: LEASE CONTRACTS -->
+            <!-- TAB: ROOMS & RATES MANAGER -->
+            <section id="tab-rooms" class="space-y-6 hidden">
+                <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm overflow-hidden p-6 space-y-6">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-slate-800 gap-4">
+                        <div>
+                            <h2 class="text-base font-bold text-white">Rooms & Rates Manager</h2>
+                            <p class="text-xs text-slate-400">Add or edit rooms, studio types, apartments, and monthly rental rates.</p>
+                        </div>
+                        <button onclick="openAddRoomModal()" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm flex items-center">
+                            <i class="fa-solid fa-plus mr-1.5"></i> Add New Room
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-slate-800 text-left text-xs">
+                            <thead class="bg-slate-950 font-semibold text-slate-400 uppercase">
+                                <tr>
+                                    <th class="px-4 py-3">Unit / Property</th>
+                                    <th class="px-4 py-3">Room / Space Name</th>
+                                    <th class="px-4 py-3">Type</th>
+                                    <th class="px-4 py-3">Monthly Rate</th>
+                                    <th class="px-4 py-3">Status</th>
+                                    <th class="px-4 py-3 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rooms-table-body" class="divide-y divide-slate-800 bg-slate-900 text-slate-300"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: LEASE CONTRACTS & E-SIGNATURE -->
             <section id="tab-contracts" class="space-y-6 hidden">
                 <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm p-6 space-y-6">
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-slate-800 gap-4 no-print">
                         <div>
-                            <h2 class="text-base font-bold text-white">Lease Contract Generator</h2>
-                            <p class="text-xs text-slate-400">Generate and print formal rental contracts for Apartments and Studio Rooms.</p>
+                            <h2 class="text-base font-bold text-white">Lease Contract & E-Signature Generator</h2>
+                            <p class="text-xs text-slate-400">Select tenant, sign electronically, and print or save the agreement.</p>
                         </div>
                         <div class="flex items-center space-x-3">
                             <select id="contract-tenant-select" onchange="generateContract()" class="px-3 py-2 bg-slate-950 border border-slate-700 text-white rounded-lg text-sm w-64"></select>
                             <button onclick="window.print()" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-lg text-sm font-medium shadow flex items-center">
-                                <i class="fa-solid fa-print mr-1.5"></i> Print Contract
+                                <i class="fa-solid fa-print mr-1.5"></i> Print Signed Contract
                             </button>
                         </div>
                     </div>
 
+                    <!-- Printable Contract Area -->
                     <div id="printable-contract" class="bg-white text-slate-900 p-10 rounded-xl shadow-md space-y-6 max-w-3xl mx-auto text-xs leading-relaxed">
                         <div class="text-center border-b border-slate-300 pb-4">
                             <h1 class="text-lg font-extrabold text-emerald-900 tracking-wide">CELOU RENTAL PROPERTY</h1>
                             <p class="text-xs text-slate-600 font-medium">BF Resort Village &bull; GreenMark Homes &bull; GreenPlace Homes 3</p>
                             <h2 class="text-sm font-bold uppercase tracking-wider text-slate-800 mt-3">RESIDENTIAL LEASE AGREEMENT</h2>
                         </div>
+
                         <div class="space-y-3">
                             <p><span class="font-bold">This Residential Lease Agreement</span> is made and entered into as of <span id="con-date" class="font-semibold">October 7, 2026</span>, by and between:</p>
                             <p class="pl-4"><span class="font-semibold">Landlord:</span> Tuhamie A. Dimanang and/or Maria Lee A. Dimanang</p>
                             <p class="pl-4"><span class="font-semibold">Tenant:</span> <span id="con-tenant-name" class="font-bold uppercase text-slate-900">-</span> (Contact: <span id="con-contact">-</span>)</p>
                         </div>
+
                         <div class="space-y-2">
                             <h3 class="font-bold uppercase tracking-wider text-slate-800">1. PREMISES & UNIT TYPE</h3>
                             <p>Landlord hereby leases to Tenant and Tenant rents the property located at Unit: <span id="con-unit" class="font-semibold">-</span>, Room/Space Designation: <span id="con-room" class="font-semibold">-</span> (classified as Residential Apartment / Studio Type Unit).</p>
                         </div>
+
                         <div class="space-y-2">
                             <h3 class="font-bold uppercase tracking-wider text-slate-800">2. TERM & MOVE-IN</h3>
                             <p>The lease term shall commence on <span id="con-movein" class="font-semibold">-</span> on a monthly renewal basis unless terminated by either party with a 30-day written notice.</p>
                         </div>
+
                         <div class="space-y-2">
                             <h3 class="font-bold uppercase tracking-wider text-slate-800">3. RENT & DEPOSITS</h3>
                             <p>Tenant agrees to pay a monthly rent of <span id="con-rent" class="font-bold text-emerald-800">-</span> payable on or before the agreed due date every month. Advance rent and security deposits paid: <span id="con-advance" class="font-semibold">-</span>.</p>
                         </div>
+
                         <div class="space-y-2">
                             <h3 class="font-bold uppercase tracking-wider text-slate-800">4. UTILITIES & HOUSE RULES</h3>
                             <p>&bull; Utilities (Electricity and Water) shall be billed based on submeter readings or standard unit sharing agreements.<br>&bull; Property caretaker shall collect payments and issue official receipts.<br>&bull; Strict observance of quiet hours, cleanliness, and proper waste disposal is required.<br>&bull; Unauthorized sub-leasing, illegal substances, and hazardous materials are strictly prohibited.</p>
                         </div>
-                        <div class="grid grid-cols-2 gap-12 pt-12 border-t border-slate-300 text-center">
+
+                        <div class="grid grid-cols-2 gap-12 pt-8 border-t border-slate-300 text-center items-end">
                             <div>
-                                <div class="border-b border-slate-400 pb-8 mb-2 font-bold uppercase">Tuhamie A. Dimanang</div>
+                                <div class="border-b border-slate-400 pb-2 mb-2 font-bold uppercase text-slate-800">Tuhamie A. Dimanang</div>
                                 <p class="text-[11px] text-slate-600">Landlord / Authorized Representative</p>
                             </div>
                             <div>
-                                <div id="con-sig-name" class="border-b border-slate-400 pb-8 mb-2 font-bold uppercase">-</div>
-                                <p class="text-[11px] text-slate-600">Tenant Signature</p>
+                                <div id="con-sig-container" class="border-b border-slate-400 pb-1 mb-2 h-16 flex items-center justify-center">
+                                    <span id="con-sig-placeholder" class="text-slate-400 italic text-[11px]">Not yet signed</span>
+                                    <img id="con-sig-img" src="" alt="Tenant Signature" class="max-h-14 object-contain hidden">
+                                </div>
+                                <p id="con-sig-name" class="font-bold uppercase text-slate-800">-</p>
+                                <p class="text-[11px] text-slate-600">Tenant Signature (Electronically Signed)</p>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- E-Signature Box (No-print) -->
+                    <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-3 no-print">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300"><i class="fa-solid fa-signature mr-1.5 text-brand-500"></i> Electronic Signature Pad</h3>
+                            <button onclick="clearSignature()" class="text-xs text-rose-400 hover:text-rose-300"><i class="fa-solid fa-rotate-right mr-1"></i> Clear Pad</button>
+                        </div>
+                        <p class="text-xs text-slate-400">Tenant can sign below using finger, mouse, or stylus, then click "Apply Signature" to stamp it on the contract.</p>
+                        <div class="flex justify-center">
+                            <canvas id="signature-canvas" width="400" height="150" class="sig-pad"></canvas>
+                        </div>
+                        <div class="flex justify-end">
+                            <button onclick="applySignature()" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-lg text-xs font-medium shadow flex items-center">
+                                <i class="fa-solid fa-check mr-1.5"></i> Apply Signature to Contract
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -381,10 +497,12 @@
                 <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm overflow-hidden">
                     <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
                         <div>
-                            <h2 class="text-base font-bold text-white">Tenant Applications</h2>
-                            <p class="text-xs text-slate-400">Review prospective tenant submissions</p>
+                            <h2 class="text-base font-bold text-white">Tenant Applications & Approvals</h2>
+                            <p class="text-xs text-slate-400">Review and approve applications submitted by prospective tenants</p>
                         </div>
-                        <button onclick="openApplicationModal()" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-lg text-sm font-medium">New Application Link</button>
+                        <button onclick="copyPublicApplyLink()" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center">
+                            <i class="fa-solid fa-share-nodes mr-1.5"></i> Share Application Link
+                        </button>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-slate-800 text-left text-xs">
@@ -579,6 +697,58 @@
     </div>
 
     <!-- Modals -->
+    <div id="room-modal" class="fixed inset-0 bg-slate-950 bg-opacity-80 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-xl max-w-md w-full overflow-hidden text-slate-100">
+            <div class="px-6 py-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
+                <h3 id="room-modal-title" class="text-base font-bold">Add New Room</h3>
+                <button onclick="closeAddRoomModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="room-form" onsubmit="saveRoom(event)" class="p-6 space-y-4 text-sm">
+                <input type="hidden" id="edit-room-id">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Property / Unit *</label>
+                    <select id="room-unit" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                        <option value="BF Resort Village">BF Resort Village</option>
+                        <option value="GreenMark Homes">GreenMark Homes</option>
+                        <option value="GreenPlace Homes 3">GreenPlace Homes 3</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Room / Space Name *</label>
+                        <input type="text" id="room-name" required placeholder="e.g. Room No. 8" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Type *</label>
+                        <select id="room-type" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                            <option value="Room / Bedspace">Room / Bedspace</option>
+                            <option value="Studio Type">Studio Type</option>
+                            <option value="Apartment Unit">Apartment Unit</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Monthly Rate (₱) *</label>
+                        <input type="number" id="room-rate" required placeholder="4500" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Status *</label>
+                        <select id="room-status" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                            <option value="Available">Available</option>
+                            <option value="Occupied">Occupied</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-3 pt-4 border-t border-slate-800">
+                    <button type="button" onclick="closeAddRoomModal()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-xs">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-medium">Save Room</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Caretaker Payment Modal -->
     <div id="caretaker-payment-modal" class="fixed inset-0 bg-slate-950 bg-opacity-80 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-xl max-w-md w-full overflow-hidden text-slate-100">
             <div class="px-6 py-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
@@ -710,35 +880,6 @@
         </div>
     </div>
 
-    <!-- Application Modal -->
-    <div id="application-modal" class="fixed inset-0 bg-slate-950 bg-opacity-80 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-xl max-w-lg w-full overflow-hidden text-slate-100">
-            <div class="px-6 py-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
-                <h3 class="text-base font-bold">New Tenant Application</h3>
-                <button onclick="closeApplicationModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <form id="application-form" onsubmit="submitApplication(event)" class="p-6 space-y-4 text-sm">
-                <div><label class="block text-xs font-semibold text-slate-300 mb-1">Full Name *</label><input type="text" id="app-name" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Contact *</label><input type="text" id="app-contact" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
-                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Move-in Date *</label><input type="text" id="app-movein" value="October 2026" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Unit *</label><select id="app-unit" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"><option value="BF Resort Village">BF Resort Village</option><option value="GreenMark Homes">GreenMark Homes</option><option value="GreenPlace Homes 3">GreenPlace Homes 3</option></select></div>
-                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Room *</label><input type="text" id="app-room" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Monthly Rent (₱) *</label><input type="number" id="app-rent" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
-                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Advance</label><input type="text" id="app-advance" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
-                </div>
-                <div class="flex justify-end space-x-3 pt-4 border-t border-slate-800">
-                    <button type="button" onclick="closeApplicationModal()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-xs">Cancel</button>
-                    <button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-medium">Submit Application</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <!-- Utility Modal -->
     <div id="utility-modal" class="fixed inset-0 bg-slate-950 bg-opacity-80 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-xl max-w-md w-full overflow-hidden text-slate-100">
@@ -799,14 +940,12 @@
         <p>Celou Rental Property Management System (Dark Edition) &bull; Live Firebase Cloud Sync</p>
     </footer>
 
-    <!-- App JavaScript Logic with Firebase & PWA Service Worker Registration -->
+    <!-- App JavaScript Logic with E-Signature & Firebase Integration -->
     <script>
         // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/Celou/sw.js')
-                    .then((reg) => console.log('Service Worker registered!', reg))
-                    .catch((err) => console.log('Service Worker registration failed', err));
+                navigator.serviceWorker.register('/Celou/sw.js').catch(() => {});
             });
         }
 
@@ -843,7 +982,26 @@
             { id: 13, name: "Jescel & Sharmaine macalisang", contact: "09205075110", movein: "September 1, 2026", unit: "BF Resort Village", room: "Apartment-A", rent: 10000, advance: "₱20,000.00", notes: "20k deposit paid 7/24/26" }
         ];
 
+        let defaultRooms = [
+            { id: 1, unit: "BF Resort Village", name: "Room No. 1", type: "Room / Bedspace", rate: 2500, status: "Occupied" },
+            { id: 2, unit: "BF Resort Village", name: "Room No. 3", type: "Room / Bedspace", rate: 5000, status: "Occupied" },
+            { id: 3, unit: "BF Resort Village", name: "Room No. 4", type: "Room / Bedspace", rate: 3500, status: "Occupied" },
+            { id: 4, unit: "BF Resort Village", name: "Room No. 5", type: "Room / Bedspace", rate: 5000, status: "Occupied" },
+            { id: 5, unit: "BF Resort Village", name: "Room No. 6", type: "Room / Bedspace", rate: 2500, status: "Occupied" },
+            { id: 6, unit: "BF Resort Village", name: "Room No. 7", type: "Room / Bedspace", rate: 4500, status: "Occupied" },
+            { id: 7, unit: "BF Resort Village", name: "Apartment-A", type: "Apartment Unit", rate: 10000, status: "Occupied" },
+            { id: 8, unit: "BF Resort Village", name: "Apartment-B", type: "Apartment Unit", rate: 8000, status: "Occupied" },
+            { id: 9, unit: "GreenMark Homes", name: "B1L28", type: "Apartment Unit", rate: 8000, status: "Occupied" },
+            { id: 10, unit: "GreenMark Homes", name: "B1L30", type: "Apartment Unit", rate: 10000, status: "Occupied" },
+            { id: 11, unit: "GreenPlace Homes 3", name: "B1L36-B", type: "Studio Type", rate: 4000, status: "Occupied" },
+            { id: 12, unit: "GreenPlace Homes 3", name: "B1L36-A", type: "Studio Type", rate: 4000, status: "Occupied" },
+            { id: 13, unit: "GreenPlace Homes 3", name: "B1L36-MAIN", type: "Apartment Unit", rate: 8000, status: "Occupied" },
+            { id: 14, unit: "BF Resort Village", name: "Studio Room 2", type: "Studio Type", rate: 4500, status: "Available" },
+            { id: 15, unit: "GreenMark Homes", name: "B1L29", type: "Apartment Unit", rate: 8500, status: "Available" }
+        ];
+
         let tenants = defaultTenants;
+        let rooms = defaultRooms;
         let utilities = [];
         let maintenance = [];
         let applications = [];
@@ -866,29 +1024,108 @@
         ];
 
         function saveToStorage() {
-            const payload = { tenants, utilities, maintenance, applications, pendingPayments, pendingExpenses };
+            const payload = { tenants, rooms, utilities, maintenance, applications, pendingPayments, pendingExpenses };
             db.ref('celouPropertyData').set(payload);
         }
 
-        function switchTab(tabId) {
-            ['dashboard', 'tenants', 'contracts', 'caretaker', 'applications', 'utilities', 'maintenance', 'soa', 'finances'].forEach(t => {
-                document.getElementById(`tab-${t}`).classList.add('hidden');
-                document.getElementById(`nav-${t}`).classList.remove('bg-brand-900/40', 'text-brand-400', 'border', 'border-brand-700/50');
-                document.getElementById(`nav-${t}`).classList.add('text-slate-300', 'hover:bg-slate-800', 'hover:text-white');
+        // Handle routing based on URL hash #apply
+        window.addEventListener('hashchange', checkURLHash);
+        function checkURLHash() {
+            if(window.location.hash === '#apply') {
+                switchTab('apply');
+                populatePublicRoomDropdown();
+            }
+        }
+
+        function copyPublicApplyLink() {
+            const link = window.location.origin + window.location.pathname + '#apply';
+            navigator.clipboard.writeText(link).then(() => {
+                alert("Public Tenant Application Link copied to clipboard!\n\n" + link);
             });
-            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
-            document.getElementById(`nav-${tabId}`).classList.add('bg-brand-900/40', 'text-brand-400', 'border', 'border-brand-700/50');
-            document.getElementById(`nav-${tabId}`).classList.remove('text-slate-300', 'hover:bg-slate-800', 'hover:text-white');
+        }
+
+        function switchTab(tabId) {
+            ['dashboard', 'tenants', 'rooms', 'contracts', 'caretaker', 'applications', 'utilities', 'maintenance', 'soa', 'finances', 'apply'].forEach(t => {
+                const el = document.getElementById(`tab-${t}`);
+                if(el) el.classList.add('hidden');
+                const nav = document.getElementById(`nav-${t}`);
+                if(nav) {
+                    nav.classList.remove('bg-brand-900/40', 'text-brand-400', 'border', 'border-brand-700/50');
+                    nav.classList.add('text-slate-300', 'hover:bg-slate-800', 'hover:text-white');
+                }
+            });
+            const targetTab = document.getElementById(`tab-${tabId}`);
+            if(targetTab) targetTab.classList.remove('hidden');
+            const targetNav = document.getElementById(`nav-${tabId}`);
+            if(targetNav) {
+                targetNav.classList.add('bg-brand-900/40', 'text-brand-400', 'border', 'border-brand-700/50');
+                targetNav.classList.remove('text-slate-300', 'hover:bg-slate-800', 'hover:text-white');
+            }
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
             if(tabId === 'soa') populateSOASelect();
-            if(tabId === 'contracts') populateContractSelect();
+            if(tabId === 'contracts') { populateContractSelect(); initSignaturePad(); }
+            if(tabId === 'rooms') renderRoomsTable();
             if(tabId === 'utilities') renderUtilityTable();
             if(tabId === 'maintenance') renderMaintenanceTable();
             if(tabId === 'applications') renderApplicationTable();
             if(tabId === 'caretaker') { renderPendingPaymentsTable(); renderPendingExpensesTable(); }
             if(tabId === 'finances') { updateFinancialView(); }
+            if(tabId === 'apply') { populatePublicRoomDropdown(); }
+        }
+
+        // Signature Pad Logic
+        let canvas, ctx, isDrawing = false;
+        function initSignaturePad() {
+            canvas = document.getElementById('signature-canvas');
+            if (!canvas) return;
+            ctx = canvas.getContext('2d');
+            ctx.strokeStyle = '#0f172a';
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+
+            // Mouse events
+            canvas.onmousedown = (e) => { isDrawing = true; ctx.beginPath(); ctx.moveTo(e.offsetX, e.offsetY); };
+            canvas.onmousemove = (e) => { if (!isDrawing) return; ctx.lineTo(e.offsetX, e.offsetY); ctx.stroke(); };
+            canvas.onmouseup = () => isDrawing = false;
+            canvas.onmouseleave = () => isDrawing = false;
+
+            // Touch events for mobile
+            canvas.ontouchstart = (e) => {
+                isDrawing = true;
+                const rect = canvas.getBoundingClientRect();
+                const touch = e.touches[0];
+                ctx.beginPath();
+                ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+                e.preventDefault();
+            };
+            canvas.ontouchmove = (e) => {
+                if (!isDrawing) return;
+                const rect = canvas.getBoundingClientRect();
+                const touch = e.touches[0];
+                ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+                ctx.stroke();
+                e.preventDefault();
+            };
+            canvas.ontouchend = () => isDrawing = false;
+        }
+
+        function clearSignature() {
+            if (!ctx) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            document.getElementById('con-sig-img').src = '';
+            document.getElementById('con-sig-img').classList.add('hidden');
+            document.getElementById('con-sig-placeholder').classList.remove('hidden');
+        }
+
+        function applySignature() {
+            const dataURL = canvas.toDataURL();
+            const img = document.getElementById('con-sig-img');
+            img.src = dataURL;
+            img.classList.remove('hidden');
+            document.getElementById('con-sig-placeholder').classList.add('hidden');
+            alert("Electronic signature successfully applied to the contract!");
         }
 
         function unlockFinancials() {
@@ -952,6 +1189,7 @@
         function renderAll() {
             renderDashboardSummary();
             renderTenantTable();
+            renderRoomsTable();
             renderPendingPaymentsTable();
             renderPendingExpensesTable();
             renderApplicationTable();
@@ -960,6 +1198,7 @@
             updateFinancialView();
             populateSOASelect();
             populateContractSelect();
+            if(window.location.hash === '#apply') switchTab('apply');
         }
 
         function renderDashboardSummary() {
@@ -976,17 +1215,153 @@
                     </tr>
                 `;
             });
-            document.getElementById('kpi-occupied').innerText = tenants.length;
+
+            const totalRoomsCount = rooms.length;
+            const availableRoomsCount = rooms.filter(r => r.status === 'Available').length;
+            const occupiedRoomsCount = rooms.filter(r => r.status === 'Occupied').length;
+
+            document.getElementById('kpi-total-rooms').innerText = totalRoomsCount;
+            document.getElementById('kpi-occupied').innerText = occupiedRoomsCount;
+            document.getElementById('kpi-available').innerText = availableRoomsCount;
             document.getElementById('dash-active-count').innerText = tenants.length;
 
             const pendingPayCount = pendingPayments.filter(p => p.status === 'PENDING').length;
-            const pendingExpCount = pendingExpenses.filter(e => e.status === 'PENDING').length;
-            const totalPending = pendingPayCount + pendingExpCount;
-            const badge = document.getElementById('pending-pay-badge');
-            if(totalPending > 0) {
-                badge.innerText = totalPending;
+            const pendingAppCount = applications.filter(a => a.status === 'PENDING').length;
+            
+            const badge = document.getElementById('pending-app-badge');
+            if(pendingAppCount > 0) {
+                badge.innerText = pendingAppCount;
                 badge.classList.remove('hidden');
             } else { badge.classList.add('hidden'); }
+
+            const payBadge = document.getElementById('pending-pay-badge');
+            if(pendingPayCount > 0) {
+                payBadge.innerText = pendingPayCount;
+                payBadge.classList.remove('hidden');
+            } else { payBadge.classList.add('hidden'); }
+        }
+
+        function populatePublicRoomDropdown() {
+            const select = document.getElementById('pub-room-select');
+            const soldoutMsg = document.getElementById('pub-room-soldout-msg');
+            const submitBtn = document.getElementById('pub-submit-btn');
+            select.innerHTML = '';
+
+            const availableRooms = rooms.filter(r => r.status === 'Available');
+            if(availableRooms.length === 0) {
+                select.innerHTML = `<option value="">-- No Rooms Available --</option>`;
+                select.disabled = true;
+                soldoutMsg.classList.remove('hidden');
+                submitBtn.disabled = true;
+                submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                document.getElementById('pub-rent').value = '₱0.00';
+                return;
+            }
+
+            select.disabled = false;
+            soldoutMsg.classList.add('hidden');
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+
+            availableRooms.forEach(r => {
+                select.innerHTML += `<option value="${r.id}" data-unit="${r.unit}" data-name="${r.name}" data-rate="${r.rate}">${r.unit} - ${r.name} (${r.type}) - ₱${r.rate.toLocaleString()}/mo</option>`;
+            });
+            onPublicRoomSelected();
+        }
+
+        function onPublicRoomSelected() {
+            const select = document.getElementById('pub-room-select');
+            const selectedOpt = select.options[select.selectedIndex];
+            if(selectedOpt && selectedOpt.dataset.rate) {
+                document.getElementById('pub-rent').value = `₱${parseFloat(selectedOpt.dataset.rate).toLocaleString()}.00`;
+            }
+        }
+
+        function submitPublicApplication(e) {
+            e.preventDefault();
+            const select = document.getElementById('pub-room-select');
+            const selectedOpt = select.options[select.selectedIndex];
+            if(!selectedOpt || !selectedOpt.dataset.name) return;
+
+            applications.push({
+                id: applications.length ? Math.max(...applications.map(a => a.id)) + 1 : 1,
+                name: document.getElementById('pub-name').value,
+                contact: document.getElementById('pub-contact').value,
+                unit: selectedOpt.dataset.unit,
+                room: selectedOpt.dataset.name,
+                rent: parseFloat(selectedOpt.dataset.rate),
+                movein: document.getElementById('pub-movein').value,
+                advance: document.getElementById('pub-advance').value || '₱0.00',
+                status: 'PENDING'
+            });
+
+            saveToStorage();
+            alert("Your rental application has been submitted successfully! The Landlord or Caretaker will review it shortly.");
+            document.getElementById('public-apply-form').reset();
+            switchTab('dashboard');
+        }
+
+        function renderRoomsTable() {
+            const tbody = document.getElementById('rooms-table-body');
+            tbody.innerHTML = '';
+            rooms.forEach(r => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/50 transition">
+                        <td class="px-4 py-3 font-medium text-white">${r.unit}</td>
+                        <td class="px-4 py-3 text-slate-200 font-bold">${r.name}</td>
+                        <td class="px-4 py-3 text-slate-300">${r.type}</td>
+                        <td class="px-4 py-3 font-semibold text-brand-400">₱${r.rate.toLocaleString()}.00</td>
+                        <td class="px-4 py-3"><span class="px-2 py-1 ${r.status === 'Available' ? 'bg-emerald-950 text-emerald-400 border border-emerald-900' : 'bg-slate-800 text-slate-400'} rounded text-xs font-semibold">${r.status}</span></td>
+                        <td class="px-4 py-3 text-right space-x-2">
+                            <button onclick="editRoom(${r.id})" class="text-blue-400 hover:text-blue-300" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="deleteRoom(${r.id})" class="text-rose-400 hover:text-rose-300" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function openAddRoomModal() {
+            document.getElementById('room-modal-title').innerText = "Add New Room";
+            document.getElementById('room-form').reset();
+            document.getElementById('edit-room-id').value = "";
+            document.getElementById('room-modal').classList.remove('hidden');
+        }
+        function closeAddRoomModal() { document.getElementById('room-modal').classList.add('hidden'); }
+
+        function saveRoom(e) {
+            e.preventDefault();
+            const idVal = document.getElementById('edit-room-id').value;
+            const roomObj = {
+                id: idVal ? parseInt(idVal) : (rooms.length ? Math.max(...rooms.map(r => r.id)) + 1 : 1),
+                unit: document.getElementById('room-unit').value,
+                name: document.getElementById('room-name').value,
+                type: document.getElementById('room-type').value,
+                rate: parseFloat(document.getElementById('room-rate').value),
+                status: document.getElementById('room-status').value
+            };
+            if(idVal) {
+                const index = rooms.findIndex(r => r.id === roomObj.id);
+                if(index !== -1) rooms[index] = roomObj;
+            } else { rooms.push(roomObj); }
+            saveToStorage(); closeAddRoomModal(); renderAll();
+        }
+
+        function editRoom(id) {
+            const r = rooms.find(item => item.id === id);
+            if(!r) return;
+            document.getElementById('room-modal-title').innerText = "Edit Room & Rate";
+            document.getElementById('edit-room-id').value = r.id;
+            document.getElementById('room-unit').value = r.unit;
+            document.getElementById('room-name').value = r.name;
+            document.getElementById('room-type').value = r.type;
+            document.getElementById('room-rate').value = r.rate;
+            document.getElementById('room-status').value = r.status;
+            document.getElementById('room-modal').classList.remove('hidden');
+        }
+
+        function deleteRoom(id) {
+            if(confirm("Delete this room?")) { rooms = rooms.filter(r => r.id !== id); saveToStorage(); renderAll(); }
         }
 
         function renderTenantTable() {
@@ -1033,6 +1408,7 @@
             document.getElementById('con-movein').innerText = t.movein;
             document.getElementById('con-rent').innerText = `₱${t.rent.toLocaleString()}.00`;
             document.getElementById('con-advance').innerText = t.advance || 'Standard Deposit';
+            clearSignature();
         }
 
         function renderPendingPaymentsTable() {
@@ -1098,14 +1474,16 @@
             const smsText = `Hello ${name}, thank you! We have received your payment of ₱${amount.toLocaleString()}.00 via ${method} covering ${month} for ${room} at Celou Rental Property. Your account is settled. God bless!`;
             navigator.clipboard.writeText(smsText).then(() => {
                 alert(`Payment confirmation text copied to clipboard!\n\n---\n${smsText}`);
-            }).catch(err => {
-                alert("Failed to copy text. Please try again.");
             });
         }
 
         function renderApplicationTable() {
             const tbody = document.getElementById('application-table-body');
             tbody.innerHTML = '';
+            if(applications.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="px-4 py-6 text-center text-slate-500">No pending tenant applications.</td></tr>`;
+                return;
+            }
             applications.forEach(app => {
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-800/50 transition">
@@ -1116,12 +1494,41 @@
                         <td class="px-4 py-3 font-bold text-brand-400">₱${app.rent.toLocaleString()}.00</td>
                         <td class="px-4 py-3 text-slate-300">${app.movein}</td>
                         <td class="px-4 py-3"><span class="px-2 py-1 bg-amber-950 text-amber-400 border border-amber-900 rounded text-xs">${app.status}</span></td>
-                        <td class="px-4 py-3 text-right">
-                            ${app.status === 'PENDING' ? `<button onclick="approveApplication(${app.id})" class="bg-emerald-600 text-white px-3 py-1 rounded text-xs">Approve</button>` : `<span class="text-xs text-emerald-400">Approved</span>`}
+                        <td class="px-4 py-3 text-right space-x-2">
+                            ${app.status === 'PENDING' ? `<button onclick="approveApplication(${app.id})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-semibold shadow">Approve & Enroll</button>` : `<span class="text-xs text-emerald-400 font-medium">Approved</span>`}
+                            <button onclick="deleteApplication(${app.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button>
                         </td>
                     </tr>
                 `;
             });
+        }
+
+        function approveApplication(id) {
+            const app = applications.find(a => a.id === id);
+            if(!app) return;
+            app.status = 'APPROVED';
+
+            tenants.push({
+                id: tenants.length ? Math.max(...tenants.map(t => t.id)) + 1 : 1,
+                name: app.name,
+                contact: app.contact,
+                movein: app.movein,
+                unit: app.unit,
+                room: app.room,
+                rent: app.rent,
+                advance: app.advance,
+                notes: "Enrolled via Application Portal"
+            });
+
+            const matchingRoom = rooms.find(r => r.unit === app.unit && r.name === app.room);
+            if(matchingRoom) { matchingRoom.status = 'Occupied'; }
+
+            saveToStorage(); renderAll();
+            alert(`Application for ${app.name} approved & successfully enrolled into Tenant Database! Room marked as Occupied.`);
+        }
+
+        function deleteApplication(id) {
+            if(confirm("Delete this application?")) { applications = applications.filter(a => a.id !== id); saveToStorage(); renderAll(); }
         }
 
         function renderUtilityTable() {
@@ -1341,90 +1748,6 @@
             });
         }
 
-        function openApplicationModal() { document.getElementById('application-modal').classList.remove('hidden'); }
-        function closeApplicationModal() { document.getElementById('application-modal').classList.add('hidden'); }
-
-        function submitApplication(e) {
-            e.preventDefault();
-            applications.push({
-                id: applications.length ? Math.max(...applications.map(a => a.id)) + 1 : 1,
-                name: document.getElementById('app-name').value,
-                contact: document.getElementById('app-contact').value,
-                unit: document.getElementById('app-unit').value,
-                room: document.getElementById('app-room').value,
-                rent: parseFloat(document.getElementById('app-rent').value),
-                movein: document.getElementById('app-movein').value,
-                advance: document.getElementById('app-advance').value || '₱0.00',
-                status: 'PENDING'
-            });
-            saveToStorage(); closeApplicationModal(); renderAll();
-            alert("Application submitted successfully!");
-        }
-
-        function approveApplication(id) {
-            const app = applications.find(a => a.id === id);
-            if(!app) return;
-            app.status = 'APPROVED';
-            tenants.push({
-                id: tenants.length ? Math.max(...tenants.map(t => t.id)) + 1 : 1,
-                name: app.name, contact: app.contact, movein: app.movein, unit: app.unit, room: app.room, rent: app.rent, advance: app.advance, notes: "Enrolled via Application"
-            });
-            saveToStorage(); renderAll();
-            alert(`Application for ${app.name} approved & enrolled!`);
-        }
-
-        function openAddUtilityModal() {
-            const select = document.getElementById('utility-tenant-select');
-            select.innerHTML = '';
-            tenants.forEach(t => { select.innerHTML += `<option value="${t.id}">${t.name} (${t.room})</option>`; });
-            document.getElementById('utility-modal').classList.remove('hidden');
-        }
-        function closeAddUtilityModal() { document.getElementById('utility-modal').classList.add('hidden'); }
-
-        function saveUtility(e) {
-            e.preventDefault();
-            const tenantId = parseInt(document.getElementById('utility-tenant-select').value);
-            const t = tenants.find(item => item.id === tenantId);
-            if(!t) return;
-            const prev = parseFloat(document.getElementById('util-prev').value) || 0;
-            const newR = parseFloat(document.getElementById('util-new').value) || 0;
-            utilities.push({
-                id: utilities.length ? Math.max(...utilities.map(u => u.id)) + 1 : 1,
-                tenantName: t.name, room: t.room,
-                type: document.getElementById('util-type').value,
-                month: document.getElementById('util-month').value,
-                prev, new: newR, usage: Math.max(0, newR - prev),
-                amount: parseFloat(document.getElementById('util-amount').value) || 0
-            });
-            saveToStorage(); closeAddUtilityModal(); renderUtilityTable();
-        }
-
-        function deleteUtility(id) {
-            if(confirm("Delete utility record?")) { utilities = utilities.filter(u => u.id !== id); saveToStorage(); renderUtilityTable(); }
-        }
-
-        function openAddMaintenanceModal() { document.getElementById('maintenance-modal').classList.remove('hidden'); }
-        function closeAddMaintenanceModal() { document.getElementById('maintenance-modal').classList.add('hidden'); }
-
-        function saveMaintenance(e) {
-            e.preventDefault();
-            maintenance.push({
-                id: maintenance.length ? Math.max(...maintenance.map(m => m.id)) + 1 : 1,
-                date: document.getElementById('maint-date').value,
-                unit: document.getElementById('maint-unit').value,
-                issue: document.getElementById('maint-issue').value,
-                action: document.getElementById('maint-action').value,
-                cost: parseFloat(document.getElementById('maint-cost').value) || 0,
-                status: document.getElementById('maint-status').value,
-                notes: document.getElementById('maint-notes').value
-            });
-            saveToStorage(); closeAddMaintenanceModal(); renderMaintenanceTable();
-        }
-
-        function deleteMaintenance(id) {
-            if(confirm("Delete ticket?")) { maintenance = maintenance.filter(m => m.id !== id); saveToStorage(); renderMaintenanceTable(); }
-        }
-
         function populateSOASelect() {
             const select = document.getElementById('soa-tenant-select');
             select.innerHTML = '';
@@ -1451,7 +1774,7 @@
         }
 
         function backupData() {
-            const backupObj = { tenants, utilities, maintenance, applications, pendingPayments, pendingExpenses };
+            const backupObj = { tenants, rooms, utilities, maintenance, applications, pendingPayments, pendingExpenses };
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupObj, null, 2));
             const downloadAnchor = document.createElement('a');
             downloadAnchor.setAttribute("href", dataStr);
@@ -1461,34 +1784,13 @@
             downloadAnchor.remove();
         }
 
-        function restoreData(event) {
-            const fileReader = new FileReader();
-            if(event.target.files[0]) {
-                fileReader.readAsText(event.target.files[0], "UTF-8");
-                fileReader.onload = function(e) {
-                    try {
-                        const parsed = JSON.parse(e.target.result);
-                        if(parsed.tenants) {
-                            tenants = parsed.tenants;
-                            utilities = parsed.utilities || [];
-                            maintenance = parsed.maintenance || [];
-                            applications = parsed.applications || [];
-                            pendingPayments = parsed.pendingPayments || [];
-                            pendingExpenses = parsed.pendingExpenses || [];
-                            saveToStorage(); renderAll();
-                            alert("Data successfully restored from backup!");
-                        } else { alert("Invalid backup structure."); }
-                    } catch(err) { alert("Error parsing JSON file."); }
-                }
-            }
-        }
-
         // Real-time Firebase Sync on Load
         window.addEventListener('DOMContentLoaded', () => {
             db.ref('celouPropertyData').once('value').then((snapshot) => {
                 const serverData = snapshot.val();
                 if (serverData) {
                     tenants = serverData.tenants || defaultTenants;
+                    rooms = serverData.rooms || defaultRooms;
                     utilities = serverData.utilities || [];
                     maintenance = serverData.maintenance || [];
                     applications = serverData.applications || [];
@@ -1496,8 +1798,10 @@
                     pendingExpenses = serverData.pendingExpenses || [];
                 }
                 renderAll();
+                checkURLHash();
             }).catch(() => {
                 renderAll();
+                checkURLHash();
             });
 
             // Listen for live updates across devices
@@ -1505,6 +1809,7 @@
                 const serverData = snapshot.val();
                 if (serverData) {
                     tenants = serverData.tenants || tenants;
+                    rooms = serverData.rooms || rooms;
                     utilities = serverData.utilities || utilities;
                     maintenance = serverData.maintenance || maintenance;
                     applications = serverData.applications || applications;
