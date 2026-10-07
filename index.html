@@ -33,8 +33,8 @@
         .print-only { display: none; }
         @media print {
             body * { visibility: hidden; }
-            #printable-soa, #printable-soa * { visibility: visible; }
-            #printable-soa { position: absolute; left: 0; top: 0; width: 100%; background: white !important; color: black !important; }
+            #printable-soa, #printable-soa *, #printable-contract, #printable-contract * { visibility: visible; }
+            #printable-soa, #printable-contract { position: absolute; left: 0; top: 0; width: 100%; background: white !important; color: black !important; }
             .no-print { display: none !important; }
             .print-only { display: block !important; }
         }
@@ -51,7 +51,7 @@
                 </div>
                 <div>
                     <h1 class="text-lg font-bold tracking-tight">Celou Rental Property</h1>
-                    <p class="text-xs text-slate-400">Management & Payment Approval System</p>
+                    <p class="text-xs text-slate-400">Management & Contract System</p>
                 </div>
             </div>
             
@@ -83,6 +83,10 @@
                 <button onclick="switchTab('tenants')" id="nav-tenants" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-300 hover:bg-slate-800 hover:text-white">
                     <i class="fa-solid fa-users w-5 text-center"></i>
                     <span>Tenant Database</span>
+                </button>
+                <button onclick="switchTab('contracts')" id="nav-contracts" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-300 hover:bg-slate-800 hover:text-white">
+                    <i class="fa-solid fa-file-contract w-5 text-center"></i>
+                    <span>Lease Contracts</span>
                 </button>
                 <button onclick="switchTab('caretaker')" id="nav-caretaker" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-300 hover:bg-slate-800 hover:text-white relative">
                     <i class="fa-solid fa-cash-register w-5 text-center"></i>
@@ -166,16 +170,16 @@
                     <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl shadow-sm flex flex-col justify-between">
                         <div>
                             <h2 class="text-base font-bold text-white mb-2">Quick Actions</h2>
-                            <p class="text-xs text-slate-400 mb-4">Manage caretakers, tenants, and properties.</p>
+                            <p class="text-xs text-slate-400 mb-4">Manage leases, tenants, and properties.</p>
                             <div class="space-y-3">
-                                <button onclick="switchTab('caretaker')" class="w-full bg-brand-600 hover:bg-brand-500 text-white py-2.5 px-4 rounded-lg text-sm font-medium transition flex items-center justify-center shadow-sm">
-                                    <i class="fa-solid fa-cash-register mr-2"></i> Caretaker Portal (Payments & Expenses)
+                                <button onclick="switchTab('contracts')" class="w-full bg-brand-600 hover:bg-brand-500 text-white py-2.5 px-4 rounded-lg text-sm font-medium transition flex items-center justify-center shadow-sm">
+                                    <i class="fa-solid fa-file-contract mr-2"></i> Generate Lease Contract
+                                </button>
+                                <button onclick="switchTab('caretaker')" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 py-2.5 px-4 rounded-lg text-sm font-medium transition flex items-center justify-center shadow-sm">
+                                    <i class="fa-solid fa-cash-register mr-2"></i> Caretaker Portal
                                 </button>
                                 <button onclick="switchTab('finances')" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-2.5 px-4 rounded-lg text-sm font-medium transition flex items-center justify-center shadow-sm">
                                     <i class="fa-solid fa-lock mr-2"></i> Unlock Financials (Landlord PIN)
-                                </button>
-                                <button onclick="switchTab('soa')" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 py-2.5 px-4 rounded-lg text-sm font-medium transition flex items-center justify-center shadow-sm">
-                                    <i class="fa-solid fa-file-invoice mr-2"></i> Generate SOA
                                 </button>
                             </div>
                         </div>
@@ -251,7 +255,71 @@
                 </div>
             </section>
 
-            <!-- TAB 3: CARETAKER PORTAL (PAYMENTS & EXPENSES) -->
+            <!-- TAB 3: LEASE CONTRACTS -->
+            <section id="tab-contracts" class="space-y-6 hidden">
+                <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm p-6 space-y-6">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-slate-800 gap-4 no-print">
+                        <div>
+                            <h2 class="text-base font-bold text-white">Lease Contract Generator</h2>
+                            <p class="text-xs text-slate-400">Generate and print formal rental contracts for Apartments and Studio Rooms.</p>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <select id="contract-tenant-select" onchange="generateContract()" class="px-3 py-2 bg-slate-950 border border-slate-700 text-white rounded-lg text-sm w-64"></select>
+                            <button onclick="window.print()" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-lg text-sm font-medium shadow flex items-center">
+                                <i class="fa-solid fa-print mr-1.5"></i> Print Contract
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Printable Contract Area -->
+                    <div id="printable-contract" class="bg-white text-slate-900 p-10 rounded-xl shadow-md space-y-6 max-w-3xl mx-auto text-xs leading-relaxed">
+                        <div class="text-center border-b border-slate-300 pb-4">
+                            <h1 class="text-lg font-extrabold text-emerald-900 tracking-wide">CELOU RENTAL PROPERTY</h1>
+                            <p class="text-xs text-slate-600 font-medium">BF Resort Village &bull; GreenMark Homes &bull; GreenPlace Homes 3</p>
+                            <h2 class="text-sm font-bold uppercase tracking-wider text-slate-800 mt-3">RESIDENTIAL LEASE AGREEMENT</h2>
+                        </div>
+
+                        <div class="space-y-3">
+                            <p><span class="font-bold">This Residential Lease Agreement</span> is made and entered into as of <span id="con-date" class="font-semibold">October 7, 2026</span>, by and between:</p>
+                            <p class="pl-4"><span class="font-semibold">Landlord:</span> Tuhamie A. Dimanang and/or Maria Lee A. Dimanang</p>
+                            <p class="pl-4"><span class="font-semibold">Tenant:</span> <span id="con-tenant-name" class="font-bold uppercase text-slate-900">-</span> (Contact: <span id="con-contact">-</span>)</p>
+                        </div>
+
+                        <div class="space-y-2">
+                            <h3 class="font-bold uppercase tracking-wider text-slate-800">1. PREMISES & UNIT TYPE</h3>
+                            <p>Landlord hereby leases to Tenant and Tenant rents the property located at Unit: <span id="con-unit" class="font-semibold">-</span>, Room/Space Designation: <span id="con-room" class="font-semibold">-</span> (classified as Residential Apartment / Studio Type Unit).</p>
+                        </div>
+
+                        <div class="space-y-2">
+                            <h3 class="font-bold uppercase tracking-wider text-slate-800">2. TERM & MOVE-IN</h3>
+                            <p>The lease term shall commence on <span id="con-movein" class="font-semibold">-</span> on a monthly renewal basis unless terminated by either party with a 30-day written notice.</p>
+                        </div>
+
+                        <div class="space-y-2">
+                            <h3 class="font-bold uppercase tracking-wider text-slate-800">3. RENT & DEPOSITS</h3>
+                            <p>Tenant agrees to pay a monthly rent of <span id="con-rent" class="font-bold text-emerald-800">-</span> payable on or before the agreed due date every month. Advance rent and security deposits paid: <span id="con-advance" class="font-semibold">-</span>.</p>
+                        </div>
+
+                        <div class="space-y-2">
+                            <h3 class="font-bold uppercase tracking-wider text-slate-800">4. UTILITIES & HOUSE RULES</h3>
+                            <p>&bull; Utilities (Electricity and Water) shall be billed based on submeter readings or standard unit sharing agreements.<br>&bull; Property caretaker shall collect payments and issue official receipts.<br>&bull; Strict observance of quiet hours, cleanliness, and proper waste disposal is required.<br>&bull; Unauthorized sub-leasing, illegal substances, and hazardous materials are strictly prohibited.</p>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-12 pt-12 border-t border-slate-300 text-center">
+                            <div>
+                                <div class="border-b border-slate-400 pb-8 mb-2 font-bold uppercase">Tuhamie A. Dimanang</div>
+                                <p class="text-[11px] text-slate-600">Landlord / Authorized Representative</p>
+                            </div>
+                            <div>
+                                <div id="con-sig-name" class="border-b border-slate-400 pb-8 mb-2 font-bold uppercase">-</div>
+                                <p class="text-[11px] text-slate-600">Tenant Signature</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: CARETAKER PORTAL (PAYMENTS & EXPENSES) -->
             <section id="tab-caretaker" class="space-y-6 hidden">
                 <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm p-6 space-y-6">
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-slate-800 gap-4">
@@ -312,7 +380,7 @@
                 </div>
             </section>
 
-            <!-- TAB 4: TENANT APPLICATIONS -->
+            <!-- TAB 5: TENANT APPLICATIONS -->
             <section id="tab-applications" class="space-y-6 hidden">
                 <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm overflow-hidden">
                     <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
@@ -342,7 +410,7 @@
                 </div>
             </section>
 
-            <!-- TAB 5: UTILITY METERS -->
+            <!-- TAB 6: UTILITY METERS -->
             <section id="tab-utilities" class="space-y-6 hidden">
                 <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm overflow-hidden">
                     <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
@@ -373,7 +441,7 @@
                 </div>
             </section>
 
-            <!-- TAB 6: MAINTENANCE LOG -->
+            <!-- TAB 7: MAINTENANCE LOG -->
             <section id="tab-maintenance" class="space-y-6 hidden">
                 <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm overflow-hidden">
                     <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
@@ -403,7 +471,7 @@
                 </div>
             </section>
 
-            <!-- TAB 7: STATEMENT OF ACCOUNT -->
+            <!-- TAB 8: STATEMENT OF ACCOUNT -->
             <section id="tab-soa" class="space-y-6 hidden">
                 <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm p-6 no-print">
                     <div class="flex items-center justify-between pb-4 border-b border-slate-800">
@@ -461,7 +529,7 @@
                 </div>
             </section>
 
-            <!-- TAB 8: FINANCES (LANDLORD LOCKED & CSV EXPORT) -->
+            <!-- TAB 9: FINANCES (LANDLORD LOCKED & CSV EXPORT) -->
             <section id="tab-finances" class="space-y-6 hidden">
                 <div id="finances-locked-banner" class="bg-slate-900 border border-slate-800 rounded-xl p-8 text-center space-y-4">
                     <div class="text-amber-400 text-4xl"><i class="fa-solid fa-lock"></i></div>
@@ -514,7 +582,7 @@
         </main>
     </div>
 
-    <!-- Caretaker Payment Modal -->
+    <!-- Modals (Caretaker, Tenant, Application, Utilities, Maintenance) -->
     <div id="caretaker-payment-modal" class="fixed inset-0 bg-slate-950 bg-opacity-80 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-xl max-w-md w-full overflow-hidden text-slate-100">
             <div class="px-6 py-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
@@ -615,7 +683,7 @@
         </div>
     </div>
 
-    <!-- Add/Edit Tenant Modal -->
+    <!-- Tenant Modal -->
     <div id="tenant-modal" class="fixed inset-0 bg-slate-950 bg-opacity-80 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-xl max-w-lg w-full overflow-hidden text-slate-100">
             <div class="px-6 py-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
@@ -675,7 +743,7 @@
         </div>
     </div>
 
-    <!-- Add Utility Modal -->
+    <!-- Utility Modal -->
     <div id="utility-modal" class="fixed inset-0 bg-slate-950 bg-opacity-80 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-xl max-w-md w-full overflow-hidden text-slate-100">
             <div class="px-6 py-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
@@ -701,7 +769,7 @@
         </div>
     </div>
 
-    <!-- Add Maintenance Modal -->
+    <!-- Maintenance Modal -->
     <div id="maintenance-modal" class="fixed inset-0 bg-slate-950 bg-opacity-80 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-xl max-w-md w-full overflow-hidden text-slate-100">
             <div class="px-6 py-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
@@ -792,7 +860,7 @@
         }
 
         function switchTab(tabId) {
-            ['dashboard', 'tenants', 'caretaker', 'applications', 'utilities', 'maintenance', 'soa', 'finances'].forEach(t => {
+            ['dashboard', 'tenants', 'contracts', 'caretaker', 'applications', 'utilities', 'maintenance', 'soa', 'finances'].forEach(t => {
                 document.getElementById(`tab-${t}`).classList.add('hidden');
                 document.getElementById(`nav-${t}`).classList.remove('bg-brand-900/40', 'text-brand-400', 'border', 'border-brand-700/50');
                 document.getElementById(`nav-${t}`).classList.add('text-slate-300', 'hover:bg-slate-800', 'hover:text-white');
@@ -804,6 +872,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
             if(tabId === 'soa') populateSOASelect();
+            if(tabId === 'contracts') populateContractSelect();
             if(tabId === 'utilities') renderUtilityTable();
             if(tabId === 'maintenance') renderMaintenanceTable();
             if(tabId === 'applications') renderApplicationTable();
@@ -879,6 +948,7 @@
             renderMaintenanceTable();
             updateFinancialView();
             populateSOASelect();
+            populateContractSelect();
         }
 
         function renderDashboardSummary() {
@@ -930,6 +1000,28 @@
                     </tr>
                 `;
             });
+        }
+
+        function populateContractSelect() {
+            const select = document.getElementById('contract-tenant-select');
+            select.innerHTML = '';
+            tenants.forEach(t => { select.innerHTML += `<option value="${t.id}">${t.name} (${t.unit} - ${t.room})</option>`; });
+            generateContract();
+        }
+
+        function generateContract() {
+            const tenantId = parseInt(document.getElementById('contract-tenant-select').value);
+            const t = tenants.find(item => item.id === tenantId);
+            if(!t) return;
+
+            document.getElementById('con-tenant-name').innerText = t.name;
+            document.getElementById('con-sig-name').innerText = t.name;
+            document.getElementById('con-contact').innerText = t.contact;
+            document.getElementById('con-unit').innerText = t.unit;
+            document.getElementById('con-room').innerText = t.room;
+            document.getElementById('con-movein').innerText = t.movein;
+            document.getElementById('con-rent').innerText = `₱${t.rent.toLocaleString()}.00`;
+            document.getElementById('con-advance').innerText = t.advance || 'Standard Deposit';
         }
 
         function renderPendingPaymentsTable() {
@@ -1230,7 +1322,7 @@
                         <td class="px-4 py-3 text-slate-300">${t.advance}</td>
                         <td class="px-4 py-3 text-slate-400">${t.notes}</td>
                         <td class="px-4 py-3 text-right space-x-2">
-                            <button onclick="editTenant(${t.id})" class="text-blue-400 hover:text-blue-300"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="editTenant(${t.id})" class="text-blue-400 hover:text-blue-300" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
                             <button onclick="deleteTenant(${t.id})" class="text-rose-400 hover:text-rose-300" title="Delete"><i class="fa-solid fa-trash"></i></button>
                         </td>
                     </tr>
