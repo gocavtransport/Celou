@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Celou Rental Property Manager</title>
-    <link rel="icon" href="https://i.imgur.com/IIpzDAj.png" type="image/png">
+    <title>Celou Rental Property - Tenant Application & Management</title>
+    <link rel="icon" href="https://i.imgur.com/e4dbngu.jpeg" type="image/png">
     
     <!-- PWA Manifest Link -->
     <link rel="manifest" href="/Celou/manifest.json">
@@ -54,7 +54,7 @@
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
 
     <!-- Top Navbar -->
-    <header class="bg-slate-900 border-b border-slate-800 text-white shadow-md sticky top-0 z-50">
+    <header class="bg-slate-900 border-b border-slate-800 text-white shadow-md sticky top-0 z-50 no-print">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('dashboard')">
                 <img src="https://i.imgur.com/IIpzDAj.png" alt="Celou Logo" class="w-10 h-10 object-contain rounded-lg bg-slate-800 p-1 border border-slate-700 shadow-inner">
@@ -76,10 +76,10 @@
     </header>
 
     <!-- Main Content Layout -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full grid grid-cols-1 md:grid-cols-5 gap-6">
+    <div id="admin-layout" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full grid grid-cols-1 md:grid-cols-5 gap-6">
         
-        <!-- Sidebar Navigation -->
-        <aside class="md:col-span-1 bg-slate-900 border border-slate-800 rounded-xl shadow-sm p-4 h-fit">
+        <!-- Sidebar Navigation (Hidden on Public Apply View) -->
+        <aside id="sidebar-nav" class="md:col-span-1 bg-slate-900 border border-slate-800 rounded-xl shadow-sm p-4 h-fit no-print">
             <nav class="space-y-1">
                 <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition bg-brand-900/40 text-brand-400 border border-brand-700/50">
                     <i class="fa-solid fa-house w-5 text-center"></i>
@@ -127,7 +127,7 @@
         </aside>
 
         <!-- Main Dynamic Panel -->
-        <main class="md:col-span-4 space-y-6">
+        <main id="main-content-panel" class="md:col-span-4 space-y-6 w-full">
 
             <!-- TAB 1: DASHBOARD -->
             <section id="tab-dashboard" class="space-y-6">
@@ -226,13 +226,18 @@
                 </div>
             </section>
 
-            <!-- PUBLIC TENANT APPLICATION VIEW (#apply) -->
-            <section id="tab-apply" class="space-y-6 hidden max-w-2xl mx-auto py-4">
-                <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-xl p-8 space-y-6">
-                    <div class="text-center space-y-2 border-b border-slate-800 pb-4">
-                        <img src="https://i.imgur.com/IIpzDAj.png" alt="Celou Logo" class="w-14 h-14 object-contain mx-auto rounded-xl bg-slate-800 p-1.5 border border-slate-700 shadow-inner">
-                        <h2 class="text-xl font-bold text-white">Celou Rental Property - Tenant Application</h2>
-                        <p class="text-xs text-slate-400">Please select an available room and fill out your details to apply.</p>
+            <!-- DEDICATED PUBLIC TENANT APPLICATION VIEW (#apply) -->
+            <section id="tab-apply" class="space-y-6 hidden max-w-2xl mx-auto py-8">
+                <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-2xl p-8 space-y-6">
+                    <div class="text-center space-y-3 border-b border-slate-800 pb-6">
+                        <img src="https://i.imgur.com/IIpzDAj.png" alt="Celou Logo" class="w-16 h-16 object-contain mx-auto rounded-2xl bg-slate-800 p-2 border border-slate-700 shadow-inner">
+                        <div>
+                            <h1 class="text-2xl font-extrabold text-white tracking-tight">Celou Rental Property</h1>
+                            <p class="text-xs text-slate-400 mt-1">BF Resort Village &bull; GreenMark Homes &bull; GreenPlace Homes 3</p>
+                        </div>
+                        <div class="inline-block px-3 py-1 bg-brand-950 text-brand-400 border border-brand-800 rounded-full text-xs font-semibold mt-2">
+                            Official Tenant Application Form
+                        </div>
                     </div>
 
                     <form id="public-apply-form" onsubmit="submitPublicApplication(event)" class="space-y-4 text-sm">
@@ -267,14 +272,18 @@
                                 <input type="text" id="pub-movein" value="October 2026" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
                             </div>
                             <div>
-                                <label class="block text-xs font-semibold text-slate-300 mb-1">Advance / Deposit Info</label>
-                                <input type="text" id="pub-advance" placeholder="e.g. 1 Month Advance" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Required Deposit Term</label>
+                                <input type="text" id="pub-advance" value="1 Month Advance, 2 Months Deposit" readonly class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-300 font-medium">
                             </div>
                         </div>
 
-                        <div class="pt-4 flex items-center justify-between border-t border-slate-800">
-                            <button type="button" onclick="switchTab('dashboard')" class="text-xs text-slate-400 hover:text-white"><i class="fa-solid fa-arrow-left mr-1"></i> Back to Dashboard</button>
-                            <button type="submit" id="pub-submit-btn" class="bg-brand-600 hover:bg-brand-500 text-white px-6 py-2.5 rounded-lg text-sm font-medium transition shadow">Submit Rental Application</button>
+                        <div class="bg-slate-950 p-4 rounded-lg border border-slate-800 text-xs text-slate-400 space-y-1">
+                            <p class="font-semibold text-slate-200">Payment & Onboarding Reminder:</p>
+                            <p>Upon approval, tenants are required to settle 1 Month Advance and 2 Months Security Deposit prior to move-in.</p>
+                        </div>
+
+                        <div class="pt-4 flex items-center justify-end border-t border-slate-800">
+                            <button type="submit" id="pub-submit-btn" class="bg-brand-600 hover:bg-brand-500 text-white px-8 py-3 rounded-lg text-sm font-medium transition shadow-lg w-full sm:w-auto">Submit Rental Application</button>
                         </div>
                     </form>
                 </div>
@@ -390,7 +399,7 @@
 
                         <div class="space-y-2">
                             <h3 class="font-bold uppercase tracking-wider text-slate-800">3. RENT & DEPOSITS</h3>
-                            <p>Tenant agrees to pay a monthly rent of <span id="con-rent" class="font-bold text-emerald-800">-</span> payable on or before the agreed due date every month. Advance rent and security deposits paid: <span id="con-advance" class="font-semibold">-</span>.</p>
+                            <p>Tenant agrees to pay a monthly rent of <span id="con-rent" class="font-bold text-emerald-800">-</span> payable on or before the agreed due date every month. Advance rent and security deposits paid: <span id="con-advance" class="font-semibold">-</span> (1 Month Advance, 2 Months Deposit).</p>
                         </div>
 
                         <div class="space-y-2">
@@ -868,7 +877,7 @@
                 </div>
                 <div class="grid grid-cols-3 gap-4">
                     <div><label class="block text-xs font-semibold text-slate-300 mb-1">Rent (₱) *</label><input type="number" id="form-rent" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
-                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Advance (₱)</label><input type="text" id="form-advance" value="₱0.00" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Advance & Deposit</label><input type="text" id="form-advance" value="1 Mo. Adv, 2 Mo. Dep" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
                     <div><label class="block text-xs font-semibold text-slate-300 mb-1">Move-in</label><input type="text" id="form-movein" value="October 2026" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
                 </div>
                 <div><label class="block text-xs font-semibold text-slate-300 mb-1">Notes</label><input type="text" id="form-notes" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
@@ -940,16 +949,14 @@
         <p>Celou Rental Property Management System (Dark Edition) &bull; Live Firebase Cloud Sync</p>
     </footer>
 
-    <!-- App JavaScript Logic with E-Signature & Firebase Integration -->
+    <!-- App JavaScript Logic -->
     <script>
-        // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/Celou/sw.js').catch(() => {});
             });
         }
 
-        // Firebase Configuration
         const firebaseConfig = {
           apiKey: "AIzaSyCgP1eo039-OY3q7WLFo7pk7BgDpBHoHzg",
           authDomain: "celourentalmanager.firebaseapp.com",
@@ -967,19 +974,19 @@
         let isFinancialsUnlocked = false;
 
         const defaultTenants = [
-            { id: 1, name: "Hanna Gene Villame", contact: "0919 481 6171", movein: "May 15, 2026", unit: "BF Resort Village", room: "Room No. 3", rent: 5000, advance: "June 15 2026", notes: "TurnOver June 2026" },
-            { id: 2, name: "Christy Iyo", contact: "0905 498 5934", movein: "May 15 2026", unit: "BF Resort Village", room: "Room No. 6", rent: 2500, advance: "June 15 2026", notes: "TurnOver June 2026" },
-            { id: 3, name: "Jover torres", contact: "0999 142 2545", movein: "May 15, 2026", unit: "BF Resort Village", room: "Room No. 1", rent: 2500, advance: "June 15, 2026", notes: "TurnOver June 2026" },
-            { id: 4, name: "Markphil & Angel Montiel", contact: "0966 184 0895", movein: "June 30, 2026", unit: "BF Resort Village", room: "Apartment-B", rent: 8000, advance: "₱8,000.00", notes: "TurnOver June 2026" },
-            { id: 5, name: "Raniel Torrie Campo", contact: "0921 861 9794", movein: "July 19, 2026", unit: "BF Resort Village", room: "Room No. 5", rent: 5000, advance: "₱5,000.00", notes: "TurnOver july 2026" },
-            { id: 6, name: "Jiucy Montiel Estares", contact: "0995 061 5314", movein: "May 25, 2026", unit: "BF Resort Village", room: "Room No. 4", rent: 3500, advance: "June 25, 2026", notes: "TurnOver June 2026" },
-            { id: 7, name: "Clarie Molina", contact: "0995 638 1726", movein: "May 29 2026", unit: "BF Resort Village", room: "Room No. 7", rent: 4500, advance: "June 29, 2026", notes: "End Contract July 2026" },
-            { id: 8, name: "Resalyn Dasig", contact: "0961 182 5686", movein: "May 15, 2026", unit: "GreenMark Homes", room: "B1L28", rent: 8000, advance: "June 18, 2026", notes: "TurnOver June 2026" },
-            { id: 9, name: "Arriane G. Costales", contact: "0917 140 1888", movein: "April 10, 2026", unit: "GreenMark Homes", room: "B1L30", rent: 10000, advance: "₱10,000.00", notes: "30K paid on apr 7,2026" },
-            { id: 10, name: "Lory Jean", contact: "0961 951 7983", movein: "February 20, 2026", unit: "GreenPlace Homes 3", room: "B1L36-B", rent: 4000, advance: "₱4,000.00", notes: "12k paid on Feb 19 2026" },
-            { id: 11, name: "Marianne Agravante", contact: "0909 631 7918", movein: "May 30, 2026", unit: "GreenPlace Homes 3", room: "B1L36-A", rent: 4000, advance: "June 30, 2026", notes: "TurnOver June 2026" },
-            { id: 12, name: "Laurence Gonzales", contact: "0908 652 6672", movein: "May 28, 2026", unit: "GreenPlace Homes 3", room: "B1L36-MAIN", rent: 8000, advance: "June 30, 2026", notes: "TurnOver June 2026" },
-            { id: 13, name: "Jescel & Sharmaine macalisang", contact: "09205075110", movein: "September 1, 2026", unit: "BF Resort Village", room: "Apartment-A", rent: 10000, advance: "₱20,000.00", notes: "20k deposit paid 7/24/26" }
+            { id: 1, name: "Hanna Gene Villame", contact: "0919 481 6171", movein: "May 15, 2026", unit: "BF Resort Village", room: "Room No. 3", rent: 5000, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "TurnOver June 2026" },
+            { id: 2, name: "Christy Iyo", contact: "0905 498 5934", movein: "May 15 2026", unit: "BF Resort Village", room: "Room No. 6", rent: 2500, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "TurnOver June 2026" },
+            { id: 3, name: "Jover torres", contact: "0999 142 2545", movein: "May 15, 2026", unit: "BF Resort Village", room: "Room No. 1", rent: 2500, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "TurnOver June 2026" },
+            { id: 4, name: "Markphil & Angel Montiel", contact: "0966 184 0895", movein: "June 30, 2026", unit: "BF Resort Village", room: "Apartment-B", rent: 8000, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "TurnOver June 2026" },
+            { id: 5, name: "Raniel Torrie Campo", contact: "0921 861 9794", movein: "July 19, 2026", unit: "BF Resort Village", room: "Room No. 5", rent: 5000, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "TurnOver july 2026" },
+            { id: 6, name: "Jiucy Montiel Estares", contact: "0995 061 5314", movein: "May 25, 2026", unit: "BF Resort Village", room: "Room No. 4", rent: 3500, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "TurnOver June 2026" },
+            { id: 7, name: "Clarie Molina", contact: "0995 638 1726", movein: "May 29 2026", unit: "BF Resort Village", room: "Room No. 7", rent: 4500, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "End Contract July 2026" },
+            { id: 8, name: "Resalyn Dasig", contact: "0961 182 5686", movein: "May 15, 2026", unit: "GreenMark Homes", room: "B1L28", rent: 8000, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "TurnOver June 2026" },
+            { id: 9, name: "Arriane G. Costales", contact: "0917 140 1888", movein: "April 10, 2026", unit: "GreenMark Homes", room: "B1L30", rent: 10000, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "30K paid on apr 7,2026" },
+            { id: 10, name: "Lory Jean", contact: "0961 951 7983", movein: "February 20, 2026", unit: "GreenPlace Homes 3", room: "B1L36-B", rent: 4000, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "12k paid on Feb 19 2026" },
+            { id: 11, name: "Marianne Agravante", contact: "0909 631 7918", movein: "May 30, 2026", unit: "GreenPlace Homes 3", room: "B1L36-A", rent: 4000, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "TurnOver June 2026" },
+            { id: 12, name: "Laurence Gonzales", contact: "0908 652 6672", movein: "May 28, 2026", unit: "GreenPlace Homes 3", room: "B1L36-MAIN", rent: 8000, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "TurnOver June 2026" },
+            { id: 13, name: "Jescel & Sharmaine macalisang", contact: "09205075110", movein: "September 1, 2026", unit: "BF Resort Village", room: "Apartment-A", rent: 10000, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "20k deposit paid 7/24/26" }
         ];
 
         let defaultRooms = [
@@ -1028,12 +1035,18 @@
             db.ref('celouPropertyData').set(payload);
         }
 
-        // Handle routing based on URL hash #apply
         window.addEventListener('hashchange', checkURLHash);
         function checkURLHash() {
             if(window.location.hash === '#apply') {
+                document.getElementById('sidebar-nav').classList.add('hidden');
+                document.getElementById('main-content-panel').classList.remove('md:col-span-4');
+                document.getElementById('main-content-panel').classList.add('md:col-span-5');
                 switchTab('apply');
                 populatePublicRoomDropdown();
+            } else {
+                document.getElementById('sidebar-nav').classList.remove('hidden');
+                document.getElementById('main-content-panel').classList.add('md:col-span-4');
+                document.getElementById('main-content-panel').classList.remove('md:col-span-5');
             }
         }
 
@@ -1075,7 +1088,6 @@
             if(tabId === 'apply') { populatePublicRoomDropdown(); }
         }
 
-        // Signature Pad Logic
         let canvas, ctx, isDrawing = false;
         function initSignaturePad() {
             canvas = document.getElementById('signature-canvas');
@@ -1085,13 +1097,11 @@
             ctx.lineWidth = 2;
             ctx.lineCap = 'round';
 
-            // Mouse events
             canvas.onmousedown = (e) => { isDrawing = true; ctx.beginPath(); ctx.moveTo(e.offsetX, e.offsetY); };
             canvas.onmousemove = (e) => { if (!isDrawing) return; ctx.lineTo(e.offsetX, e.offsetY); ctx.stroke(); };
             canvas.onmouseup = () => isDrawing = false;
             canvas.onmouseleave = () => isDrawing = false;
 
-            // Touch events for mobile
             canvas.ontouchstart = (e) => {
                 isDrawing = true;
                 const rect = canvas.getBoundingClientRect();
@@ -1198,7 +1208,7 @@
             updateFinancialView();
             populateSOASelect();
             populateContractSelect();
-            if(window.location.hash === '#apply') switchTab('apply');
+            checkURLHash();
         }
 
         function renderDashboardSummary() {
@@ -1245,6 +1255,7 @@
             const select = document.getElementById('pub-room-select');
             const soldoutMsg = document.getElementById('pub-room-soldout-msg');
             const submitBtn = document.getElementById('pub-submit-btn');
+            if(!select) return;
             select.innerHTML = '';
 
             const availableRooms = rooms.filter(r => r.status === 'Available');
@@ -1291,13 +1302,14 @@
                 room: selectedOpt.dataset.name,
                 rent: parseFloat(selectedOpt.dataset.rate),
                 movein: document.getElementById('pub-movein').value,
-                advance: document.getElementById('pub-advance').value || '₱0.00',
+                advance: "1 Month Advance, 2 Months Deposit",
                 status: 'PENDING'
             });
 
             saveToStorage();
             alert("Your rental application has been submitted successfully! The Landlord or Caretaker will review it shortly.");
             document.getElementById('public-apply-form').reset();
+            window.location.hash = '';
             switchTab('dashboard');
         }
 
@@ -1407,7 +1419,7 @@
             document.getElementById('con-room').innerText = t.room;
             document.getElementById('con-movein').innerText = t.movein;
             document.getElementById('con-rent').innerText = `₱${t.rent.toLocaleString()}.00`;
-            document.getElementById('con-advance').innerText = t.advance || 'Standard Deposit';
+            document.getElementById('con-advance').innerText = t.advance || '1 Month Advance, 2 Months Deposit';
             clearSignature();
         }
 
@@ -1516,7 +1528,7 @@
                 unit: app.unit,
                 room: app.room,
                 rent: app.rent,
-                advance: app.advance,
+                advance: "1 Mo. Adv, 2 Mo. Dep",
                 notes: "Enrolled via Application Portal"
             });
 
@@ -1784,7 +1796,6 @@
             downloadAnchor.remove();
         }
 
-        // Real-time Firebase Sync on Load
         window.addEventListener('DOMContentLoaded', () => {
             db.ref('celouPropertyData').once('value').then((snapshot) => {
                 const serverData = snapshot.val();
@@ -1804,7 +1815,6 @@
                 checkURLHash();
             });
 
-            // Listen for live updates across devices
             db.ref('celouPropertyData').on('value', (snapshot) => {
                 const serverData = snapshot.val();
                 if (serverData) {
