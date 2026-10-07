@@ -1,0 +1,15 @@
+{
+  "name": "Celou Rental Property Manager",
+  "short_name": "Celou Rentals",
+  "start_url": "/Celou/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#020617",
+  "icons": [
+    {
+      "src": "https://i.imgur.com/IIpzDAj.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png"
+    }
+  ]
+}
