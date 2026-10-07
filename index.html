@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Celou Rental Property - Tenant Application & Management</title>
-    <link rel="icon" href="https://i.imgur.com/e4dbngu.jpeg" type="image/png">
+    <link rel="icon" href="https://i.imgur.com/e4dbngu.jpeg" type="image/jpeg">
     
     <!-- PWA Manifest Link -->
     <link rel="manifest" href="/Celou/manifest.json">
@@ -57,10 +57,10 @@
     <header class="bg-slate-900 border-b border-slate-800 text-white shadow-md sticky top-0 z-50 no-print">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('dashboard')">
-                <img src="https://i.imgur.com/IIpzDAj.png" alt="Celou Logo" class="w-10 h-10 object-contain rounded-lg bg-slate-800 p-1 border border-slate-700 shadow-inner">
+                <img src="https://i.imgur.com/e4dbngu.jpeg" alt="Celou Logo" class="w-10 h-10 object-cover rounded-lg bg-slate-800 p-0.5 border border-slate-700 shadow-inner">
                 <div>
                     <h1 class="text-lg font-bold tracking-tight">Celou Rental Property</h1>
-                    <p class="text-xs text-slate-400">Live Cloud Sync & Contract Management</p>
+                    <p class="text-xs text-slate-400">Live Cloud Sync & Secured Management</p>
                 </div>
             </div>
             
@@ -231,7 +231,7 @@
                 <!-- Application Form Card -->
                 <div id="public-form-card" class="bg-slate-900 border border-slate-800 rounded-xl shadow-2xl p-8 space-y-6">
                     <div class="text-center space-y-3 border-b border-slate-800 pb-6">
-                        <img src="https://i.imgur.com/IIpzDAj.png" alt="Celou Logo" class="w-16 h-16 object-contain mx-auto rounded-2xl bg-slate-800 p-2 border border-slate-700 shadow-inner">
+                        <img src="https://i.imgur.com/e4dbngu.jpeg" alt="Celou Logo" class="w-16 h-16 object-cover mx-auto rounded-2xl bg-slate-800 p-0.5 border border-slate-700 shadow-inner">
                         <div>
                             <h1 class="text-2xl font-extrabold text-white tracking-tight">Celou Rental Property</h1>
                             <p class="text-xs text-slate-400 mt-1">BF Resort Village &bull; GreenMark Homes &bull; GreenPlace Homes 3</p>
@@ -336,7 +336,7 @@
                 </div>
             </section>
 
-            <!-- TAB 2: TENANT DATABASE (SECURED BY LANDLORD PIN) -->
+            <!-- TAB 2: TENANT DATABASE -->
             <section id="tab-tenants" class="space-y-6 hidden">
                 <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm overflow-hidden">
                     <div class="px-6 py-4 border-b border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -373,7 +373,7 @@
                 </div>
             </section>
 
-            <!-- TAB: ROOMS & RATES MANAGER (LANDLORD PIN SECURED) -->
+            <!-- TAB: ROOMS & RATES MANAGER -->
             <section id="tab-rooms" class="space-y-6 hidden">
                 <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm overflow-hidden p-6 space-y-6">
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-slate-800 gap-4">
@@ -548,7 +548,7 @@
                 </div>
             </section>
 
-            <!-- TAB 5: TENANT APPLICATIONS (LANDLORD-ONLY APPROVAL) -->
+            <!-- TAB 5: TENANT APPLICATIONS -->
             <section id="tab-applications" class="space-y-6 hidden">
                 <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm overflow-hidden">
                     <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
@@ -1197,13 +1197,11 @@
             if(!tenant) return;
 
             if(confirm(`Are you sure you want to terminate the contract for ${tenant.name} in room ${tenant.room}?\n\nThis will mark the room as AVAILABLE.`)) {
-                // Mark room available
                 const roomMatch = rooms.find(r => r.unit === tenant.unit && r.name === tenant.room);
                 if(roomMatch) {
                     roomMatch.status = 'Available';
                 }
 
-                // Remove or update tenant status
                 tenants = tenants.filter(t => t.id !== id);
                 saveToStorage();
                 renderAll();
