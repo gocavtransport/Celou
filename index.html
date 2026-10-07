@@ -54,7 +54,7 @@
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
 
     <!-- Top Navbar -->
-    <header class="bg-slate-900 border-b border-slate-800 text-white shadow-md sticky top-0 z-50 no-print">
+    <header id="top-navbar" class="bg-slate-900 border-b border-slate-800 text-white shadow-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('dashboard')">
                 <img src="https://i.imgur.com/e4dbngu.jpeg" alt="Celou Logo" class="w-10 h-10 object-cover rounded-lg bg-slate-800 p-0.5 border border-slate-700 shadow-inner">
@@ -64,7 +64,7 @@
                 </div>
             </div>
             
-            <div class="flex items-center space-x-3">
+            <div id="admin-header-actions" class="flex items-center space-x-3">
                 <button onclick="copyPublicApplyLink()" class="bg-brand-600 hover:bg-brand-500 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition shadow flex items-center">
                     <i class="fa-solid fa-share-nodes mr-1.5"></i> Copy Tenant Apply Link
                 </button>
@@ -79,7 +79,7 @@
     <div id="admin-layout" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full grid grid-cols-1 md:grid-cols-5 gap-6">
         
         <!-- Sidebar Navigation -->
-        <aside id="sidebar-nav" class="md:col-span-1 bg-slate-900 border border-slate-800 rounded-xl shadow-sm p-4 h-fit no-print">
+        <aside id="sidebar-nav" class="md:col-span-1 bg-slate-900 border border-slate-800 rounded-xl shadow-sm p-4 h-fit">
             <nav class="space-y-1">
                 <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition bg-brand-900/40 text-brand-400 border border-brand-700/50">
                     <i class="fa-solid fa-house w-5 text-center"></i>
@@ -1086,12 +1086,14 @@
         function checkURLHash() {
             if(window.location.hash === '#apply') {
                 document.getElementById('sidebar-nav').classList.add('hidden');
+                document.getElementById('admin-header-actions').classList.add('hidden');
                 document.getElementById('main-content-panel').classList.remove('md:col-span-4');
                 document.getElementById('main-content-panel').classList.add('md:col-span-5');
                 switchTab('apply');
                 populatePublicRoomDropdown();
             } else {
                 document.getElementById('sidebar-nav').classList.remove('hidden');
+                document.getElementById('admin-header-actions').classList.remove('hidden');
                 document.getElementById('main-content-panel').classList.add('md:col-span-4');
                 document.getElementById('main-content-panel').classList.remove('md:col-span-5');
             }
@@ -1398,13 +1400,6 @@
             
             document.getElementById('public-form-card').classList.add('hidden');
             document.getElementById('public-success-card').classList.remove('hidden');
-        }
-
-        function resetPublicForm() {
-            document.getElementById('public-apply-form').reset();
-            document.getElementById('public-form-card').classList.remove('hidden');
-            document.getElementById('public-success-card').classList.add('hidden');
-            populatePublicRoomDropdown();
         }
 
         function renderRoomsTable() {
