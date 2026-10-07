@@ -237,7 +237,7 @@
                             <p class="text-xs text-slate-400 mt-1">BF Resort Village &bull; GreenMark Homes &bull; GreenPlace Homes 3</p>
                         </div>
                         <div class="inline-block px-3 py-1 bg-brand-950 text-brand-400 border border-brand-800 rounded-full text-xs font-semibold mt-2">
-                            Official Tenant Application Form
+                            Official Tenant Application Form & Screening
                         </div>
                     </div>
 
@@ -269,6 +269,43 @@
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Previous Address *</label>
+                                <input type="text" id="pub-prev-address" required placeholder="Complete previous address" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Reason for Leaving Previous Place *</label>
+                                <input type="text" id="pub-reason" required placeholder="e.g. Relocating closer to work" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Employment / School Status *</label>
+                                <select id="pub-status" onchange="toggleStudentFields()" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                                    <option value="Working Professional">Working Professional</option>
+                                    <option value="Student">Student</option>
+                                    <option value="Self-Employed / Business">Self-Employed / Business</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1" id="label-employer">Employer / Company Name & Monthly Income *</label>
+                                <input type="text" id="pub-employer" required placeholder="Company Name & Est. Income" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Emergency Contact Person *</label>
+                                <input type="text" id="pub-emerg-name" required placeholder="Full Name" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Relationship & Contact No. *</label>
+                                <input type="text" id="pub-emerg-rel" required placeholder="e.g. Parent / Spouse - 0912..." class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
                                 <label class="block text-xs font-semibold text-slate-300 mb-1">Target Move-in Date *</label>
                                 <input type="text" id="pub-movein" value="October 2026" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
                             </div>
@@ -279,12 +316,12 @@
                         </div>
 
                         <div class="bg-slate-950 p-4 rounded-lg border border-slate-800 text-xs text-slate-400 space-y-1">
-                            <p class="font-semibold text-slate-200">Payment & Onboarding Reminder:</p>
-                            <p>Upon approval, tenants are required to settle 1 Month Advance and 2 Months Security Deposit prior to move-in.</p>
+                            <p class="font-semibold text-slate-200">Screening & Onboarding Notice:</p>
+                            <p>All information provided is subject to verification. Upon approval, 1 Month Advance and 2 Months Deposit are required prior to contract signing.</p>
                         </div>
 
                         <div class="pt-4 flex items-center justify-end border-t border-slate-800">
-                            <button type="submit" id="pub-submit-btn" class="bg-brand-600 hover:bg-brand-500 text-white px-8 py-3 rounded-lg text-sm font-medium transition shadow-lg w-full sm:w-auto">Submit Rental Application</button>
+                            <button type="submit" id="pub-submit-btn" class="bg-brand-600 hover:bg-brand-500 text-white px-8 py-3 rounded-lg text-sm font-medium transition shadow-lg w-full sm:w-auto">Submit Application & Screening</button>
                         </div>
                     </form>
                 </div>
@@ -294,11 +331,8 @@
                     <div class="w-16 h-16 bg-emerald-950 text-emerald-400 border border-emerald-800 rounded-full flex items-center justify-center text-3xl mx-auto shadow-inner">
                         <i class="fa-solid fa-check"></i>
                     </div>
-                    <h2 class="text-2xl font-bold text-white">Application Submitted Successfully!</h2>
-                    <p class="text-sm text-slate-400 max-w-md mx-auto">Thank you for applying to Celou Rental Property. Your application has been sent to our management team for review. We will contact you shortly.</p>
-                    <div class="pt-4">
-                        <button onclick="resetPublicForm()" class="bg-brand-600 hover:bg-brand-500 text-white px-6 py-2 rounded-lg text-xs font-medium transition">Submit Another Application</button>
-                    </div>
+                    <h2 class="text-2xl font-bold text-white">Message Successfully Sent!</h2>
+                    <p class="text-sm text-slate-400 max-w-md mx-auto">Waiting for approval from Landlord. We have received your screening details and will notify you soon.</p>
                 </div>
             </section>
 
@@ -339,7 +373,7 @@
                 </div>
             </section>
 
-            <!-- TAB: ROOMS & RATES MANAGER (SECURED BY LANDLORD PIN) -->
+            <!-- TAB: ROOMS & RATES MANAGER -->
             <section id="tab-rooms" class="space-y-6 hidden">
                 <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm overflow-hidden p-6 space-y-6">
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-slate-800 gap-4">
@@ -514,13 +548,13 @@
                 </div>
             </section>
 
-            <!-- TAB 5: TENANT APPLICATIONS -->
+            <!-- TAB 5: TENANT APPLICATIONS (LANDLORD-ONLY APPROVAL) -->
             <section id="tab-applications" class="space-y-6 hidden">
                 <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm overflow-hidden">
                     <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
                         <div>
-                            <h2 class="text-base font-bold text-white">Tenant Applications & Approvals</h2>
-                            <p class="text-xs text-slate-400">Review and approve applications submitted by prospective tenants</p>
+                            <h2 class="text-base font-bold text-white">Tenant Applications & Screening Records</h2>
+                            <p class="text-xs text-slate-400">Review screening info (Employment, History, Emergency Contacts). Approvals require Landlord PIN.</p>
                         </div>
                         <button onclick="copyPublicApplyLink()" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center">
                             <i class="fa-solid fa-share-nodes mr-1.5"></i> Share Application Link
@@ -530,14 +564,14 @@
                         <table class="min-w-full divide-y divide-slate-800 text-left text-xs">
                             <thead class="bg-slate-950 font-semibold text-slate-400 uppercase">
                                 <tr>
-                                    <th class="px-4 py-3">Name</th>
+                                    <th class="px-4 py-3">Applicant Name</th>
                                     <th class="px-4 py-3">Contact</th>
-                                    <th class="px-4 py-3">Property</th>
-                                    <th class="px-4 py-3">Room</th>
-                                    <th class="px-4 py-3">Rent</th>
-                                    <th class="px-4 py-3">Move-in</th>
+                                    <th class="px-4 py-3">Property / Room</th>
+                                    <th class="px-4 py-3">Employment / School</th>
+                                    <th class="px-4 py-3">Prev Address & Reason</th>
+                                    <th class="px-4 py-3">Emergency Contact</th>
                                     <th class="px-4 py-3">Status</th>
-                                    <th class="px-4 py-3 text-right">Actions</th>
+                                    <th class="px-4 py-3 text-right">Landlord Action</th>
                                 </tr>
                             </thead>
                             <tbody id="application-table-body" class="divide-y divide-slate-800 bg-slate-900 text-slate-300"></tbody>
@@ -1155,6 +1189,19 @@
             alert("Electronic signature successfully applied to the contract!");
         }
 
+        function toggleStudentFields() {
+            const status = document.getElementById('pub-status').value;
+            const label = document.getElementById('label-employer');
+            const input = document.getElementById('pub-employer');
+            if(status === 'Student') {
+                label.innerText = "School Name & Who is Paying / Parent's Contact *";
+                input.placeholder = "School Name, Parent Name & Contact No.";
+            } else {
+                label.innerText = "Employer / Company Name & Monthly Income *";
+                input.placeholder = "Company Name & Est. Income";
+            }
+        }
+
         function unlockFinancials() {
             const pass = prompt("Enter Landlord PIN to view income & profit:");
             if(pass === LANDLORD_PASSWORD) {
@@ -1319,6 +1366,10 @@
                 room: selectedOpt.dataset.name,
                 rent: parseFloat(selectedOpt.dataset.rate),
                 movein: document.getElementById('pub-movein').value,
+                prevAddress: document.getElementById('pub-prev-address').value,
+                reason: document.getElementById('pub-reason').value,
+                statusDetail: `${document.getElementById('pub-status').value}: ${document.getElementById('pub-employer').value}`,
+                emergency: `${document.getElementById('pub-emerg-name').value} (${document.getElementById('pub-emerg-rel').value})`,
                 advance: "1 Month Advance, 2 Months Deposit",
                 status: 'PENDING'
             });
@@ -1533,13 +1584,13 @@
                     <tr class="hover:bg-slate-800/50 transition">
                         <td class="px-4 py-3 font-medium text-white">${app.name}</td>
                         <td class="px-4 py-3 text-slate-300">${app.contact}</td>
-                        <td class="px-4 py-3 text-slate-300">${app.unit}</td>
-                        <td class="px-4 py-3 text-slate-200">${app.room}</td>
-                        <td class="px-4 py-3 font-bold text-brand-400">₱${app.rent.toLocaleString()}.00</td>
-                        <td class="px-4 py-3 text-slate-300">${app.movein}</td>
+                        <td class="px-4 py-3 text-slate-300">${app.unit} - ${app.room}</td>
+                        <td class="px-4 py-3 text-slate-300">${app.statusDetail || 'N/A'}</td>
+                        <td class="px-4 py-3 text-slate-400 text-[11px]">Prev: ${app.prevAddress || 'N/A'}<br>Reason: ${app.reason || 'N/A'}</td>
+                        <td class="px-4 py-3 text-slate-300">${app.emergency || 'N/A'}</td>
                         <td class="px-4 py-3"><span class="px-2 py-1 bg-amber-950 text-amber-400 border border-amber-900 rounded text-xs">${app.status}</span></td>
                         <td class="px-4 py-3 text-right space-x-2">
-                            ${app.status === 'PENDING' ? `<button onclick="approveApplication(${app.id})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-semibold shadow">Approve & Enroll</button>` : `<span class="text-xs text-emerald-400 font-medium">Approved</span>`}
+                            ${app.status === 'PENDING' ? `<button onclick="approveApplication(${app.id})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-semibold shadow">Landlord Approve</button>` : `<span class="text-xs text-emerald-400 font-medium">Approved</span>`}
                             <button onclick="deleteApplication(${app.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button>
                         </td>
                     </tr>
@@ -1548,6 +1599,9 @@
         }
 
         function approveApplication(id) {
+            const pass = prompt("Enter Landlord PIN to approve tenant application:");
+            if(pass !== LANDLORD_PASSWORD) { alert("Incorrect password! Access denied. Only the Landlord can approve applications."); return; }
+
             const app = applications.find(a => a.id === id);
             if(!app) return;
             app.status = 'APPROVED';
@@ -1561,14 +1615,14 @@
                 room: app.room,
                 rent: app.rent,
                 advance: "1 Mo. Adv, 2 Mo. Dep",
-                notes: "Enrolled via Application Portal"
+                notes: `Screened. ${app.statusDetail}`
             });
 
             const matchingRoom = rooms.find(r => r.unit === app.unit && r.name === app.room);
             if(matchingRoom) { matchingRoom.status = 'Occupied'; }
 
             saveToStorage(); renderAll();
-            alert(`Application for ${app.name} approved & successfully enrolled into Tenant Database! Room marked as Occupied.`);
+            alert(`Application for ${app.name} approved by Landlord & successfully enrolled into Tenant Database!`);
         }
 
         function deleteApplication(id) {
