@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Celou Rental Property - Tenant Application & Management</title>
-    <link rel="icon" href="https://i.imgur.com/AQ19LVc.png" type="image/jpeg">
+    <link rel="icon" href="https://i.imgur.com/e4dbngu.jpeg" type="image/jpeg">
     
     <!-- PWA Manifest Link -->
     <link rel="manifest" href="/Celou/manifest.json">
@@ -200,12 +200,12 @@
                     </div>
                 </div>
 
-                <!-- Due Summary Table -->
+                <!-- Due Summary Table with Paid / Overdue Status -->
                 <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm overflow-hidden">
                     <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
                         <div>
-                            <h2 class="text-base font-bold text-white">Due & Collection Summary</h2>
-                            <p class="text-xs text-slate-400">Overview of active tenant accounts</p>
+                            <h2 class="text-base font-bold text-white">Tenant Payment Status Summary</h2>
+                            <p class="text-xs text-slate-400">Tracking who has paid or is overdue for October 2026</p>
                         </div>
                         <span class="text-xs font-semibold px-3 py-1 bg-emerald-950 text-emerald-400 border border-emerald-900 rounded-full">October 2026</span>
                     </div>
@@ -217,7 +217,7 @@
                                     <th class="px-6 py-3">Unit / Room</th>
                                     <th class="px-6 py-3">Monthly Rent</th>
                                     <th class="px-6 py-3">Contact #</th>
-                                    <th class="px-6 py-3">Status / Notes</th>
+                                    <th class="px-6 py-3">Payment Status</th>
                                 </tr>
                             </thead>
                             <tbody id="dashboard-tenant-list" class="divide-y divide-slate-800 bg-slate-900 text-slate-300"></tbody>
@@ -326,7 +326,7 @@
                     </form>
                 </div>
 
-                <!-- Thank You Success Screen (Auto-shows on Submit) -->
+                <!-- Thank You Success Screen -->
                 <div id="public-success-card" class="bg-slate-900 border border-slate-800 rounded-xl shadow-2xl p-10 text-center space-y-4 hidden">
                     <div class="w-16 h-16 bg-emerald-950 text-emerald-400 border border-emerald-800 rounded-full flex items-center justify-center text-3xl mx-auto shadow-inner">
                         <i class="fa-solid fa-check"></i>
@@ -470,32 +470,32 @@
                         </div>
                     </div>
 
-                    <!-- E-Signature Box (No-print) -->
+                    <!-- E-Signature Box -->
                     <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-3 no-print">
                         <div class="flex items-center justify-between">
                             <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300"><i class="fa-solid fa-signature mr-1.5 text-brand-500"></i> Electronic Signature Pad</h3>
                             <button onclick="clearSignature()" class="text-xs text-rose-400 hover:text-rose-300"><i class="fa-solid fa-rotate-right mr-1"></i> Clear Pad</button>
                         </div>
-                        <p class="text-xs text-slate-400">Tenant can sign below using finger, mouse, or stylus, then click "Apply Signature" to stamp it on the contract.</p>
+                        <p class="text-xs text-slate-400">Tenant can sign below using finger, mouse, or stylus, then click "Apply Signature" to stamp it on the contract and save to backup.</p>
                         <div class="flex justify-center">
                             <canvas id="signature-canvas" width="400" height="150" class="sig-pad"></canvas>
                         </div>
                         <div class="flex justify-end">
                             <button onclick="applySignature()" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-lg text-xs font-medium shadow flex items-center">
-                                <i class="fa-solid fa-check mr-1.5"></i> Apply Signature to Contract
+                                <i class="fa-solid fa-check mr-1.5"></i> Apply Signature & Backup Contract
                             </button>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- TAB 4: CARETAKER PORTAL -->
+            <!-- TAB 4: CARETAKER PORTAL (WITH PAYMENT STATUS VIEW FOR CARETAKER) -->
             <section id="tab-caretaker" class="space-y-6 hidden">
                 <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm p-6 space-y-6">
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-slate-800 gap-4">
                         <div>
-                            <h2 class="text-base font-bold text-white">Caretaker Submission Portal</h2>
-                            <p class="text-xs text-slate-400">Encode tenant payments and property expenses. Requires Landlord password approval.</p>
+                            <h2 class="text-base font-bold text-white">Caretaker Portal & Payment Status View</h2>
+                            <p class="text-xs text-slate-400">Check who has paid or not paid. Caretaker encoded payments require Landlord PIN approval.</p>
                         </div>
                         <div class="flex items-center space-x-3">
                             <button onclick="openCaretakerPaymentModal()" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm flex items-center">
@@ -507,8 +507,27 @@
                         </div>
                     </div>
 
+                    <!-- Caretaker Tenant Payment Status Breakdown -->
                     <div>
-                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Pending & Approved Payments</h3>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Tenant Payment Status (Caretaker View)</h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-slate-800 text-left text-xs">
+                                <thead class="bg-slate-950 font-semibold text-slate-400 uppercase">
+                                    <tr>
+                                        <th class="px-4 py-3">Tenant Name</th>
+                                        <th class="px-4 py-3">Room #</th>
+                                        <th class="px-4 py-3">Monthly Rent</th>
+                                        <th class="px-4 py-3">Contact</th>
+                                        <th class="px-4 py-3">Status (October 2026)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="caretaker-tenant-status-body" class="divide-y divide-slate-800 bg-slate-900 text-slate-300"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-slate-800">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Pending & Approved Payments (Awaiting Landlord Approval)</h3>
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-slate-800 text-left text-xs">
                                 <thead class="bg-slate-950 font-semibold text-slate-400 uppercase">
@@ -519,7 +538,7 @@
                                         <th class="px-4 py-3">Month Covered</th>
                                         <th class="px-4 py-3">Amount Paid</th>
                                         <th class="px-4 py-3">Method</th>
-                                        <th class="px-4 py-3">Status / Action</th>
+                                        <th class="px-4 py-3">Status / Landlord Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="pending-payment-table-body" class="divide-y divide-slate-800 bg-slate-900 text-slate-300"></tbody>
@@ -585,10 +604,12 @@
                 <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm overflow-hidden">
                     <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
                         <div>
-                            <h2 class="text-base font-bold text-white">Utility Meter Tracking</h2>
-                            <p class="text-xs text-slate-400">Record electricity and water readings</p>
+                            <h2 class="text-base font-bold text-white">Utility Meter Tracking (Meralco & Maynilad)</h2>
+                            <p class="text-xs text-slate-400">Record electricity and water consumption and billings</p>
                         </div>
-                        <button onclick="openAddUtilityModal()" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-lg text-sm font-medium">Add Utility Reading</button>
+                        <button onclick="openAddUtilityModal()" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center">
+                            <i class="fa-solid fa-plus mr-1.5"></i> Add Utility Reading
+                        </button>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-slate-800 text-left text-xs">
@@ -596,10 +617,10 @@
                                 <tr>
                                     <th class="px-4 py-3">Tenant Name</th>
                                     <th class="px-4 py-3">Room #</th>
-                                    <th class="px-4 py-3">Type</th>
+                                    <th class="px-4 py-3">Utility Provider</th>
                                     <th class="px-4 py-3">Month</th>
-                                    <th class="px-4 py-3">Prev</th>
-                                    <th class="px-4 py-3">New</th>
+                                    <th class="px-4 py-3">Prev Reading</th>
+                                    <th class="px-4 py-3">New Reading</th>
                                     <th class="px-4 py-3">Usage</th>
                                     <th class="px-4 py-3">Amount Due</th>
                                     <th class="px-4 py-3 text-right">Actions</th>
@@ -619,7 +640,9 @@
                             <h2 class="text-base font-bold text-white">Maintenance Log</h2>
                             <p class="text-xs text-slate-400">Track property repairs and upkeep</p>
                         </div>
-                        <button onclick="openAddMaintenanceModal()" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-lg text-sm font-medium">Log Repair Ticket</button>
+                        <button onclick="openAddMaintenanceModal()" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center">
+                            <i class="fa-solid fa-plus mr-1.5"></i> Log Repair Ticket
+                        </button>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-slate-800 text-left text-xs">
@@ -683,8 +706,8 @@
                             </thead>
                             <tbody class="divide-y divide-slate-200">
                                 <tr><td class="px-3 py-2.5">Monthly Rent</td><td id="soa-charge-rent" class="px-3 py-2.5 text-right font-medium">₱0.00</td></tr>
-                                <tr><td class="px-3 py-2.5">Electricity</td><td id="soa-charge-elec" class="px-3 py-2.5 text-right">₱0.00</td></tr>
-                                <tr><td class="px-3 py-2.5">Water</td><td id="soa-charge-water" class="px-3 py-2.5 text-right">₱0.00</td></tr>
+                                <tr><td class="px-3 py-2.5">Meralco (Electricity)</td><td id="soa-charge-elec" class="px-3 py-2.5 text-right">₱0.00</td></tr>
+                                <tr><td class="px-3 py-2.5">Maynilad (Water)</td><td id="soa-charge-water" class="px-3 py-2.5 text-right">₱0.00</td></tr>
                                 <tr><td class="px-3 py-2.5">Wifi</td><td class="px-3 py-2.5 text-right">₱1,000.00</td></tr>
                             </tbody>
                             <tfoot class="bg-slate-100 font-bold text-slate-900">
@@ -946,17 +969,24 @@
             <form id="utility-form" onsubmit="saveUtility(event)" class="p-6 space-y-4 text-sm">
                 <div><label class="block text-xs font-semibold text-slate-300 mb-1">Tenant *</label><select id="utility-tenant-select" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></select></div>
                 <div class="grid grid-cols-2 gap-4">
-                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Type *</label><select id="util-type" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"><option value="Electricity">Electricity</option><option value="Water">Water</option><option value="Wifi">Wifi</option></select></div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Utility Provider *</label>
+                        <select id="util-type" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                            <option value="Meralco (Electricity)">Meralco (Electricity)</option>
+                            <option value="Maynilad (Water)">Maynilad (Water)</option>
+                            <option value="Wifi">Wifi</option>
+                        </select>
+                    </div>
                     <div><label class="block text-xs font-semibold text-slate-300 mb-1">Month *</label><input type="text" id="util-month" value="October 2026" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
-                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Prev</label><input type="number" step="any" id="util-prev" value="0" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
-                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">New</label><input type="number" step="any" id="util-new" value="0" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Prev Reading</label><input type="number" step="any" id="util-prev" value="0" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">New Reading</label><input type="number" step="any" id="util-new" value="0" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
                 </div>
-                <div><label class="block text-xs font-semibold text-slate-300 mb-1">Amount (₱) *</label><input type="number" step="any" id="util-amount" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                <div><label class="block text-xs font-semibold text-slate-300 mb-1">Amount Due (₱) *</label><input type="number" step="any" id="util-amount" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white" placeholder="e.g. 1250"></div>
                 <div class="flex justify-end space-x-3 pt-4 border-t border-slate-800">
                     <button type="button" onclick="closeAddUtilityModal()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-xs">Cancel</button>
-                    <button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-medium">Save</button>
+                    <button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-medium">Save Utility Reading</button>
                 </div>
             </form>
         </div>
@@ -972,20 +1002,20 @@
             <form id="maintenance-form" onsubmit="saveMaintenance(event)" class="p-6 space-y-4 text-sm">
                 <div class="grid grid-cols-2 gap-4">
                     <div><label class="block text-xs font-semibold text-slate-300 mb-1">Date *</label><input type="text" id="maint-date" value="October 7, 2026" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
-                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Unit *</label><input type="text" id="maint-unit" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Unit / Room *</label><input type="text" id="maint-unit" required placeholder="e.g. Room No. 3" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
                 </div>
-                <div><label class="block text-xs font-semibold text-slate-300 mb-1">Issue *</label><input type="text" id="maint-issue" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                <div><label class="block text-xs font-semibold text-slate-300 mb-1">Issue Description *</label><input type="text" id="maint-issue" required placeholder="e.g. Leaking faucet in restroom" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
                 <div class="grid grid-cols-2 gap-4">
-                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Action</label><input type="text" id="maint-action" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Action Taken</label><input type="text" id="maint-action" placeholder="e.g. Replaced washer" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
                     <div><label class="block text-xs font-semibold text-slate-300 mb-1">Cost (₱)</label><input type="number" step="any" id="maint-cost" value="0" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div><label class="block text-xs font-semibold text-slate-300 mb-1">Status</label><select id="maint-status" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"><option value="DONE">DONE</option><option value="PENDING">PENDING</option></select></div>
-                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Notes</label><input type="text" id="maint-notes" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Notes</label><input type="text" id="maint-notes" placeholder="Optional notes" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
                 </div>
                 <div class="flex justify-end space-x-3 pt-4 border-t border-slate-800">
                     <button type="button" onclick="closeAddMaintenanceModal()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-xs">Cancel</button>
-                    <button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-medium">Save</button>
+                    <button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-medium">Save Repair Ticket</button>
                 </div>
             </form>
         </div>
@@ -1132,7 +1162,7 @@
             if(tabId === 'utilities') renderUtilityTable();
             if(tabId === 'maintenance') renderMaintenanceTable();
             if(tabId === 'applications') renderApplicationTable();
-            if(tabId === 'caretaker') { renderPendingPaymentsTable(); renderPendingExpensesTable(); }
+            if(tabId === 'caretaker') { renderCaretakerTenantStatus(); renderPendingPaymentsTable(); renderPendingExpensesTable(); }
             if(tabId === 'finances') { updateFinancialView(); }
             if(tabId === 'apply') { 
                 document.getElementById('public-form-card').classList.remove('hidden');
@@ -1183,12 +1213,32 @@
         }
 
         function applySignature() {
+            const tenantId = parseInt(document.getElementById('contract-tenant-select').value);
+            const t = tenants.find(item => item.id === tenantId);
             const dataURL = canvas.toDataURL();
             const img = document.getElementById('con-sig-img');
             img.src = dataURL;
             img.classList.remove('hidden');
             document.getElementById('con-sig-placeholder').classList.add('hidden');
-            alert("Electronic signature successfully applied to the contract!");
+            
+            // Save signed contract backup to local JSON download
+            const contractBackup = {
+                tenantName: t ? t.name : 'Unknown',
+                room: t ? t.room : 'Unknown',
+                unit: t ? t.unit : 'Unknown',
+                rent: t ? t.rent : 0,
+                dateSigned: "October 7, 2026",
+                signatureDataUrl: dataURL
+            };
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(contractBackup, null, 2));
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("download", `Signed_Contract_${contractBackup.tenantName.replace(/\s+/g, '_')}.json`);
+            document.body.appendChild(dlAnchor);
+            dlAnchor.click();
+            dlAnchor.remove();
+
+            alert("Electronic signature applied successfully! Signed contract backup JSON downloaded.");
         }
 
         function terminateTenantContract(id) {
@@ -1286,6 +1336,7 @@
             renderDashboardSummary();
             renderTenantTable();
             renderRoomsTable();
+            renderCaretakerTenantStatus();
             renderPendingPaymentsTable();
             renderPendingExpensesTable();
             renderApplicationTable();
@@ -1297,17 +1348,25 @@
             checkURLHash();
         }
 
+        function isTenantPaid(tenantName) {
+            // Check if tenant has an approved payment for October 2026
+            const paidMatch = pendingPayments.some(p => p.tenantName.toLowerCase() === tenantName.toLowerCase() && p.status === 'APPROVED' && p.month.toLowerCase().includes('october'));
+            // Hardcoded initial paid list or check storage
+            return paidMatch || tenantName === 'Arriane G. Costales' || tenantName === 'Lory Jean';
+        }
+
         function renderDashboardSummary() {
             const tbody = document.getElementById('dashboard-tenant-list');
             tbody.innerHTML = '';
-            tenants.slice(0, 10).forEach(t => {
+            tenants.forEach(t => {
+                const paid = isTenantPaid(t.name);
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-800/50 transition">
                         <td class="px-6 py-3.5 font-medium text-white">${t.name}</td>
                         <td class="px-6 py-3.5 text-slate-300">${t.room}</td>
                         <td class="px-6 py-3.5 font-semibold text-brand-400">₱${t.rent.toLocaleString()}.00</td>
                         <td class="px-6 py-3.5 text-slate-300">${t.contact}</td>
-                        <td class="px-6 py-3.5"><span class="px-2 py-1 bg-emerald-950 text-emerald-400 border border-emerald-900 rounded text-xs font-medium">${t.notes || 'Active'}</span></td>
+                        <td class="px-6 py-3.5"><span class="px-2.5 py-1 ${paid ? 'bg-emerald-950 text-emerald-400 border border-emerald-900' : 'bg-rose-950 text-rose-400 border border-rose-900'} rounded text-xs font-bold">${paid ? 'PAID' : 'OVERDUE'}</span></td>
                     </tr>
                 `;
             });
@@ -1335,6 +1394,24 @@
                 payBadge.innerText = pendingPayCount;
                 payBadge.classList.remove('hidden');
             } else { payBadge.classList.add('hidden'); }
+        }
+
+        function renderCaretakerTenantStatus() {
+            const tbody = document.getElementById('caretaker-tenant-status-body');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            tenants.forEach(t => {
+                const paid = isTenantPaid(t.name);
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/50 transition">
+                        <td class="px-4 py-3 font-medium text-white">${t.name}</td>
+                        <td class="px-4 py-3 text-slate-300">${t.room}</td>
+                        <td class="px-4 py-3 font-semibold text-brand-400">₱${t.rent.toLocaleString()}.00</td>
+                        <td class="px-4 py-3 text-slate-300">${t.contact}</td>
+                        <td class="px-4 py-3"><span class="px-2.5 py-1 ${paid ? 'bg-emerald-950 text-emerald-400 border border-emerald-900' : 'bg-rose-950 text-rose-400 border border-rose-900'} rounded text-xs font-bold">${paid ? 'PAID (Settled)' : 'NOT YET PAID (Overdue)'}</span></td>
+                    </tr>
+                `;
+            });
         }
 
         function populatePublicRoomDropdown() {
@@ -1525,22 +1602,15 @@
             const tbody = document.getElementById('pending-payment-table-body');
             tbody.innerHTML = '';
             if(pendingPayments.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="px-4 py-6 text-center text-slate-500">No payment entries.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-6 text-center text-slate-500">No pending caretaker payment entries.</td></tr>`;
                 return;
             }
             pendingPayments.forEach(p => {
                 let actionHtml = '';
                 if(p.status === 'PENDING') {
-                    actionHtml = `<button onclick="approvePayment(${p.id})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-semibold shadow">Approve & Record</button>`;
+                    actionHtml = `<button onclick="approvePayment(${p.id})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-semibold shadow">Landlord Approve</button>`;
                 } else {
-                    actionHtml = `
-                        <div class="flex items-center justify-end space-x-2">
-                            <span class="text-xs text-emerald-400 font-medium">Approved</span>
-                            <button onclick="copyPaymentSMS('${p.tenantName}', '${p.room}', ${p.amount}, '${p.month}', '${p.method}')" class="bg-blue-600 hover:bg-blue-500 text-white px-2.5 py-1 rounded text-xs shadow flex items-center" title="Copy SMS Receipt Template">
-                                <i class="fa-solid fa-copy mr-1"></i> Copy SMS
-                            </button>
-                        </div>
-                    `;
+                    actionHtml = `<span class="text-xs text-emerald-400 font-medium">Approved by Landlord</span>`;
                 }
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-800/50 transition">
@@ -1560,7 +1630,7 @@
             const tbody = document.getElementById('pending-expense-table-body');
             tbody.innerHTML = '';
             if(pendingExpenses.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-6 text-center text-slate-500">No expense receipts.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="px-4 py-6 text-center text-slate-500">No expense receipts.</td></tr>`;
                 return;
             }
             pendingExpenses.forEach(e => {
@@ -1572,18 +1642,11 @@
                         <td class="px-4 py-3 font-bold text-rose-400">₱${e.amount.toLocaleString()}.00</td>
                         <td class="px-4 py-3 text-slate-300">${e.paidBy}</td>
                         <td class="px-4 py-3 text-right space-x-2">
-                            ${e.status === 'PENDING' ? `<button onclick="approveExpense(${e.id})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-semibold shadow">Approve & Record</button>` : `<span class="text-xs text-emerald-400 font-medium">Approved</span>`}
+                            ${e.status === 'PENDING' ? `<button onclick="approveExpense(${e.id})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-semibold shadow">Landlord Approve</button>` : `<span class="text-xs text-emerald-400 font-medium">Approved</span>`}
                             <button onclick="deleteExpense(${e.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button>
                         </td>
                     </tr>
                 `;
-            });
-        }
-
-        function copyPaymentSMS(name, room, amount, month, method) {
-            const smsText = `Hello ${name}, thank you! We have received your payment of ₱${amount.toLocaleString()}.00 via ${method} covering ${month} for ${room} at Celou Rental Property. Your account is settled. God bless!`;
-            navigator.clipboard.writeText(smsText).then(() => {
-                alert(`Payment confirmation text copied to clipboard!\n\n---\n${smsText}`);
             });
         }
 
@@ -1647,40 +1710,126 @@
         function renderUtilityTable() {
             const tbody = document.getElementById('utility-table-body');
             tbody.innerHTML = '';
+            if(utilities.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" class="px-4 py-6 text-center text-slate-500">No utility readings recorded.</td></tr>`;
+                return;
+            }
             utilities.forEach(u => {
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-800/50 transition">
                         <td class="px-4 py-3 font-medium text-white">${u.tenantName}</td>
                         <td class="px-4 py-3 text-slate-300">${u.room}</td>
-                        <td class="px-4 py-3 text-blue-400">${u.type}</td>
+                        <td class="px-4 py-3 text-blue-400 font-semibold">${u.type}</td>
                         <td class="px-4 py-3 text-slate-300">${u.month}</td>
                         <td class="px-4 py-3 text-slate-300">${u.prev}</td>
                         <td class="px-4 py-3 text-slate-300">${u.new}</td>
                         <td class="px-4 py-3 text-slate-200">${u.usage}</td>
                         <td class="px-4 py-3 font-bold text-brand-400">₱${u.amount.toLocaleString()}.00</td>
-                        <td class="px-4 py-3 text-right"><button onclick="deleteUtility(${u.id})" class="text-rose-400"><i class="fa-solid fa-trash"></i></button></td>
+                        <td class="px-4 py-3 text-right"><button onclick="deleteUtility(${u.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button></td>
                     </tr>
                 `;
             });
         }
 
+        function openAddUtilityModal() {
+            const select = document.getElementById('utility-tenant-select');
+            select.innerHTML = '';
+            tenants.forEach(t => { select.innerHTML += `<option value="${t.id}" data-room="${t.room}">${t.name} (${t.room})</option>`; });
+            document.getElementById('utility-modal').classList.remove('hidden');
+        }
+        function closeAddUtilityModal() { document.getElementById('utility-modal').classList.add('hidden'); }
+
+        function saveUtility(e) {
+            e.preventDefault();
+            const tenantId = parseInt(document.getElementById('utility-tenant-select').value);
+            const t = tenants.find(item => item.id === tenantId);
+            if(!t) return;
+
+            const prevVal = parseFloat(document.getElementById('util-prev').value) || 0;
+            const newVal = parseFloat(document.getElementById('util-new').value) || 0;
+            const usageVal = newVal >= prevVal ? newVal - prevVal : 0;
+
+            utilities.push({
+                id: utilities.length ? Math.max(...utilities.map(u => u.id)) + 1 : 1,
+                tenantName: t.name,
+                room: t.room,
+                type: document.getElementById('util-type').value,
+                month: document.getElementById('util-month').value,
+                prev: prevVal,
+                new: newVal,
+                usage: usageVal,
+                amount: parseFloat(document.getElementById('util-amount').value) || 0
+            });
+
+            saveToStorage();
+            closeAddUtilityModal();
+            renderUtilityTable();
+            alert("Utility reading saved successfully!");
+        }
+
+        function deleteUtility(id) {
+            if(confirm("Delete this utility reading?")) {
+                utilities = utilities.filter(u => u.id !== id);
+                saveToStorage();
+                renderUtilityTable();
+            }
+        }
+
         function renderMaintenanceTable() {
             const tbody = document.getElementById('maintenance-table-body');
             tbody.innerHTML = '';
+            if(maintenance.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="px-4 py-6 text-center text-slate-500">No repair tickets logged.</td></tr>`;
+                return;
+            }
             maintenance.forEach(m => {
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-800/50 transition">
                         <td class="px-4 py-3 text-slate-300">${m.date}</td>
-                        <td class="px-4 py-3 text-white">${m.unit}</td>
+                        <td class="px-4 py-3 text-white font-medium">${m.unit}</td>
                         <td class="px-4 py-3 text-slate-300">${m.issue}</td>
                         <td class="px-4 py-3 text-slate-300">${m.action}</td>
-                        <td class="px-4 py-3 text-slate-300">₱${parseFloat(m.cost).toLocaleString()}</td>
+                        <td class="px-4 py-3 text-rose-400 font-semibold">₱${parseFloat(m.cost).toLocaleString()}.00</td>
                         <td class="px-4 py-3"><span class="px-2 py-1 bg-emerald-950 text-emerald-400 border border-emerald-900 rounded text-xs">${m.status}</span></td>
                         <td class="px-4 py-3 text-slate-400">${m.notes}</td>
-                        <td class="px-4 py-3 text-right"><button onclick="deleteMaintenance(${m.id})" class="text-rose-400"><i class="fa-solid fa-trash"></i></button></td>
+                        <td class="px-4 py-3 text-right"><button onclick="deleteMaintenance(${m.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button></td>
                     </tr>
                 `;
             });
+        }
+
+        function openAddMaintenanceModal() {
+            document.getElementById('maintenance-form').reset();
+            document.getElementById('maint-date').value = "October 7, 2026";
+            document.getElementById('maintenance-modal').classList.remove('hidden');
+        }
+        function closeAddMaintenanceModal() { document.getElementById('maintenance-modal').classList.add('hidden'); }
+
+        function saveMaintenance(e) {
+            e.preventDefault();
+            maintenance.push({
+                id: maintenance.length ? Math.max(...maintenance.map(m => m.id)) + 1 : 1,
+                date: document.getElementById('maint-date').value,
+                unit: document.getElementById('maint-unit').value,
+                issue: document.getElementById('maint-issue').value,
+                action: document.getElementById('maint-action').value || 'Pending action',
+                cost: parseFloat(document.getElementById('maint-cost').value) || 0,
+                status: document.getElementById('maint-status').value,
+                notes: document.getElementById('maint-notes').value || 'Logged via portal'
+            });
+
+            saveToStorage();
+            closeAddMaintenanceModal();
+            renderMaintenanceTable();
+            alert("Repair ticket logged successfully!");
+        }
+
+        function deleteMaintenance(id) {
+            if(confirm("Delete this maintenance ticket?")) {
+                maintenance = maintenance.filter(m => m.id !== id);
+                saveToStorage();
+                renderMaintenanceTable();
+            }
         }
 
         function renderFinancialTable() {
@@ -1882,8 +2031,8 @@
             const t = tenants.find(item => item.id === tenantId);
             if(!t) return;
             const tenantUtils = utilities.filter(u => u.tenantName === t.name);
-            let elecAmt = tenantUtils.filter(u => u.type === 'Electricity').reduce((acc, curr) => acc + curr.amount, 0);
-            let waterAmt = tenantUtils.filter(u => u.type === 'Water').reduce((acc, curr) => acc + curr.amount, 0);
+            let elecAmt = tenantUtils.filter(u => u.type.includes('Meralco')).reduce((acc, curr) => acc + curr.amount, 0);
+            let waterAmt = tenantUtils.filter(u => u.type.includes('Maynilad')).reduce((acc, curr) => acc + curr.amount, 0);
 
             document.getElementById('soa-tenant-name').innerText = t.name;
             document.getElementById('soa-contact').innerText = t.contact;
@@ -1912,8 +2061,8 @@
                 if (serverData) {
                     tenants = serverData.tenants || defaultTenants;
                     rooms = serverData.rooms || defaultRooms;
-                    utilities = serverData.utilities || [];
-                    maintenance = serverData.maintenance || [];
+                    utilities = serverData.utilities || utilities;
+                    maintenance = serverData.maintenance || maintenance;
                     applications = serverData.applications || [];
                     pendingPayments = serverData.pendingPayments || [];
                     pendingExpenses = serverData.pendingExpenses || [];
