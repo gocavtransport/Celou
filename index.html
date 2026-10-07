@@ -138,16 +138,16 @@
                     <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-sm flex items-center justify-between">
                         <div>
                             <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">YTD Income</p>
-                            <h3 class="text-2xl font-bold text-emerald-400 mt-1">₱199,000</h3>
-                            <p class="text-xs text-slate-400 mt-1">Total recorded rent</p>
+                            <h3 id="dash-ytd-income" class="text-2xl font-bold text-emerald-400 mt-1">🔒 Locked</h3>
+                            <p class="text-xs text-slate-400 mt-1">Requires Landlord PIN</p>
                         </div>
                         <div class="p-3 bg-emerald-950 text-emerald-400 rounded-xl border border-emerald-900/50"><i class="fa-solid fa-peso-sign text-xl"></i></div>
                     </div>
                     <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-sm flex items-center justify-between">
                         <div>
                             <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Net Profit (YTD)</p>
-                            <h3 class="text-2xl font-bold text-indigo-400 mt-1">₱64,965</h3>
-                            <p class="text-xs text-slate-400 mt-1">After expenses</p>
+                            <h3 id="dash-net-profit" class="text-2xl font-bold text-indigo-400 mt-1">🔒 Locked</h3>
+                            <p class="text-xs text-slate-400 mt-1">Requires Landlord PIN</p>
                         </div>
                         <div class="p-3 bg-indigo-950 text-indigo-400 rounded-xl border border-indigo-900/50"><i class="fa-solid fa-chart-line text-xl"></i></div>
                     </div>
@@ -171,8 +171,8 @@
                                 <button onclick="switchTab('caretaker')" class="w-full bg-brand-600 hover:bg-brand-500 text-white py-2.5 px-4 rounded-lg text-sm font-medium transition flex items-center justify-center shadow-sm">
                                     <i class="fa-solid fa-cash-register mr-2"></i> Caretaker Portal (Payments & Expenses)
                                 </button>
-                                <button onclick="openApplicationModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 py-2.5 px-4 rounded-lg text-sm font-medium transition flex items-center justify-center shadow-sm">
-                                    <i class="fa-solid fa-file-pen mr-2"></i> Tenant Application Form
+                                <button onclick="switchTab('finances')" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-2.5 px-4 rounded-lg text-sm font-medium transition flex items-center justify-center shadow-sm">
+                                    <i class="fa-solid fa-lock mr-2"></i> Unlock Financials (Landlord PIN)
                                 </button>
                                 <button onclick="switchTab('soa')" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 py-2.5 px-4 rounded-lg text-sm font-medium transition flex items-center justify-center shadow-sm">
                                     <i class="fa-solid fa-file-invoice mr-2"></i> Generate SOA
@@ -461,29 +461,49 @@
                 </div>
             </section>
 
-            <!-- TAB 8: FINANCES -->
+            <!-- TAB 8: FINANCES (LANDLORD LOCKED & CSV EXPORT) -->
             <section id="tab-finances" class="space-y-6 hidden">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
-                        <h2 class="text-base font-bold text-white mb-4">Monthly Financials</h2>
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-slate-800 text-xs">
-                                <thead class="bg-slate-950 text-slate-400 uppercase">
-                                    <tr><th class="px-3 py-2.5 text-left">Month</th><th class="px-3 py-2.5 text-right">Rent Collected</th><th class="px-3 py-2.5 text-right">Expenses</th><th class="px-3 py-2.5 text-right">Net</th></tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-800 text-slate-300" id="monthly-financial-table"></tbody>
-                            </table>
-                        </div>
+                <div id="finances-locked-banner" class="bg-slate-900 border border-slate-800 rounded-xl p-8 text-center space-y-4">
+                    <div class="text-amber-400 text-4xl"><i class="fa-solid fa-lock"></i></div>
+                    <h2 class="text-lg font-bold text-white">Financial Records Are Locked</h2>
+                    <p class="text-xs text-slate-400 max-w-md mx-auto">Income, expenses, and net profit details are restricted to the Landlord. Please enter your PIN to view.</p>
+                    <button onclick="unlockFinancials()" class="bg-brand-600 hover:bg-brand-500 text-white px-6 py-2.5 rounded-lg text-sm font-medium shadow">
+                        <i class="fa-solid fa-key mr-2"></i> Enter Landlord PIN
+                    </button>
+                </div>
+
+                <div id="finances-unlocked-content" class="space-y-6 hidden">
+                    <div class="flex justify-end space-x-3">
+                        <button onclick="exportFinancialsCSV()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg text-xs font-medium shadow flex items-center">
+                            <i class="fa-solid fa-file-csv mr-1.5"></i> Download CSV Spreadsheet
+                        </button>
+                        <button onclick="lockFinancials()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-4 py-2 rounded-lg text-xs font-medium shadow flex items-center">
+                            <i class="fa-solid fa-lock mr-1.5"></i> Lock Financials
+                        </button>
                     </div>
-                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 flex flex-col justify-between">
-                        <div>
-                            <h2 class="text-base font-bold text-white mb-4">Financial Totals (YTD)</h2>
-                            <div class="space-y-4">
-                                <div class="bg-slate-950 p-4 rounded-lg flex items-center justify-between border border-slate-800">
-                                    <div><p class="text-xs text-slate-400">Total Collected</p><h4 class="text-xl font-bold text-emerald-400 mt-1">₱199,000.00</h4></div>
-                                </div>
-                                <div class="bg-slate-950 p-4 rounded-lg flex items-center justify-between border border-slate-800">
-                                    <div><p class="text-xs text-slate-400">Total Expenses</p><h4 id="fin-total-expense" class="text-xl font-bold text-rose-400 mt-1">₱134,034.95</h4></div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+                            <h2 class="text-base font-bold text-white mb-4">Monthly Financials</h2>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-slate-800 text-xs">
+                                    <thead class="bg-slate-950 text-slate-400 uppercase">
+                                        <tr><th class="px-3 py-2.5 text-left">Month</th><th class="px-3 py-2.5 text-right">Rent Collected</th><th class="px-3 py-2.5 text-right">Expenses</th><th class="px-3 py-2.5 text-right">Net</th></tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-800 text-slate-300" id="monthly-financial-table"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 flex flex-col justify-between">
+                            <div>
+                                <h2 class="text-base font-bold text-white mb-4">Financial Totals (YTD)</h2>
+                                <div class="space-y-4">
+                                    <div class="bg-slate-950 p-4 rounded-lg flex items-center justify-between border border-slate-800">
+                                        <div><p class="text-xs text-slate-400">Total Collected</p><h4 id="fin-total-revenue" class="text-xl font-bold text-emerald-400 mt-1">₱199,000.00</h4></div>
+                                    </div>
+                                    <div class="bg-slate-950 p-4 rounded-lg flex items-center justify-between border border-slate-800">
+                                        <div><p class="text-xs text-slate-400">Total Expenses</p><h4 id="fin-total-expense" class="text-xl font-bold text-rose-400 mt-1">₱134,034.95</h4></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -718,6 +738,7 @@
     <!-- App JavaScript Logic -->
     <script>
         const LANDLORD_PASSWORD = "caretaker123";
+        let isFinancialsUnlocked = false;
 
         const defaultTenants = [
             { id: 1, name: "Hanna Gene Villame", contact: "0919 481 6171", movein: "May 15, 2026", unit: "BF Resort Village", room: "Room No. 3", rent: 5000, advance: "June 15 2026", notes: "TurnOver June 2026" },
@@ -787,6 +808,65 @@
             if(tabId === 'maintenance') renderMaintenanceTable();
             if(tabId === 'applications') renderApplicationTable();
             if(tabId === 'caretaker') { renderPendingPaymentsTable(); renderPendingExpensesTable(); }
+            if(tabId === 'finances') { updateFinancialView(); }
+        }
+
+        function unlockFinancials() {
+            const pass = prompt("Enter Landlord PIN to view income & profit:");
+            if(pass === LANDLORD_PASSWORD) {
+                isFinancialsUnlocked = true;
+                updateFinancialView();
+                alert("Financial records unlocked successfully!");
+            } else {
+                alert("Incorrect PIN! Access denied.");
+            }
+        }
+
+        function lockFinancials() {
+            isFinancialsUnlocked = false;
+            updateFinancialView();
+        }
+
+        function updateFinancialView() {
+            const lockedBanner = document.getElementById('finances-locked-banner');
+            const unlockedContent = document.getElementById('finances-unlocked-content');
+            const dashYtd = document.getElementById('dash-ytd-income');
+            const dashNet = document.getElementById('dash-net-profit');
+
+            if(isFinancialsUnlocked) {
+                lockedBanner.classList.add('hidden');
+                unlockedContent.classList.remove('hidden');
+                renderFinancialTable();
+                
+                let totalRev = monthlyFinancials.reduce((acc, m) => acc + m.rent, 0);
+                let totalExp = monthlyFinancials.reduce((acc, m) => acc + m.expense, 0);
+                let netProfit = totalRev - totalExp;
+
+                dashYtd.innerText = `₱${totalRev.toLocaleString()}`;
+                dashNet.innerText = `₱${netProfit.toLocaleString()}`;
+                document.getElementById('fin-total-revenue').innerText = `₱${totalRev.toLocaleString()}.00`;
+                document.getElementById('fin-total-expense').innerText = `₱${totalExp.toLocaleString()}.00`;
+            } else {
+                lockedBanner.classList.remove('hidden');
+                unlockedContent.classList.add('hidden');
+                dashYtd.innerText = "🔒 Locked";
+                dashNet.innerText = "🔒 Locked";
+            }
+        }
+
+        function exportFinancialsCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,Month,Rent Collected,Expenses,Net Profit\n";
+            monthlyFinancials.forEach(m => {
+                let net = m.rent - m.expense;
+                csvContent += `"${m.month}",${m.rent},${m.expense},${net}\n`;
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "Celou_Rental_Financials.csv");
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
         }
 
         function renderAll() {
@@ -797,7 +877,7 @@
             renderApplicationTable();
             renderUtilityTable();
             renderMaintenanceTable();
-            renderFinancialTable();
+            updateFinancialView();
             populateSOASelect();
         }
 
@@ -826,9 +906,6 @@
                 badge.innerText = totalPending;
                 badge.classList.remove('hidden');
             } else { badge.classList.add('hidden'); }
-
-            let totalExpYTD = monthlyFinancials.reduce((acc, m) => acc + m.expense, 0);
-            document.getElementById('fin-total-expense').innerText = `₱${totalExpYTD.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
         }
 
         function renderTenantTable() {
@@ -1154,7 +1231,7 @@
                         <td class="px-4 py-3 text-slate-400">${t.notes}</td>
                         <td class="px-4 py-3 text-right space-x-2">
                             <button onclick="editTenant(${t.id})" class="text-blue-400 hover:text-blue-300"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button onclick="deleteTenant(${t.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="deleteTenant(${t.id})" class="text-rose-400 hover:text-rose-300" title="Delete"><i class="fa-solid fa-trash"></i></button>
                         </td>
                     </tr>
                 `;
@@ -1257,4 +1334,74 @@
             const t = tenants.find(item => item.id === tenantId);
             if(!t) return;
             const tenantUtils = utilities.filter(u => u.tenantName === t.name);
-            let elecAmt = tenantUtils.filter(u => u.type === 'Electricity').reduce((acc, curr) => acc + curr
+            let elecAmt = tenantUtils.filter(u => u.type === 'Electricity').reduce((acc, curr) => acc + curr.amount, 0);
+            let waterAmt = tenantUtils.filter(u => u.type === 'Water').reduce((acc, curr) => acc + curr.amount, 0);
+
+            document.getElementById('soa-tenant-name').innerText = t.name;
+            document.getElementById('soa-contact').innerText = t.contact;
+            document.getElementById('soa-room').innerText = `${t.unit} - ${t.room}`;
+            document.getElementById('soa-rent-amount').innerText = `₱${t.rent.toLocaleString()}.00`;
+            document.getElementById('soa-charge-rent').innerText = `₱${t.rent.toLocaleString()}.00`;
+            document.getElementById('soa-charge-elec').innerText = `₱${elecAmt.toLocaleString()}.00`;
+            document.getElementById('soa-charge-water').innerText = `₱${waterAmt.toLocaleString()}.00`;
+            document.getElementById('soa-total-due').innerText = `₱${(t.rent + elecAmt + waterAmt + 1000).toLocaleString()}.00`;
+        }
+
+        function backupData() {
+            const backupObj = { tenants, utilities, maintenance, applications, pendingPayments, pendingExpenses };
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupObj, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", "Celou_Rental_Property_Backup.json");
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        function restoreData(event) {
+            const fileReader = new FileReader();
+            if(event.target.files[0]) {
+                fileReader.readAsText(event.target.files[0], "UTF-8");
+                fileReader.onload = function(e) {
+                    try {
+                        const parsed = JSON.parse(e.target.result);
+                        if(parsed.tenants) {
+                            tenants = parsed.tenants;
+                            utilities = parsed.utilities || [];
+                            maintenance = parsed.maintenance || [];
+                            applications = parsed.applications || [];
+                            pendingPayments = parsed.pendingPayments || [];
+                            pendingExpenses = parsed.pendingExpenses || [];
+                            saveToStorage(); renderAll();
+                            alert("Data successfully restored from backup!");
+                        } else { alert("Invalid backup structure."); }
+                    } catch(err) { alert("Error parsing JSON file."); }
+                }
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderAll();
+            const ctx = document.getElementById('financialChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: monthlyFinancials.map(m => m.month.split(' ')[0]),
+                    datasets: [
+                        { label: 'Rent Collected (₱)', data: monthlyFinancials.map(m => m.rent), backgroundColor: '#22c55e', borderRadius: 4 },
+                        { label: 'Expenses (₱)', data: monthlyFinancials.map(m => m.expense), backgroundColor: '#ef4444', borderRadius: 4 }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1' } } },
+                    scales: {
+                        x: { ticks: { color: '#cbd5e1' }, grid: { color: '#334155' } },
+                        y: { ticks: { color: '#cbd5e1' }, grid: { color: '#334155' }, beginAtZero: true }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
