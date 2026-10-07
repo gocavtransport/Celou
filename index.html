@@ -60,7 +60,7 @@
                 <img src="https://i.imgur.com/IIpzDAj.png" alt="Celou Logo" class="w-10 h-10 object-contain rounded-lg bg-slate-800 p-1 border border-slate-700 shadow-inner">
                 <div>
                     <h1 class="text-lg font-bold tracking-tight">Celou Rental Property</h1>
-                    <p class="text-xs text-slate-400">Live Cloud Sync & Secured Management</p>
+                    <p class="text-xs text-slate-400">Live Cloud Sync & Contract Management</p>
                 </div>
             </div>
             
@@ -331,18 +331,18 @@
                     <div class="w-16 h-16 bg-emerald-950 text-emerald-400 border border-emerald-800 rounded-full flex items-center justify-center text-3xl mx-auto shadow-inner">
                         <i class="fa-solid fa-check"></i>
                     </div>
-                    <h2 class="text-2xl font-bold text-white">Message Successfully Sent!</h2>
-                    <p class="text-sm text-slate-400 max-w-md mx-auto">Waiting for approval from Landlord. We have received your screening details and will notify you soon.</p>
+                    <h2 class="text-2xl font-bold text-white">Message successfully send, waiting for approval from landlord.</h2>
+                    <p class="text-sm text-slate-400 max-w-md mx-auto">Thank you for applying to Celou Rental Property. Your application screening details have been submitted successfully.</p>
                 </div>
             </section>
 
-            <!-- TAB 2: TENANT DATABASE -->
+            <!-- TAB 2: TENANT DATABASE (SECURED BY LANDLORD PIN) -->
             <section id="tab-tenants" class="space-y-6 hidden">
                 <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm overflow-hidden">
                     <div class="px-6 py-4 border-b border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                         <div>
                             <h2 class="text-base font-bold text-white">Tenant Database</h2>
-                            <p class="text-xs text-slate-400">Complete records of all existing and previous tenants (Secured by Landlord PIN)</p>
+                            <p class="text-xs text-slate-400">Complete records of all active and terminated tenants (Secured by Landlord PIN)</p>
                         </div>
                         <div class="flex items-center space-x-3 w-full sm:w-auto">
                             <input type="text" id="tenant-search" placeholder="Search tenant..." onkeyup="filterTenants()" class="px-3 py-1.5 bg-slate-950 border border-slate-700 text-white rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 w-full sm:w-64">
@@ -364,7 +364,7 @@
                                     <th class="px-4 py-3">Monthly Rent</th>
                                     <th class="px-4 py-3">Advance / Deposit</th>
                                     <th class="px-4 py-3">Notes</th>
-                                    <th class="px-4 py-3 text-right">Actions</th>
+                                    <th class="px-4 py-3 text-right">Actions / Termination</th>
                                 </tr>
                             </thead>
                             <tbody id="full-tenant-table-body" class="divide-y divide-slate-800 bg-slate-900 text-slate-300"></tbody>
@@ -373,7 +373,7 @@
                 </div>
             </section>
 
-            <!-- TAB: ROOMS & RATES MANAGER -->
+            <!-- TAB: ROOMS & RATES MANAGER (LANDLORD PIN SECURED) -->
             <section id="tab-rooms" class="space-y-6 hidden">
                 <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm overflow-hidden p-6 space-y-6">
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-slate-800 gap-4">
@@ -1189,6 +1189,28 @@
             alert("Electronic signature successfully applied to the contract!");
         }
 
+        function terminateTenantContract(id) {
+            const pass = prompt("Enter Landlord PIN to terminate this tenant contract:");
+            if(pass !== LANDLORD_PASSWORD) { alert("Incorrect PIN! Only the Landlord can terminate contracts."); return; }
+
+            const tenant = tenants.find(t => t.id === id);
+            if(!tenant) return;
+
+            if(confirm(`Are you sure you want to terminate the contract for ${tenant.name} in room ${tenant.room}?\n\nThis will mark the room as AVAILABLE.`)) {
+                // Mark room available
+                const roomMatch = rooms.find(r => r.unit === tenant.unit && r.name === tenant.room);
+                if(roomMatch) {
+                    roomMatch.status = 'Available';
+                }
+
+                // Remove or update tenant status
+                tenants = tenants.filter(t => t.id !== id);
+                saveToStorage();
+                renderAll();
+                alert(`Contract successfully terminated. Room ${tenant.room} is now available for new applicants!`);
+            }
+        }
+
         function toggleStudentFields() {
             const status = document.getElementById('pub-status').value;
             const label = document.getElementById('label-employer');
@@ -1476,7 +1498,7 @@
                         <td class="px-4 py-3 text-slate-400">${t.notes}</td>
                         <td class="px-4 py-3 text-right space-x-2">
                             <button onclick="editTenant(${t.id})" class="text-blue-400 hover:text-blue-300" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button onclick="deleteTenant(${t.id})" class="text-rose-400 hover:text-rose-300" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="terminateTenantContract(${t.id})" class="bg-rose-950 text-rose-400 border border-rose-900 hover:bg-rose-900 px-2.5 py-1 rounded text-xs font-semibold" title="End / Terminate Contract"><i class="fa-solid fa-ban mr-1"></i> Terminate</button>
                         </td>
                     </tr>
                 `;
@@ -1848,7 +1870,7 @@
                         <td class="px-4 py-3 text-slate-400">${t.notes}</td>
                         <td class="px-4 py-3 text-right space-x-2">
                             <button onclick="editTenant(${t.id})" class="text-blue-400 hover:text-blue-300" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button onclick="deleteTenant(${t.id})" class="text-rose-400 hover:text-rose-300" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="terminateTenantContract(${t.id})" class="bg-rose-950 text-rose-400 border border-rose-900 hover:bg-rose-900 px-2.5 py-1 rounded text-xs font-semibold" title="End / Terminate Contract"><i class="fa-solid fa-ban mr-1"></i> Terminate</button>
                         </td>
                     </tr>
                 `;
