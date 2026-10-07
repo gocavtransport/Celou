@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Celou Rental Property Manager (Dark Edition)</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .print-only { display: none; }
+        @media print {
+            body * { visibility: hidden; }
+            #printable-soa, #printable-soa * { visibility: visible; }
+            #printable-soa { position: absolute; left: 0; top: 0; width: 100%; background: white !important; color: black !important; }
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
+
+    <!-- Top Navbar -->
+    <header class="bg-slate-900 border-b border-slate-800 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-brand-600 p-2 rounded-lg text-white font-bold text-xl shadow-inner">
+                    <i class="fa-solid fa-house-chimney"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight">Celou Rental Property</h1>
+                    <p class="text-xs text-slate-400">Management & Payment Approval System</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-3">
+                <span class="hidden sm:inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-slate-800 text-slate-300 border border-slate-700">
+                    <i class="fa-regular fa-calendar mr-1.5 text-brand-500"></i> October 7, 2026
+                </span>
+                <button onclick="backupData()" class="bg-brand-700 hover:bg-brand-600 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition shadow flex items-center">
+                    <i class="fa-solid fa-cloud-arrow-down mr-1.5"></i> Backup JSON
+                </button>
+                <label class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-medium transition shadow flex items-center cursor-pointer">
+                    <i class="fa-solid fa-cloud-arrow-up mr-1.5 text-brand-500"></i> Restore
+                    <input type="file" id="restore-file-input" accept=".json" class="hidden" onchange="restoreData(event)">
+                </label>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Layout -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full grid grid-cols-1 md:grid-cols-5 gap-6">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="md:col-span-1 bg-slate-900 border border-slate-800 rounded-xl shadow-sm p-4 h-fit sticky top-20">
+            <nav class="space-y-1">
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition bg-brand-900/40 text-brand-400 border border-brand-700/50">
+                    <i class="fa-solid fa-chart-pie w-5 text-center"></i>
+                    <span>Dashboard</span>
+                </button>
+                <button onclick="switchTab('tenants')" id="nav-tenants" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-300 hover:bg-slate-800 hover:text-white">
+                    <i class="fa-solid fa-users w-5 text-center"></i>
+                    <span>Tenant Database</span>
+                </button>
+                <button onclick="switchTab('caretaker')" id="nav-caretaker" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-300 hover:bg-slate-800 hover:text-white relative">
+                    <i class="fa-solid fa-cash-register w-5 text-center"></i>
+                    <span>Caretaker Payments</span>
+                    <span id="pending-pay-badge" class="absolute right-3 px-2 py-0.5 text-[10px] bg-amber-500 text-slate-950 font-bold rounded-full hidden">0</span>
+                </button>
+                <button onclick="switchTab('applications')" id="nav-applications" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-300 hover:bg-slate-800 hover:text-white relative">
+                    <i class="fa-solid fa-user-clock w-5 text-center"></i>
+                    <span>Applications</span>
+                </button>
+                <button onclick="switchTab('utilities')" id="nav-utilities" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-300 hover:bg-slate-800 hover:text-white">
+                    <i class="fa-solid fa-bolt w-5 text-center"></i>
+                    <span>Utility Meters</span>
+                </button>
+                <button onclick="switchTab('maintenance')" id="nav-maintenance" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-300 hover:bg-slate-800 hover:text-white">
+                    <i class="fa-solid fa-screwdriver-wrench w-5 text-center"></i>
+                    <span>Maintenance Log</span>
+                </button>
+                <button onclick="switchTab('soa')" id="nav-soa" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-300 hover:bg-slate-800 hover:text-white">
+                    <i class="fa-solid fa-file-invoice-dollar w-5 text-center"></i>
+                    <span>Statement of Account</span>
+                </button>
+                <button onclick="switchTab('finances')" id="nav-finances" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-300 hover:bg-slate-800 hover:text-white">
+                    <i class="fa-solid fa-wallet w-5 text-center"></i>
+                    <span>Income & Expenses</span>
+                </button>
+            </nav>
+        </aside>
+
+        <!-- Main Dynamic Panel -->
+        <main class="md:col-span-4 space-y-6">
+
+            <!-- TAB 1: DASHBOARD -->
+            <section id="tab-dashboard" class="space-y-6">
+                <!-- KPI Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Rooms</p>
+                            <h3 class="text-2xl font-bold text-white mt-1">19</h3>
+                            <p class="text-xs text-slate-400 mt-1"><span class="font-medium text-brand-400">68.42%</span> Occupancy</p>
+                        </div>
+                        <div class="p-3 bg-blue-950 text-blue-400 rounded-xl border border-blue-900/50"><i class="fa-solid fa-building text-xl"></i></div>
+                    </div>
+                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Occupied / Vacant</p>
+                            <h3 class="text-2xl font-bold text-white mt-1"><span id="kpi-occupied">13</span> / <span class="text-amber-400">6</span></h3>
+                            <p class="text-xs text-slate-400 mt-1">Active units</p>
+                        </div>
+                        <div class="p-3 bg-emerald-950 text-emerald-400 rounded-xl border border-emerald-900/50"><i class="fa-solid fa-door-open text-xl"></i></div>
+                    </div>
+                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">YTD Income</p>
+                            <h3 class="text-2xl font-bold text-emerald-400 mt-1">₱199,000</h3>
+                            <p class="text-xs text-slate-400 mt-1">Total recorded rent</p>
+                        </div>
+                        <div class="p-3 bg-emerald-950 text-emerald-400 rounded-xl border border-emerald-900/50"><i class="fa-solid fa-peso-sign text-xl"></i></div>
+                    </div>
+                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Net Profit (YTD)</p>
+                            <h3 class="text-2xl font-bold text-indigo-400 mt-1">₱64,965</h3>
+                            <p class="text-xs text-slate-400 mt-1">After expenses</p>
+                        </div>
+                        <div class="p-3 bg-indigo-950 text-indigo-400 rounded-xl border border-indigo-900/50"><i class="fa-solid fa-chart-line text-xl"></i></div>
+                    </div>
+                </div>
+
+                <!-- Chart and Quick Actions -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl shadow-sm lg:col-span-2">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-base font-bold text-white">Income vs Expenses Overview</h2>
+                            <span class="text-xs bg-slate-800 text-slate-300 px-2.5 py-1 rounded-md font-medium border border-slate-700">Year 2026</span>
+                        </div>
+                        <div class="h-64"><canvas id="financialChart"></canvas></div>
+                    </div>
+
+                    <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl shadow-sm flex flex-col justify-between">
+                        <div>
+                            <h2 class="text-base font-bold text-white mb-2">Quick Actions</h2>
+                            <p class="text-xs text-slate-400 mb-4">Manage caretakers, tenants, and properties.</p>
+                            <div class="space-y-3">
+                                <button onclick="switchTab('caretaker')" class="w-full bg-brand-600 hover:bg-brand-500 text-white py-2.5 px-4 rounded-lg text-sm font-medium transition flex items-center justify-center shadow-sm">
+                                    <i class="fa-solid fa-cash-register mr-2"></i> Caretaker Payment Portal
+                                </button>
+                                <button onclick="openApplicationModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 py-2.5 px-4 rounded-lg text-sm font-medium transition flex items-center justify-center shadow-sm">
+                                    <i class="fa-solid fa-file-pen mr-2"></i> Tenant Application Form
+                                </button>
+                                <button onclick="switchTab('soa')" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 py-2.5 px-4 rounded-lg text-sm font-medium transition flex items-center justify-center shadow-sm">
+                                    <i class="fa-solid fa-file-invoice mr-2"></i> Generate SOA
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-slate-800">
+                            <div class="flex items-center justify-between text-xs text-slate-400">
+                                <span>Active Tenants:</span>
+                                <span id="dash-active-count" class="font-bold text-white">13</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Due Summary Table -->
+                <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm overflow-hidden">
+                    <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+                        <div>
+                            <h2 class="text-base font-bold text-white">Due & Collection Summary</h2>
+                            <p class="text-xs text-slate-400">Overview of active tenant accounts</p>
+                        </div>
+                        <span class="text-xs font-semibold px-3 py-1 bg-emerald-950 text-emerald-400 border border-emerald-900 rounded-full">October 2026</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-slate-800 text-left text-sm">
+                            <thead class="bg-slate-950 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                                <tr>
+                                    <th class="px-6 py-3">Tenant Name</th>
+                                    <th class="px-6 py-3">Unit / Room</th>
+                                    <th class="px-6 py-3">Monthly Rent</th>
+                                    <th class="px-6 py-3">Contact #</th>
+                                    <th class="px-6 py-3">Status / Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dashboard-tenant-list" class="divide-y divide-slate-800 bg-slate-900 text-slate-300"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: TENANT DATABASE -->
+            <section id="tab-tenants" class="space-y-6 hidden">
+                <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm overflow-hidden">
+                    <div class="px-6 py-4 border-b border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-base font-bold text-white">Tenant Database</h2>
+                            <p class="text-xs text-slate-400">Complete records of all existing and previous tenants</p>
+                        </div>
+                        <div class="flex items-center space-x-3 w-full sm:w-auto">
+                            <input type="text" id="tenant-search" placeholder="Search tenant..." onkeyup="filterTenants()" class="px-3 py-1.5 bg-slate-950 border border-slate-700 text-white rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 w-full sm:w-64">
+                            <button onclick="openAddTenantModal()" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm whitespace-nowrap flex items-center">
+                                <i class="fa-solid fa-plus mr-1.5"></i> Add Tenant
+                            </button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-slate-800 text-left text-xs">
+                            <thead class="bg-slate-950 font-semibold text-slate-400 uppercase tracking-wider">
+                                <tr>
+                                    <th class="px-4 py-3">ID</th>
+                                    <th class="px-4 py-3">Name</th>
+                                    <th class="px-4 py-3">Contact #</th>
+                                    <th class="px-4 py-3">Move-in Date</th>
+                                    <th class="px-4 py-3">Unit / Property</th>
+                                    <th class="px-4 py-3">Room #</th>
+                                    <th class="px-4 py-3">Monthly Rent</th>
+                                    <th class="px-4 py-3">Advance / Deposit</th>
+                                    <th class="px-4 py-3">Notes</th>
+                                    <th class="px-4 py-3 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="full-tenant-table-body" class="divide-y divide-slate-800 bg-slate-900 text-slate-300"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: CARETAKER PAYMENT PORTAL -->
+            <section id="tab-caretaker" class="space-y-6 hidden">
+                <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm p-6 space-y-4">
+                    <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                        <div>
+                            <h2 class="text-base font-bold text-white">Caretaker Payment & Collection Portal</h2>
+                            <p class="text-xs text-slate-400">Caretakers can encode tenant payments here. Requires Landlord approval before recording.</p>
+                        </div>
+                        <button onclick="openCaretakerModal()" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm flex items-center">
+                            <i class="fa-solid fa-cash-register mr-1.5"></i> Encode Tenant Payment
+                        </button>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Pending Payment Approvals (Requires Landlord Password)</h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-slate-800 text-left text-xs">
+                                <thead class="bg-slate-950 font-semibold text-slate-400 uppercase">
+                                    <tr>
+                                        <th class="px-4 py-3">Date</th>
+                                        <th class="px-4 py-3">Tenant Name</th>
+                                        <th class="px-4 py-3">Room #</th>
+                                        <th class="px-4 py-3">Month Covered</th>
+                                        <th class="px-4 py-3">Amount Paid</th>
+                                        <th class="px-4 py-3">Method</th>
+                                        <th class="px-4 py-3">Reference / Notes</th>
+                                        <th class="px-4 py-3 text-right">Approval Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pending-payment-table-body" class="divide-y divide-slate-800 bg-slate-900 text-slate-300"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: TENANT APPLICATIONS -->
+            <section id="tab-applications" class="space-y-6 hidden">
+                <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm overflow-hidden">
+                    <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+                        <div>
+                            <h2 class="text-base font-bold text-white">Tenant Applications</h2>
+                            <p class="text-xs text-slate-400">Review prospective tenant submissions</p>
+                        </div>
+                        <button onclick="openApplicationModal()" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-lg text-sm font-medium">New Application Link</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-slate-800 text-left text-xs">
+                            <thead class="bg-slate-950 font-semibold text-slate-400 uppercase">
+                                <tr>
+                                    <th class="px-4 py-3">Name</th>
+                                    <th class="px-4 py-3">Contact</th>
+                                    <th class="px-4 py-3">Property</th>
+                                    <th class="px-4 py-3">Room</th>
+                                    <th class="px-4 py-3">Rent</th>
+                                    <th class="px-4 py-3">Move-in</th>
+                                    <th class="px-4 py-3">Status</th>
+                                    <th class="px-4 py-3 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="application-table-body" class="divide-y divide-slate-800 bg-slate-900 text-slate-300"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: UTILITY METERS -->
+            <section id="tab-utilities" class="space-y-6 hidden">
+                <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm overflow-hidden">
+                    <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+                        <div>
+                            <h2 class="text-base font-bold text-white">Utility Meter Tracking</h2>
+                            <p class="text-xs text-slate-400">Record electricity and water readings</p>
+                        </div>
+                        <button onclick="openAddUtilityModal()" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-lg text-sm font-medium">Add Utility Reading</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-slate-800 text-left text-xs">
+                            <thead class="bg-slate-950 font-semibold text-slate-400 uppercase">
+                                <tr>
+                                    <th class="px-4 py-3">Tenant Name</th>
+                                    <th class="px-4 py-3">Room #</th>
+                                    <th class="px-4 py-3">Type</th>
+                                    <th class="px-4 py-3">Month</th>
+                                    <th class="px-4 py-3">Prev</th>
+                                    <th class="px-4 py-3">New</th>
+                                    <th class="px-4 py-3">Usage</th>
+                                    <th class="px-4 py-3">Amount Due</th>
+                                    <th class="px-4 py-3 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="utility-table-body" class="divide-y divide-slate-800 bg-slate-900 text-slate-300"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 6: MAINTENANCE LOG -->
+            <section id="tab-maintenance" class="space-y-6 hidden">
+                <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm overflow-hidden">
+                    <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+                        <div>
+                            <h2 class="text-base font-bold text-white">Maintenance Log</h2>
+                            <p class="text-xs text-slate-400">Track property repairs and upkeep</p>
+                        </div>
+                        <button onclick="openAddMaintenanceModal()" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-lg text-sm font-medium">Log Repair Ticket</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-slate-800 text-left text-xs">
+                            <thead class="bg-slate-950 font-semibold text-slate-400 uppercase">
+                                <tr>
+                                    <th class="px-4 py-3">Date</th>
+                                    <th class="px-4 py-3">Unit</th>
+                                    <th class="px-4 py-3">Issue</th>
+                                    <th class="px-4 py-3">Action</th>
+                                    <th class="px-4 py-3">Cost</th>
+                                    <th class="px-4 py-3">Status</th>
+                                    <th class="px-4 py-3">Notes</th>
+                                    <th class="px-4 py-3 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="maintenance-table-body" class="divide-y divide-slate-800 bg-slate-900 text-slate-300"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 7: STATEMENT OF ACCOUNT -->
+            <section id="tab-soa" class="space-y-6 hidden">
+                <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm p-6 no-print">
+                    <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                        <div>
+                            <h2 class="text-base font-bold text-white">Statement of Account Generator</h2>
+                            <p class="text-xs text-slate-400">Select a tenant to print billing statement</p>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <select id="soa-tenant-select" onchange="generateSOA()" class="px-3 py-2 bg-slate-950 border border-slate-700 text-white rounded-lg text-sm w-72"></select>
+                            <button onclick="window.print()" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-lg text-sm font-medium"><i class="fa-solid fa-print mr-1.5"></i> Print</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="printable-soa" class="bg-white rounded-xl shadow-sm border border-slate-800 p-8 max-w-3xl mx-auto space-y-6 text-slate-900">
+                    <div class="flex justify-between items-start border-b border-slate-200 pb-6">
+                        <div>
+                            <h1 class="text-xl font-extrabold text-emerald-800">STATEMENT OF ACCOUNT</h1>
+                            <p class="text-sm font-bold text-slate-700 mt-1">Celou Rental Property</p>
+                        </div>
+                        <div class="text-right text-xs text-slate-600">
+                            <p><span class="font-semibold">Date:</span> October 7, 2026</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 text-xs bg-slate-50 p-4 rounded-lg border border-slate-200">
+                        <div class="space-y-1.5">
+                            <p><span class="font-semibold text-slate-600">Tenant:</span> <span id="soa-tenant-name" class="font-bold text-slate-900">-</span></p>
+                            <p><span class="font-semibold text-slate-600">Contact:</span> <span id="soa-contact">-</span></p>
+                        </div>
+                        <div class="space-y-1.5">
+                            <p><span class="font-semibold text-slate-600">Unit / Room:</span> <span id="soa-room">-</span></p>
+                            <p><span class="font-semibold text-slate-600">Monthly Rent:</span> <span id="soa-rent-amount" class="font-bold text-emerald-700">-</span></p>
+                        </div>
+                    </div>
+                    <div>
+                        <table class="min-w-full divide-y divide-slate-200 text-xs">
+                            <thead class="bg-slate-100 text-slate-600">
+                                <tr><th class="px-3 py-2 text-left">Description</th><th class="px-3 py-2 text-right">Charge</th></tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200">
+                                <tr><td class="px-3 py-2.5">Monthly Rent</td><td id="soa-charge-rent" class="px-3 py-2.5 text-right font-medium">₱0.00</td></tr>
+                                <tr><td class="px-3 py-2.5">Electricity</td><td id="soa-charge-elec" class="px-3 py-2.5 text-right">₱0.00</td></tr>
+                                <tr><td class="px-3 py-2.5">Water</td><td id="soa-charge-water" class="px-3 py-2.5 text-right">₱0.00</td></tr>
+                                <tr><td class="px-3 py-2.5">Wifi</td><td class="px-3 py-2.5 text-right">₱1,000.00</td></tr>
+                            </tbody>
+                            <tfoot class="bg-slate-100 font-bold text-slate-900">
+                                <tr><td class="px-3 py-3">TOTAL DUE</td><td id="soa-total-due" class="px-3 py-3 text-right text-emerald-700 text-sm">₱0.00</td></tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="border-t border-slate-200 pt-4 text-xs space-y-1 text-slate-700">
+                        <p class="font-bold text-slate-900">PAYMENT INFO:</p>
+                        <p>GCash: 0976 046 5134 | BPI: 6589 4521 55 (Tuhamie A. Dimanang)</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 8: FINANCES -->
+            <section id="tab-finances" class="space-y-6 hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+                        <h2 class="text-base font-bold text-white mb-4">Monthly Financials</h2>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-slate-800 text-xs">
+                                <thead class="bg-slate-950 text-slate-400 uppercase">
+                                    <tr><th class="px-3 py-2.5 text-left">Month</th><th class="px-3 py-2.5 text-right">Rent Collected</th><th class="px-3 py-2.5 text-right">Expenses</th><th class="px-3 py-2.5 text-right">Net</th></tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-800 text-slate-300" id="monthly-financial-table"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 flex flex-col justify-between">
+                        <div>
+                            <h2 class="text-base font-bold text-white mb-4">Financial Totals (YTD)</h2>
+                            <div class="space-y-4">
+                                <div class="bg-slate-950 p-4 rounded-lg flex items-center justify-between border border-slate-800">
+                                    <div><p class="text-xs text-slate-400">Total Collected</p><h4 class="text-xl font-bold text-emerald-400 mt-1">₱199,000.00</h4></div>
+                                </div>
+                                <div class="bg-slate-950 p-4 rounded-lg flex items-center justify-between border border-slate-800">
+                                    <div><p class="text-xs text-slate-400">Total Expenses</p><h4 class="text-xl font-bold text-rose-400 mt-1">₱134,034.95</h4></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Caretaker Payment Modal -->
+    <div id="caretaker-modal" class="fixed inset-0 bg-slate-950 bg-opacity-80 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-xl max-w-md w-full overflow-hidden text-slate-100">
+            <div class="px-6 py-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
+                <h3 class="text-base font-bold">Caretaker: Submit Payment Entry</h3>
+                <button onclick="closeCaretakerModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="caretaker-form" onsubmit="submitCaretakerPayment(event)" class="p-6 space-y-4 text-sm">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Select Tenant *</label>
+                    <select id="pay-tenant-select" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></select>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Month Covered *</label>
+                        <input type="text" id="pay-month" value="October 2026" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Amount Paid (₱) *</label>
+                        <input type="number" step="any" id="pay-amount" required placeholder="5000" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Payment Method</label>
+                        <select id="pay-method" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                            <option value="CASH">CASH</option>
+                            <option value="GCASH">GCASH</option>
+                            <option value="BANK TRANSFER">BANK TRANSFER</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Date Paid</label>
+                        <input type="text" id="pay-date" value="October 7, 2026" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Reference # / Notes</label>
+                    <input type="text" id="pay-notes" placeholder="e.g. GCash Ref 123456" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                </div>
+                <div class="flex justify-end space-x-3 pt-4 border-t border-slate-800">
+                    <button type="button" onclick="closeCaretakerModal()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-xs">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-medium">Submit for Landlord Approval</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add/Edit Tenant Modal -->
+    <div id="tenant-modal" class="fixed inset-0 bg-slate-950 bg-opacity-80 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-xl max-w-lg w-full overflow-hidden text-slate-100">
+            <div class="px-6 py-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
+                <h3 id="modal-title" class="text-base font-bold">Register New Tenant</h3>
+                <button onclick="closeAddTenantModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="tenant-form" onsubmit="saveTenant(event)" class="p-6 space-y-4 text-sm">
+                <input type="hidden" id="edit-tenant-id">
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Tenant Name *</label><input type="text" id="form-name" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Contact Number *</label><input type="text" id="form-contact" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Unit *</label><select id="form-unit" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"><option value="BF Resort Village">BF Resort Village</option><option value="GreenMark Homes">GreenMark Homes</option><option value="GreenPlace Homes 3">GreenPlace Homes 3</option></select></div>
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Room *</label><input type="text" id="form-room" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                </div>
+                <div class="grid grid-cols-3 gap-4">
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Rent (₱) *</label><input type="number" id="form-rent" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Advance (₱)</label><input type="text" id="form-advance" value="₱0.00" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Move-in</label><input type="text" id="form-movein" value="October 2026" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                </div>
+                <div><label class="block text-xs font-semibold text-slate-300 mb-1">Notes</label><input type="text" id="form-notes" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                <div class="flex justify-end space-x-3 pt-4 border-t border-slate-800">
+                    <button type="button" onclick="closeAddTenantModal()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-xs">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-medium">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Application Modal -->
+    <div id="application-modal" class="fixed inset-0 bg-slate-950 bg-opacity-80 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-xl max-w-lg w-full overflow-hidden text-slate-100">
+            <div class="px-6 py-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
+                <h3 class="text-base font-bold">New Tenant Application</h3>
+                <button onclick="closeApplicationModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="application-form" onsubmit="submitApplication(event)" class="p-6 space-y-4 text-sm">
+                <div><label class="block text-xs font-semibold text-slate-300 mb-1">Full Name *</label><input type="text" id="app-name" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Contact *</label><input type="text" id="app-contact" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Move-in Date *</label><input type="text" id="app-movein" value="October 2026" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Unit *</label><select id="app-unit" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"><option value="BF Resort Village">BF Resort Village</option><option value="GreenMark Homes">GreenMark Homes</option><option value="GreenPlace Homes 3">GreenPlace Homes 3</option></select></div>
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Room *</label><input type="text" id="app-room" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Monthly Rent (₱) *</label><input type="number" id="app-rent" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Advance</label><input type="text" id="app-advance" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                </div>
+                <div class="flex justify-end space-x-3 pt-4 border-t border-slate-800">
+                    <button type="button" onclick="closeApplicationModal()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-xs">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-medium">Submit Application</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Utility Modal -->
+    <div id="utility-modal" class="fixed inset-0 bg-slate-950 bg-opacity-80 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-xl max-w-md w-full overflow-hidden text-slate-100">
+            <div class="px-6 py-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
+                <h3 class="text-base font-bold">Add Utility Reading</h3>
+                <button onclick="closeAddUtilityModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="utility-form" onsubmit="saveUtility(event)" class="p-6 space-y-4 text-sm">
+                <div><label class="block text-xs font-semibold text-slate-300 mb-1">Tenant *</label><select id="utility-tenant-select" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></select></div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Type *</label><select id="util-type" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"><option value="Electricity">Electricity</option><option value="Water">Water</option><option value="Wifi">Wifi</option></select></div>
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Month *</label><input type="text" id="util-month" value="October 2026" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Prev</label><input type="number" step="any" id="util-prev" value="0" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">New</label><input type="number" step="any" id="util-new" value="0" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                </div>
+                <div><label class="block text-xs font-semibold text-slate-300 mb-1">Amount (₱) *</label><input type="number" step="any" id="util-amount" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                <div class="flex justify-end space-x-3 pt-4 border-t border-slate-800">
+                    <button type="button" onclick="closeAddUtilityModal()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-xs">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-medium">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Maintenance Modal -->
+    <div id="maintenance-modal" class="fixed inset-0 bg-slate-950 bg-opacity-80 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-xl max-w-md w-full overflow-hidden text-slate-100">
+            <div class="px-6 py-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
+                <h3 class="text-base font-bold">Log Repair Ticket</h3>
+                <button onclick="closeAddMaintenanceModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="maintenance-form" onsubmit="saveMaintenance(event)" class="p-6 space-y-4 text-sm">
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Date *</label><input type="text" id="maint-date" value="October 7, 2026" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Unit *</label><input type="text" id="maint-unit" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                </div>
+                <div><label class="block text-xs font-semibold text-slate-300 mb-1">Issue *</label><input type="text" id="maint-issue" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Action</label><input type="text" id="maint-action" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Cost (₱)</label><input type="number" step="any" id="maint-cost" value="0" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Status</label><select id="maint-status" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"><option value="DONE">DONE</option><option value="PENDING">PENDING</option></select></div>
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Notes</label><input type="text" id="maint-notes" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                </div>
+                <div class="flex justify-end space-x-3 pt-4 border-t border-slate-800">
+                    <button type="button" onclick="closeAddMaintenanceModal()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-xs">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-medium">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 border-t border-slate-800 mt-auto py-4 text-center text-xs text-slate-500 no-print">
+        <p>Celou Rental Property Management System (Dark Edition) &bull; Integrated Local Storage & Cloud Backup</p>
+    </footer>
+
+    <!-- App JavaScript Logic -->
+    <script>
+        const LANDLORD_PASSWORD = "caretaker123"; // Change password here if desired
+
+        const defaultTenants = [
+            { id: 1, name: "Hanna Gene Villame", contact: "0919 481 6171", movein: "May 15, 2026", unit: "BF Resort Village", room: "Room No. 3", rent: 5000, advance: "June 15 2026", notes: "TurnOver June 2026" },
+            { id: 2, name: "Christy Iyo", contact: "0905 498 5934", movein: "May 15 2026", unit: "BF Resort Village", room: "Room No. 6", rent: 2500, advance: "June 15 2026", notes: "TurnOver June 2026" },
+            { id: 3, name: "Jover torres", contact: "0999 142 2545", movein: "May 15, 2026", unit: "BF Resort Village", room: "Room No. 1", rent: 2500, advance: "June 15, 2026", notes: "TurnOver June 2026" },
+            { id: 4, name: "Markphil & Angel Montiel", contact: "0966 184 0895", movein: "June 30, 2026", unit: "BF Resort Village", room: "Apartment-B", rent: 8000, advance: "₱8,000.00", notes: "TurnOver June 2026" },
+            { id: 5, name: "Raniel Torrie Campo", contact: "0921 861 9794", movein: "July 19, 2026", unit: "BF Resort Village", room: "Room No. 5", rent: 5000, advance: "₱5,000.00", notes: "TurnOver july 2026" },
+            { id: 6, name: "Jiucy Montiel Estares", contact: "0995 061 5314", movein: "May 25, 2026", unit: "BF Resort Village", room: "Room No. 4", rent: 3500, advance: "June 25, 2026", notes: "TurnOver June 2026" },
+            { id: 7, name: "Clarie Molina", contact: "0995 638 1726", movein: "May 29 2026", unit: "BF Resort Village", room: "Room No. 7", rent: 4500, advance: "June 29, 2026", notes: "End Contract July 2026" },
+            { id: 8, name: "Resalyn Dasig", contact: "0961 182 5686", movein: "May 15, 2026", unit: "GreenMark Homes", room: "B1L28", rent: 8000, advance: "June 18, 2026", notes: "TurnOver June 2026" },
+            { id: 9, name: "Arriane G. Costales", contact: "0917 140 1888", movein: "April 10, 2026", unit: "GreenMark Homes", room: "B1L30", rent: 10000, advance: "₱10,000.00", notes: "30K paid on apr 7,2026" },
+            { id: 10, name: "Lory Jean", contact: "0961 951 7983", movein: "February 20, 2026", unit: "GreenPlace Homes 3", room: "B1L36-B", rent: 4000, advance: "₱4,000.00", notes: "12k paid on Feb 19 2026" },
+            { id: 11, name: "Marianne Agravante", contact: "0909 631 7918", movein: "May 30, 2026", unit: "GreenPlace Homes 3", room: "B1L36-A", rent: 4000, advance: "June 30, 2026", notes: "TurnOver June 2026" },
+            { id: 12, name: "Laurence Gonzales", contact: "0908 652 6672", movein: "May 28, 2026", unit: "GreenPlace Homes 3", room: "B1L36-MAIN", rent: 8000, advance: "June 30, 2026", notes: "TurnOver June 2026" },
+            { id: 13, name: "Jescel & Sharmaine macalisang", contact: "09205075110", movein: "September 1, 2026", unit: "BF Resort Village", room: "Apartment-A", rent: 10000, advance: "₱20,000.00", notes: "20k deposit paid 7/24/26" }
+        ];
+
+        let tenants = JSON.parse(localStorage.getItem('celou_tenants')) || defaultTenants;
+        let utilities = JSON.parse(localStorage.getItem('celou_utilities')) || [];
+        let maintenance = JSON.parse(localStorage.getItem('celou_maintenance')) || [];
+        let applications = JSON.parse(localStorage.getItem('celou_applications')) || [];
+        let pendingPayments = JSON.parse(localStorage.getItem('celou_pending_payments')) || [
+            { id: 1, tenantName: "Resalyn Dasig", room: "B1L28", month: "October 2026", amount: 8000, method: "GCASH", date: "October 7, 2026", notes: "Ref. 0042022442", status: "PENDING" }
+        ];
+
+        const monthlyFinancials = [
+            { month: "January 2026", rent: 0, expense: 0 },
+            { month: "February 2026", rent: 0, expense: 0 },
+            { month: "March 2026", rent: 0, expense: 0 },
+            { month: "April 2026", rent: 0, expense: 0 },
+            { month: "May 2026", rent: 0, expense: 0 },
+            { month: "June 2026", rent: 49500, expense: 58383 },
+            { month: "July 2026", rent: 47500, expense: 59551.95 },
+            { month: "August 2026", rent: 40000, expense: 16100 },
+            { month: "September 2026", rent: 42000, expense: 0 },
+            { month: "October 2026", rent: 20000, expense: 0 },
+            { month: "November 2026", rent: 0, expense: 0 },
+            { month: "December 2026", rent: 0, expense: 0 }
+        ];
+
+        function saveToStorage() {
+            localStorage.setItem('celou_tenants', JSON.stringify(tenants));
+            localStorage.setItem('celou_utilities', JSON.stringify(utilities));
+            localStorage.setItem('celou_maintenance', JSON.stringify(maintenance));
+            localStorage.setItem('celou_applications', JSON.stringify(applications));
+            localStorage.setItem('celou_pending_payments', JSON.stringify(pendingPayments));
+        }
+
+        function switchTab(tabId) {
+            ['dashboard', 'tenants', 'caretaker', 'applications', 'utilities', 'maintenance', 'soa', 'finances'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                document.getElementById(`nav-${t}`).classList.remove('bg-brand-900/40', 'text-brand-400', 'border', 'border-brand-700/50');
+                document.getElementById(`nav-${t}`).classList.add('text-slate-300', 'hover:bg-slate-800', 'hover:text-white');
+            });
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            document.getElementById(`nav-${tabId}`).classList.add('bg-brand-900/40', 'text-brand-400', 'border', 'border-brand-700/50');
+            document.getElementById(`nav-${tabId}`).classList.remove('text-slate-300', 'hover:bg-slate-800', 'hover:text-white');
+
+            if(tabId === 'soa') populateSOASelect();
+            if(tabId === 'utilities') renderUtilityTable();
+            if(tabId === 'maintenance') renderMaintenanceTable();
+            if(tabId === 'applications') renderApplicationTable();
+            if(tabId === 'caretaker') renderPendingPaymentsTable();
+        }
+
+        function renderAll() {
+            renderDashboardSummary();
+            renderTenantTable();
+            renderPendingPaymentsTable();
+            renderApplicationTable();
+            renderUtilityTable();
+            renderMaintenanceTable();
+            renderFinancialTable();
+            populateSOASelect();
+        }
+
+        function renderDashboardSummary() {
+            const tbody = document.getElementById('dashboard-tenant-list');
+            tbody.innerHTML = '';
+            tenants.slice(0, 10).forEach(t => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/50 transition">
+                        <td class="px-6 py-3.5 font-medium text-white">${t.name}</td>
+                        <td class="px-6 py-3.5 text-slate-300">${t.room}</td>
+                        <td class="px-6 py-3.5 font-semibold text-brand-400">₱${t.rent.toLocaleString()}.00</td>
+                        <td class="px-6 py-3.5 text-slate-300">${t.contact}</td>
+                        <td class="px-6 py-3.5"><span class="px-2 py-1 bg-emerald-950 text-emerald-400 border border-emerald-900 rounded text-xs font-medium">${t.notes || 'Active'}</span></td>
+                    </tr>
+                `;
+            });
+            document.getElementById('kpi-occupied').innerText = tenants.length;
+            document.getElementById('dash-active-count').innerText = tenants.length;
+
+            const pendingPayCount = pendingPayments.filter(p => p.status === 'PENDING').length;
+            const badge = document.getElementById('pending-pay-badge');
+            if(pendingPayCount > 0) {
+                badge.innerText = pendingPayCount;
+                badge.classList.remove('hidden');
+            } else { badge.classList.add('hidden'); }
+        }
+
+        function renderTenantTable() {
+            const tbody = document.getElementById('full-tenant-table-body');
+            tbody.innerHTML = '';
+            tenants.forEach(t => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/50 transition">
+                        <td class="px-4 py-3 font-semibold text-slate-400">#${t.id}</td>
+                        <td class="px-4 py-3 font-medium text-white">${t.name}</td>
+                        <td class="px-4 py-3 text-slate-300">${t.contact}</td>
+                        <td class="px-4 py-3 text-slate-300">${t.movein}</td>
+                        <td class="px-4 py-3 text-slate-300">${t.unit}</td>
+                        <td class="px-4 py-3 font-medium text-slate-200">${t.room}</td>
+                        <td class="px-4 py-3 font-bold text-brand-400">₱${t.rent.toLocaleString()}.00</td>
+                        <td class="px-4 py-3 text-slate-300">${t.advance}</td>
+                        <td class="px-4 py-3 text-slate-400">${t.notes}</td>
+                        <td class="px-4 py-3 text-right space-x-2">
+                            <button onclick="editTenant(${t.id})" class="text-blue-400 hover:text-blue-300"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="deleteTenant(${t.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderPendingPaymentsTable() {
+            const tbody = document.getElementById('pending-payment-table-body');
+            tbody.innerHTML = '';
+            if(pendingPayments.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="px-4 py-6 text-center text-slate-500">No payment entries submitted by caretaker.</td></tr>`;
+                return;
+            }
+            pendingPayments.forEach(p => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/50 transition">
+                        <td class="px-4 py-3 text-slate-300">${p.date}</td>
+                        <td class="px-4 py-3 font-medium text-white">${p.tenantName}</td>
+                        <td class="px-4 py-3 text-slate-300">${p.room}</td>
+                        <td class="px-4 py-3 text-slate-300">${p.month}</td>
+                        <td class="px-4 py-3 font-bold text-brand-400">₱${p.amount.toLocaleString()}.00</td>
+                        <td class="px-4 py-3 text-slate-300">${p.method}</td>
+                        <td class="px-4 py-3 text-slate-400">${p.notes}</td>
+                        <td class="px-4 py-3 text-right space-x-2">
+                            ${p.status === 'PENDING' ? `<button onclick="approvePayment(${p.id})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-semibold shadow">Approve & Record</button>` : `<span class="text-xs text-emerald-400 font-medium">Approved</span>`}
+                            <button onclick="deletePayment(${p.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderApplicationTable() {
+            const tbody = document.getElementById('application-table-body');
+            tbody.innerHTML = '';
+            applications.forEach(app => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/50 transition">
+                        <td class="px-4 py-3 font-medium text-white">${app.name}</td>
+                        <td class="px-4 py-3 text-slate-300">${app.contact}</td>
+                        <td class="px-4 py-3 text-slate-300">${app.unit}</td>
+                        <td class="px-4 py-3 text-slate-200">${app.room}</td>
+                        <td class="px-4 py-3 font-bold text-brand-400">₱${app.rent.toLocaleString()}.00</td>
+                        <td class="px-4 py-3 text-slate-300">${app.movein}</td>
+                        <td class="px-4 py-3"><span class="px-2 py-1 bg-amber-950 text-amber-400 border border-amber-900 rounded text-xs">${app.status}</span></td>
+                        <td class="px-4 py-3 text-right">
+                            ${app.status === 'PENDING' ? `<button onclick="approveApplication(${app.id})" class="bg-emerald-600 text-white px-3 py-1 rounded text-xs">Approve</button>` : `<span class="text-xs text-emerald-400">Approved</span>`}
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderUtilityTable() {
+            const tbody = document.getElementById('utility-table-body');
+            tbody.innerHTML = '';
+            utilities.forEach(u => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/50 transition">
+                        <td class="px-4 py-3 font-medium text-white">${u.tenantName}</td>
+                        <td class="px-4 py-3 text-slate-300">${u.room}</td>
+                        <td class="px-4 py-3 text-blue-400">${u.type}</td>
+                        <td class="px-4 py-3 text-slate-300">${u.month}</td>
+                        <td class="px-4 py-3 text-slate-300">${u.prev}</td>
+                        <td class="px-4 py-3 text-slate-300">${u.new}</td>
+                        <td class="px-4 py-3 text-slate-200">${u.usage}</td>
+                        <td class="px-4 py-3 font-bold text-brand-400">₱${u.amount.toLocaleString()}.00</td>
+                        <td class="px-4 py-3 text-right"><button onclick="deleteUtility(${u.id})" class="text-rose-400"><i class="fa-solid fa-trash"></i></button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderMaintenanceTable() {
+            const tbody = document.getElementById('maintenance-table-body');
+            tbody.innerHTML = '';
+            maintenance.forEach(m => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/50 transition">
+                        <td class="px-4 py-3 text-slate-300">${m.date}</td>
+                        <td class="px-4 py-3 text-white">${m.unit}</td>
+                        <td class="px-4 py-3 text-slate-300">${m.issue}</td>
+                        <td class="px-4 py-3 text-slate-300">${m.action}</td>
+                        <td class="px-4 py-3 text-slate-300">₱${parseFloat(m.cost).toLocaleString()}</td>
+                        <td class="px-4 py-3"><span class="px-2 py-1 bg-emerald-950 text-emerald-400 border border-emerald-900 rounded text-xs">${m.status}</span></td>
+                        <td class="px-4 py-3 text-slate-400">${m.notes}</td>
+                        <td class="px-4 py-3 text-right"><button onclick="deleteMaintenance(${m.id})" class="text-rose-400"><i class="fa-solid fa-trash"></i></button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderFinancialTable() {
+            const tbody = document.getElementById('monthly-financial-table');
+            tbody.innerHTML = '';
+            monthlyFinancials.forEach(m => {
+                const net = m.rent - m.expense;
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/50">
+                        <td class="px-3 py-2.5 font-medium text-slate-200">${m.month}</td>
+                        <td class="px-3 py-2.5 text-right font-semibold text-emerald-400">₱${m.rent.toLocaleString()}.00</td>
+                        <td class="px-3 py-2.5 text-right text-rose-400">₱${m.expense.toLocaleString()}</td>
+                        <td class="px-3 py-2.5 text-right font-bold ${net >= 0 ? 'text-brand-400' : 'text-rose-400'}">₱${net.toLocaleString()}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Caretaker Payment Actions
+        function openCaretakerModal() {
+            const select = document.getElementById('pay-tenant-select');
+            select.innerHTML = '';
+            tenants.forEach(t => { select.innerHTML += `<option value="${t.id}">${t.name} (${t.room})</option>`; });
+            document.getElementById('caretaker-modal').classList.remove('hidden');
+        }
+        function closeCaretakerModal() { document.getElementById('caretaker-modal').classList.add('hidden'); }
+
+        function submitCaretakerPayment(e) {
+            e.preventDefault();
+            const tenantId = parseInt(document.getElementById('pay-tenant-select').value);
+            const t = tenants.find(item => item.id === tenantId);
+            if(!t) return;
+
+            pendingPayments.push({
+                id: pendingPayments.length ? Math.max(...pendingPayments.map(p => p.id)) + 1 : 1,
+                tenantName: t.name,
+                room: t.room,
+                month: document.getElementById('pay-month').value,
+                amount: parseFloat(document.getElementById('pay-amount').value),
+                method: document.getElementById('pay-method').value,
+                date: document.getElementById('pay-date').value,
+                notes: document.getElementById('pay-notes').value || 'Caretaker encoded payment',
+                status: 'PENDING'
+            });
+
+            saveToStorage(); closeCaretakerModal(); renderAll();
+            alert("Payment successfully submitted! Awaiting Landlord password approval to record into system.");
+        }
+
+        function approvePayment(id) {
+            const pass = prompt("Enter Landlord Password to Approve Payment:");
+            if(pass !== LANDLORD_PASSWORD) {
+                alert("Incorrect password! Access denied.");
+                return;
+            }
+
+            const payment = pendingPayments.find(p => p.id === id);
+            if(!payment) return;
+            payment.status = 'APPROVED';
+
+            // Update monthly financials for October 2026 (or corresponding month)
+            const matchMonth = monthlyFinancials.find(m => m.month.toLowerCase().includes(payment.month.toLowerCase().split(' ')[0]));
+            if(matchMonth) {
+                matchMonth.rent += payment.amount;
+            }
+
+            saveToStorage(); renderAll();
+            alert(`Payment of ₱${payment.amount.toLocaleString()} for ${payment.tenantName} approved and successfully recorded into the financial ledger!`);
+        }
+
+        function deletePayment(id) {
+            if(confirm("Delete this payment entry?")) {
+                pendingPayments = pendingPayments.filter(p => p.id !== id);
+                saveToStorage(); renderAll();
+            }
+        }
+
+        // Tenant Actions
+        function openAddTenantModal() {
+            document.getElementById('modal-title').innerText = "Register New Tenant";
+            document.getElementById('tenant-form').reset();
+            document.getElementById('edit-tenant-id').value = "";
+            document.getElementById('tenant-modal').classList.remove('hidden');
+        }
+        function closeAddTenantModal() { document.getElementById('tenant-modal').classList.add('hidden'); }
+
+        function saveTenant(e) {
+            e.preventDefault();
+            const idVal = document.getElementById('edit-tenant-id').value;
+            const tenantObj = {
+                id: idVal ? parseInt(idVal) : (tenants.length ? Math.max(...tenants.map(t => t.id)) + 1 : 1),
+                name: document.getElementById('form-name').value,
+                contact: document.getElementById('form-contact').value,
+                unit: document.getElementById('form-unit').value,
+                room: document.getElementById('form-room').value,
+                rent: parseFloat(document.getElementById('form-rent').value),
+                advance: document.getElementById('form-advance').value,
+                movein: document.getElementById('form-movein').value,
+                notes: document.getElementById('form-notes').value
+            };
+            if(idVal) {
+                const index = tenants.findIndex(t => t.id === tenantObj.id);
+                if(index !== -1) tenants[index] = tenantObj;
+            } else { tenants.push(tenantObj); }
+            saveToStorage(); closeAddTenantModal(); renderAll();
+        }
+
+        function editTenant(id) {
+            const t = tenants.find(item => item.id === id);
+            if(!t) return;
+            document.getElementById('modal-title').innerText = "Edit Tenant Record";
+            document.getElementById('edit-tenant-id').value = t.id;
+            document.getElementById('form-name').value = t.name;
+            document.getElementById('form-contact').value = t.contact;
+            document.getElementById('form-unit').value = t.unit;
+            document.getElementById('form-room').value = t.room;
+            document.getElementById('form-rent').value = t.rent;
+            document.getElementById('form-advance').value = t.advance;
+            document.getElementById('form-movein').value = t.movein;
+            document.getElementById('form-notes').value = t.notes;
+            document.getElementById('tenant-modal').classList.remove('hidden');
+        }
+
+        function deleteTenant(id) {
+            if(confirm("Delete tenant record?")) {
+                tenants = tenants.filter(t => t.id !== id);
+                saveToStorage(); renderAll();
+            }
+        }
+
+        function filterTenants() {
+            const query = document.getElementById('tenant-search').value.toLowerCase();
+            const tbody = document.getElementById('full-tenant-table-body');
+            tbody.innerHTML = '';
+            tenants.filter(t => t.name.toLowerCase().includes(query) || t.room.toLowerCase().includes(query) || t.unit.toLowerCase().includes(query)).forEach(t => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/50 transition">
+                        <td class="px-4 py-3 font-semibold text-slate-400">#${t.id}</td>
+                        <td class="px-4 py-3 font-medium text-white">${t.name}</td>
+                        <td class="px-4 py-3 text-slate-300">${t.contact}</td>
+                        <td class="px-4 py-3 text-slate-300">${t.movein}</td>
+                        <td class="px-4 py-3 text-slate-300">${t.unit}</td>
+                        <td class="px-4 py-3 font-medium text-slate-200">${t.room}</td>
+                        <td class="px-4 py-3 font-bold text-brand-400">₱${t.rent.toLocaleString()}.00</td>
+                        <td class="px-4 py-3 text-slate-300">${t.advance}</td>
+                        <td class="px-4 py-3 text-slate-400">${t.notes}</td>
+                        <td class="px-4 py-3 text-right space-x-2">
+                            <button onclick="editTenant(${t.id})" class="text-blue-400 hover:text-blue-300"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="deleteTenant(${t.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Application & Utility Actions
+        function openApplicationModal() { document.getElementById('application-modal').classList.remove('hidden'); }
+        function closeApplicationModal() { document.getElementById('application-modal').classList.add('hidden'); }
+
+        function submitApplication(e) {
+            e.preventDefault();
+            applications.push({
+                id: applications.length ? Math.max(...applications.map(a => a.id)) + 1 : 1,
+                name: document.getElementById('app-name').value,
+                contact: document.getElementById('app-contact').value,
+                unit: document.getElementById('app-unit').value,
+                room: document.getElementById('app-room').value,
+                rent: parseFloat(document.getElementById('app-rent').value),
+                movein: document.getElementById('app-movein').value,
+                advance: document.getElementById('app-advance').value || '₱0.00',
+                status: 'PENDING'
+            });
+            saveToStorage(); closeApplicationModal(); renderAll();
+            alert("Application submitted successfully!");
+        }
+
+        function approveApplication(id) {
+            const app = applications.find(a => a.id === id);
+            if(!app) return;
+            app.status = 'APPROVED';
+            tenants.push({
+                id: tenants.length ? Math.max(...tenants.map(t => t.id)) + 1 : 1,
+                name: app.name, contact: app.contact, movein: app.movein, unit: app.unit, room: app.room, rent: app.rent, advance: app.advance, notes: "Enrolled via Application"
+            });
+            saveToStorage(); renderAll();
+            alert(`Application for ${app.name} approved & enrolled!`);
+        }
+
+        function openAddUtilityModal() {
+            const select = document.getElementById('utility-tenant-select');
+            select.innerHTML = '';
+            tenants.forEach(t => { select.innerHTML += `<option value="${t.id}">${t.name} (${t.room})</option>`; });
+            document.getElementById('utility-modal').classList.remove('hidden');
+        }
+        function closeAddUtilityModal() { document.getElementById('utility-modal').classList.add('hidden'); }
+
+        function saveUtility(e) {
+            e.preventDefault();
+            const tenantId = parseInt(document.getElementById('utility-tenant-select').value);
+            const t = tenants.find(item => item.id === tenantId);
+            if(!t) return;
+            const prev = parseFloat(document.getElementById('util-prev').value) || 0;
+            const newR = parseFloat(document.getElementById('util-new').value) || 0;
+            utilities.push({
+                id: utilities.length ? Math.max(...utilities.map(u => u.id)) + 1 : 1,
+                tenantName: t.name, room: t.room,
+                type: document.getElementById('util-type').value,
+                month: document.getElementById('util-month').value,
+                prev, new: newR, usage: Math.max(0, newR - prev),
+                amount: parseFloat(document.getElementById('util-amount').value) || 0
+            });
+            saveToStorage(); closeAddUtilityModal(); renderUtilityTable();
+        }
+
+        function deleteUtility(id) {
+            if(confirm("Delete utility record?")) {
+                utilities = utilities.filter(u => u.id !== id);
+                saveToStorage(); renderUtilityTable();
+            }
+        }
+
+        function openAddMaintenanceModal() { document.getElementById('maintenance-modal').classList.remove('hidden'); }
+        function closeAddMaintenanceModal() { document.getElementById('maintenance-modal').classList.add('hidden'); }
+
+        function saveMaintenance(e) {
+            e.preventDefault();
+            maintenance.push({
+                id: maintenance.length ? Math.max(...maintenance.map(m => m.id)) + 1 : 1,
+                date: document.getElementById('maint-date').value,
+                unit: document.getElementById('maint-unit').value,
+                issue: document.getElementById('maint-issue').value,
+                action: document.getElementById('maint-action').value,
+                cost: parseFloat(document.getElementById('maint-cost').value) || 0,
+                status: document.getElementById('maint-status').value,
+                notes: document.getElementById('maint-notes').value
+            });
+            saveToStorage(); closeAddMaintenanceModal(); renderMaintenanceTable();
+        }
+
+        function deleteMaintenance(id) {
+            if(confirm("Delete ticket?")) {
+                maintenance = maintenance.filter(m => m.id !== id);
+                saveToStorage(); renderMaintenanceTable();
+            }
+        }
+
+        function populateSOASelect() {
+            const select = document.getElementById('soa-tenant-select');
+            select.innerHTML = '';
+            tenants.forEach(t => { select.innerHTML += `<option value="${t.id}">${t.name} (${t.unit} - ${t.room})</option>`; });
+            generateSOA();
+        }
+
+        function generateSOA() {
+            const tenantId = parseInt(document.getElementById('soa-tenant-select').value);
+            const t = tenants.find(item => item.id === tenantId);
+            if(!t) return;
+            const tenantUtils = utilities.filter(u => u.tenantName === t.name);
+            let elecAmt = tenantUtils.filter(u => u.type === 'Electricity').reduce((acc, curr) => acc + curr.amount, 0);
+            let waterAmt = tenantUtils.filter(u => u.type === 'Water').reduce((acc, curr) => acc + curr.amount, 0);
+
+            document.getElementById('soa-tenant-name').innerText = t.name;
+            document.getElementById('soa-contact').innerText = t.contact;
+            document.getElementById('soa-room').innerText = `${t.unit} - ${t.room}`;
+            document.getElementById('soa-rent-amount').innerText = `₱${t.rent.toLocaleString()}.00`;
+            document.getElementById('soa-charge-rent').innerText = `₱${t.rent.toLocaleString()}.00`;
+            document.getElementById('soa-charge-elec').innerText = `₱${elecAmt.toLocaleString()}.00`;
+            document.getElementById('soa-charge-water').innerText = `₱${waterAmt.toLocaleString()}.00`;
+            document.getElementById('soa-total-due').innerText = `₱${(t.rent + elecAmt + waterAmt + 1000).toLocaleString()}.00`;
+        }
+
+        function backupData() {
+            const backupObj = { tenants, utilities, maintenance, applications, pendingPayments };
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupObj, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", "Celou_Rental_Property_Backup.json");
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        function restoreData(event) {
+            const fileReader = new FileReader();
+            if(event.target.files[0]) {
+                fileReader.readAsText(event.target.files[0], "UTF-8");
+                fileReader.onload = function(e) {
+                    try {
+                        const parsed = JSON.parse(e.target.result);
+                        if(parsed.tenants) {
+                            tenants = parsed.tenants;
+                            utilities = parsed.utilities || [];
+                            maintenance = parsed.maintenance || [];
+                            applications = parsed.applications || [];
+                            pendingPayments = parsed.pendingPayments || [];
+                            saveToStorage(); renderAll();
+                            alert("Data successfully restored from backup!");
+                        } else { alert("Invalid backup structure."); }
+                    } catch(err) { alert("Error parsing JSON file."); }
+                }
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderAll();
+            const ctx = document.getElementById('financialChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: monthlyFinancials.map(m => m.month.split(' ')[0]),
+                    datasets: [
+                        { label: 'Rent Collected (₱)', data: monthlyFinancials.map(m => m.rent), backgroundColor: '#22c55e', borderRadius: 4 },
+                        { label: 'Expenses (₱)', data: monthlyFinancials.map(m => m.expense), backgroundColor: '#ef4444', borderRadius: 4 }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1' } } },
+                    scales: {
+                        x: { ticks: { color: '#cbd5e1' }, grid: { color: '#334155' } },
+                        y: { ticks: { color: '#cbd5e1' }, grid: { color: '#334155' }, beginAtZero: true }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
