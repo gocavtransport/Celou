@@ -711,11 +711,11 @@
                 <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm overflow-hidden">
                     <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
                         <div>
-                            <h2 class="text-base font-bold text-white">Utility Meter Tracking (Meralco & Maynilad)</h2>
-                            <p class="text-xs text-slate-400">Record electricity and water consumption and billings</p>
+                            <h2 class="text-base font-bold text-white">Utility Meter Tracking (Meralco, Maynilad & Fixed Wifi)</h2>
+                            <p class="text-xs text-slate-400">Record electricity, water, and fixed monthly wifi billings</p>
                         </div>
                         <button onclick="openAddUtilityModal()" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center">
-                            <i class="fa-solid fa-plus mr-1.5"></i> Add Utility Reading
+                            <i class="fa-solid fa-plus mr-1.5"></i> Add Utility Reading / Bill
                         </button>
                     </div>
                     <div class="overflow-x-auto">
@@ -815,7 +815,7 @@
                                 <tr><td class="px-3 py-2.5">Monthly Rent</td><td id="soa-charge-rent" class="px-3 py-2.5 text-right font-medium">₱0.00</td></tr>
                                 <tr><td class="px-3 py-2.5">Meralco (Electricity)</td><td id="soa-charge-elec" class="px-3 py-2.5 text-right">₱0.00</td></tr>
                                 <tr><td class="px-3 py-2.5">Maynilad (Water)</td><td id="soa-charge-water" class="px-3 py-2.5 text-right">₱0.00</td></tr>
-                                <tr><td class="px-3 py-2.5">Wifi</td><td class="px-3 py-2.5 text-right">₱1,000.00</td></tr>
+                                <tr><td class="px-3 py-2.5">Wifi (Fixed)</td><td id="soa-charge-wifi" class="px-3 py-2.5 text-right">₱1,000.00</td></tr>
                             </tbody>
                             <tfoot class="bg-slate-100 font-bold text-slate-900">
                                 <tr><td class="px-3 py-3">TOTAL DUE</td><td id="soa-total-due" class="px-3 py-3 text-right text-emerald-700 text-sm">₱0.00</td></tr>
@@ -966,7 +966,7 @@
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-1">Amount Settled (₱)</label>
-                    <input type="number" step="any" id="lp-amount" required placeholder="5000" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                    <input type="number" step="0.01" id="lp-amount" required placeholder="5000" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
                 </div>
                 <div class="flex justify-end space-x-3 pt-4 border-t border-slate-800">
                     <button type="button" onclick="closeLandlordPaymentEditor()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-xs">Cancel</button>
@@ -995,7 +995,7 @@
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-300 mb-1">Amount Paid (₱) *</label>
-                        <input type="number" step="any" id="pay-amount" required placeholder="5000" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                        <input type="number" step="0.01" id="pay-amount" required placeholder="5000" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
@@ -1095,7 +1095,7 @@
                     <div><label class="block text-xs font-semibold text-slate-300 mb-1">Room *</label><input type="text" id="form-room" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
                 </div>
                 <div class="grid grid-cols-3 gap-4">
-                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Rent (₱) *</label><input type="number" id="form-rent" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Rent (₱) *</label><input type="number" step="0.01" id="form-rent" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
                     <div><label class="block text-xs font-semibold text-slate-300 mb-1">Advance & Deposit</label><input type="text" id="form-advance" value="1 Mo. Adv, 2 Mo. Dep" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
                     <div><label class="block text-xs font-semibold text-slate-300 mb-1">Move-in</label><input type="text" id="form-movein" value="October 2026" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
                 </div>
@@ -1112,7 +1112,7 @@
     <div id="utility-modal" class="fixed inset-0 bg-slate-950 bg-opacity-80 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-xl max-w-md w-full overflow-hidden text-slate-100">
             <div class="px-6 py-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
-                <h3 class="text-base font-bold">Add Utility Reading</h3>
+                <h3 class="text-base font-bold">Add Utility Reading / Bill</h3>
                 <button onclick="closeAddUtilityModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <form id="utility-form" onsubmit="saveUtility(event)" class="p-6 space-y-4 text-sm">
@@ -1123,7 +1123,7 @@
                         <select id="util-type" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
                             <option value="Meralco (Electricity)">Meralco (Electricity)</option>
                             <option value="Maynilad (Water)">Maynilad (Water)</option>
-                            <option value="Wifi">Wifi</option>
+                            <option value="Wifi (Fixed)">Wifi (Fixed)</option>
                         </select>
                     </div>
                     <div><label class="block text-xs font-semibold text-slate-300 mb-1">Month *</label><input type="text" id="util-month" value="October 2026" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
@@ -1435,7 +1435,7 @@
             e.preventDefault();
             maintenance.push({
                 id: maintenance.length ? Math.max(...maintenance.map(m => m.id)) + 1 : 1,
-                date: "October 7, 2026",
+                date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
                 unit: `${document.getElementById('rep-unit').value} (${document.getElementById('rep-room').value})`,
                 issue: document.getElementById('rep-issue').value,
                 action: "Pending inspection",
@@ -1447,6 +1447,33 @@
             saveToStorage();
             document.getElementById('repair-form-card').classList.add('hidden');
             document.getElementById('repair-success-card').classList.remove('hidden');
+        }
+
+        function submitPublicApplication(e) {
+            e.preventDefault();
+            const select = document.getElementById('pub-room-select');
+            const selectedOpt = select.options[select.selectedIndex];
+            if(!selectedOpt || !selectedOpt.dataset.name) return;
+
+            applications.push({
+                id: applications.length ? Math.max(...applications.map(a => a.id)) + 1 : 1,
+                name: document.getElementById('pub-name').value,
+                contact: document.getElementById('pub-contact').value,
+                unit: selectedOpt.dataset.unit,
+                room: selectedOpt.dataset.name,
+                rent: parseFloat(selectedOpt.dataset.rate),
+                movein: document.getElementById('pub-movein').value,
+                prevAddress: document.getElementById('pub-prev-address').value,
+                reason: document.getElementById('pub-reason').value,
+                statusDetail: `${document.getElementById('pub-status').value}: ${document.getElementById('pub-employer').value}`,
+                emergency: `${document.getElementById('pub-emerg-name').value} (${document.getElementById('pub-emerg-rel').value})`,
+                advance: "1 Month Advance, 2 Months Deposit",
+                status: 'PENDING'
+            });
+
+            saveToStorage();
+            document.getElementById('public-form-card').classList.add('hidden');
+            document.getElementById('public-success-card').classList.remove('hidden');
         }
 
         function toggleStudentFields() {
@@ -1496,7 +1523,7 @@
                 dashYtd.innerText = `₱${totalRev.toLocaleString()}`;
                 dashNet.innerText = `₱${netProfit.toLocaleString()}`;
                 document.getElementById('fin-total-revenue').innerText = `₱${totalRev.toLocaleString()}.00`;
-                document.getElementById('fin-total-expense').innerText = `₱${totalExp.toLocaleString()}.00`;
+                document.getElementById('fin-total-expense').innerText = `₱${totalExp.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             } else {
                 lockedBanner.classList.remove('hidden');
                 unlockedContent.classList.add('hidden');
@@ -1752,6 +1779,114 @@
                 }
             });
         });
+
+        // Additional handler functions to ensure robust module operations
+        function saveTenant(e) {
+            e.preventDefault();
+            const idVal = document.getElementById('edit-tenant-id').value;
+            const tenantObj = {
+                id: idVal ? parseInt(idVal) : (tenants.length ? Math.max(...tenants.map(t => t.id)) + 1 : 1),
+                name: document.getElementById('form-name').value,
+                contact: document.getElementById('form-contact').value,
+                unit: document.getElementById('form-unit').value,
+                room: document.getElementById('form-room').value,
+                rent: parseFloat(document.getElementById('form-rent').value),
+                advance: document.getElementById('form-advance').value,
+                movein: document.getElementById('form-movein').value,
+                notes: document.getElementById('form-notes').value
+            };
+            if(idVal) {
+                const index = tenants.findIndex(t => t.id === tenantObj.id);
+                if(index !== -1) tenants[index] = tenantObj;
+            } else { tenants.push(tenantObj); }
+            saveToStorage(); closeAddTenantModal(); renderAll();
+            alert("Tenant saved successfully!");
+        }
+
+        function saveUtility(e) {
+            e.preventDefault();
+            const tenantId = parseInt(document.getElementById('utility-tenant-select').value);
+            const t = tenants.find(item => item.id === tenantId);
+            if(!t) return;
+
+            const prevVal = parseFloat(document.getElementById('util-prev').value) || 0;
+            const newVal = parseFloat(document.getElementById('util-new').value) || 0;
+            const usageVal = newVal >= prevVal ? newVal - prevVal : 0;
+
+            utilities.push({
+                id: utilities.length ? Math.max(...utilities.map(u => u.id)) + 1 : 1,
+                tenantName: t.name,
+                room: t.room,
+                type: document.getElementById('util-type').value,
+                month: document.getElementById('util-month').value,
+                prev: prevVal,
+                new: newVal,
+                usage: usageVal,
+                amount: parseFloat(document.getElementById('util-amount').value) || 0
+            });
+
+            saveToStorage();
+            closeAddUtilityModal();
+            renderUtilityTable();
+            alert("Utility reading/bill saved successfully!");
+        }
+
+        function saveMaintenance(e) {
+            e.preventDefault();
+            maintenance.push({
+                id: maintenance.length ? Math.max(...maintenance.map(m => m.id)) + 1 : 1,
+                date: document.getElementById('maint-date').value,
+                unit: document.getElementById('maint-unit').value,
+                issue: document.getElementById('maint-issue').value,
+                action: document.getElementById('maint-action').value || 'Pending action',
+                cost: parseFloat(document.getElementById('maint-cost').value) || 0,
+                status: document.getElementById('maint-status').value,
+                notes: document.getElementById('maint-notes').value || 'Logged via portal'
+            });
+
+            saveToStorage();
+            closeAddMaintenanceModal();
+            renderMaintenanceTable();
+            alert("Repair ticket logged successfully!");
+        }
+
+        function submitCaretakerPayment(e) {
+            e.preventDefault();
+            const tenantId = parseInt(document.getElementById('pay-tenant-select').value);
+            const t = tenants.find(item => item.id === tenantId);
+            if(!t) return;
+
+            pendingPayments.push({
+                id: pendingPayments.length ? Math.max(...pendingPayments.map(p => p.id)) + 1 : 1,
+                tenantName: t.name, room: t.room,
+                month: document.getElementById('pay-month').value,
+                amount: parseFloat(document.getElementById('pay-amount').value),
+                method: document.getElementById('pay-method').value,
+                date: document.getElementById('pay-date').value,
+                notes: document.getElementById('pay-notes').value || 'Caretaker payment',
+                status: 'PENDING'
+            });
+
+            saveToStorage(); closeCaretakerPaymentModal(); renderAll();
+            alert("Payment submitted successfully! Awaiting Landlord password approval.");
+        }
+
+        function submitCaretakerExpense(e) {
+            e.preventDefault();
+            pendingExpenses.push({
+                id: pendingExpenses.length ? Math.max(...pendingExpenses.map(e => e.id)) + 1 : 1,
+                date: document.getElementById('exp-date').value,
+                category: document.getElementById('exp-category').value,
+                description: document.getElementById('exp-desc').value,
+                amount: parseFloat(document.getElementById('exp-amount').value),
+                paidBy: document.getElementById('exp-paidby').value,
+                notes: document.getElementById('exp-notes').value || 'Caretaker expense',
+                status: 'PENDING'
+            });
+
+            saveToStorage(); closeCaretakerExpenseModal(); renderAll();
+            alert("Expense receipt submitted successfully! Awaiting Landlord password approval.");
+        }
     </script>
 </body>
 </html>
