@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Celou Rental Property - Tenant Application & Management</title>
+    <title>Celou Rental Property - Tenant Portal & Management</title>
     <link rel="icon" href="https://i.imgur.com/e4dbngu.jpeg" type="image/jpeg">
     
     <!-- PWA Manifest Link -->
@@ -65,8 +65,11 @@
             </div>
             
             <div id="admin-header-actions" class="flex items-center space-x-3">
-                <button onclick="copyPublicApplyLink()" class="bg-brand-600 hover:bg-brand-500 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition shadow flex items-center">
-                    <i class="fa-solid fa-share-nodes mr-1.5"></i> Copy Tenant Apply Link
+                <button onclick="copyPublicApplyLink()" class="bg-brand-600 hover:bg-brand-500 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition shadow flex items-center" title="Copy Tenant Apply Link">
+                    <i class="fa-solid fa-share-nodes mr-1.5"></i> Copy Apply Link
+                </button>
+                <button onclick="copyPublicRepairLink()" class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition shadow flex items-center" title="Copy Tenant Repair Request Link">
+                    <i class="fa-solid fa-screwdriver-wrench mr-1.5"></i> Copy Repair Link
                 </button>
                 <button onclick="backupData()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-medium transition shadow flex items-center">
                     <i class="fa-solid fa-cloud-arrow-down mr-1.5"></i> Backup JSON
@@ -114,6 +117,10 @@
                 <button onclick="switchTab('maintenance')" id="nav-maintenance" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-300 hover:bg-slate-800 hover:text-white">
                     <i class="fa-solid fa-screwdriver-wrench w-5 text-center"></i>
                     <span>Maintenance Log</span>
+                </button>
+                <button onclick="switchTab('landlord-report')" id="nav-landlord-report" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-300 hover:bg-slate-800 hover:text-white">
+                    <i class="fa-solid fa-calendar-days w-5 text-center"></i>
+                    <span>Landlord Annual Matrix</span>
                 </button>
                 <button onclick="switchTab('soa')" id="nav-soa" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-300 hover:bg-slate-800 hover:text-white">
                     <i class="fa-solid fa-file-invoice-dollar w-5 text-center"></i>
@@ -180,8 +187,8 @@
                             <h2 class="text-base font-bold text-white mb-2">Quick Actions</h2>
                             <p class="text-xs text-slate-400 mb-4">Manage tenant applications & rooms.</p>
                             <div class="space-y-3">
-                                <button onclick="switchTab('contracts')" class="w-full bg-brand-600 hover:bg-brand-500 text-white py-2.5 px-4 rounded-lg text-sm font-medium transition flex items-center justify-center shadow-sm">
-                                    <i class="fa-solid fa-file-contract mr-2"></i> E-Sign Lease Contract
+                                <button onclick="switchTab('landlord-report')" class="w-full bg-brand-600 hover:bg-brand-500 text-white py-2.5 px-4 rounded-lg text-sm font-medium transition flex items-center justify-center shadow-sm">
+                                    <i class="fa-solid fa-calendar-days mr-2"></i> Landlord Annual Matrix
                                 </button>
                                 <button onclick="switchTab('rooms')" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 py-2.5 px-4 rounded-lg text-sm font-medium transition flex items-center justify-center shadow-sm">
                                     <i class="fa-solid fa-door-open mr-2"></i> Manage Rooms & Rates
@@ -200,7 +207,7 @@
                     </div>
                 </div>
 
-                <!-- Due Summary Table with Paid / Overdue Status -->
+                <!-- Due Summary Table -->
                 <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm overflow-hidden">
                     <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
                         <div>
@@ -228,7 +235,6 @@
 
             <!-- DEDICATED PUBLIC TENANT APPLICATION VIEW (#apply) -->
             <section id="tab-apply" class="space-y-6 hidden max-w-2xl mx-auto py-8">
-                <!-- Application Form Card -->
                 <div id="public-form-card" class="bg-slate-900 border border-slate-800 rounded-xl shadow-2xl p-8 space-y-6">
                     <div class="text-center space-y-3 border-b border-slate-800 pb-6">
                         <img src="https://i.imgur.com/e4dbngu.jpeg" alt="Celou Logo" class="w-16 h-16 object-cover mx-auto rounded-2xl bg-slate-800 p-0.5 border border-slate-700 shadow-inner">
@@ -333,6 +339,68 @@
                     </div>
                     <h2 class="text-2xl font-bold text-white">Message successfully send, waiting for approval from landlord.</h2>
                     <p class="text-sm text-slate-400 max-w-md mx-auto">Thank you for applying to Celou Rental Property. Your application screening details have been submitted successfully.</p>
+                </div>
+            </section>
+
+            <!-- DEDICATED PUBLIC TENANT REPAIR REQUEST VIEW (#repair) -->
+            <section id="tab-repair" class="space-y-6 hidden max-w-xl mx-auto py-8">
+                <div id="repair-form-card" class="bg-slate-900 border border-slate-800 rounded-xl shadow-2xl p-8 space-y-6">
+                    <div class="text-center space-y-3 border-b border-slate-800 pb-6">
+                        <img src="https://i.imgur.com/e4dbngu.jpeg" alt="Celou Logo" class="w-16 h-16 object-cover mx-auto rounded-2xl bg-slate-800 p-0.5 border border-slate-700 shadow-inner">
+                        <div>
+                            <h1 class="text-2xl font-extrabold text-white tracking-tight">Celou Rental Property</h1>
+                            <p class="text-xs text-slate-400 mt-1">Tenant Maintenance & Repair Request Portal</p>
+                        </div>
+                        <div class="inline-block px-3 py-1 bg-blue-950 text-blue-400 border border-blue-800 rounded-full text-xs font-semibold mt-2">
+                            Log a Property Issue or Repair Ticket
+                        </div>
+                    </div>
+
+                    <form id="public-repair-form" onsubmit="submitPublicRepair(event)" class="space-y-4 text-sm">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Your Full Name *</label>
+                                <input type="text" id="rep-name" required placeholder="Juan Dela Cruz" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Contact Number *</label>
+                                <input type="text" id="rep-contact" required placeholder="09123456789" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Property / Unit *</label>
+                                <select id="rep-unit" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                                    <option value="BF Resort Village">BF Resort Village</option>
+                                    <option value="GreenMark Homes">GreenMark Homes</option>
+                                    <option value="GreenPlace Homes 3">GreenPlace Homes 3</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Room / House Designation *</label>
+                                <input type="text" id="rep-room" required placeholder="e.g. Room No. 3 or B1L28" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Issue / Problem Description *</label>
+                            <textarea id="rep-issue" rows="3" required placeholder="Describe what needs repair (e.g., leaking pipe, faulty socket, broken lock)" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></textarea>
+                        </div>
+
+                        <div class="pt-4 flex items-center justify-end border-t border-slate-800">
+                            <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-lg text-sm font-medium transition shadow-lg w-full sm:w-auto">Submit Repair Request</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Success Screen for Repair Request -->
+                <div id="repair-success-card" class="bg-slate-900 border border-slate-800 rounded-xl shadow-2xl p-10 text-center space-y-4 hidden">
+                    <div class="w-16 h-16 bg-blue-950 text-blue-400 border border-blue-800 rounded-full flex items-center justify-center text-3xl mx-auto shadow-inner">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white">Repair Request Submitted Successfully!</h2>
+                    <p class="text-sm text-slate-400 max-w-md mx-auto">Your maintenance ticket has been forwarded to the property caretaker and landlord. We will attend to it shortly.</p>
                 </div>
             </section>
 
@@ -489,7 +557,7 @@
                 </div>
             </section>
 
-            <!-- TAB 4: CARETAKER PORTAL (WITH PAYMENT STATUS VIEW FOR CARETAKER) -->
+            <!-- TAB 4: CARETAKER PORTAL -->
             <section id="tab-caretaker" class="space-y-6 hidden">
                 <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm p-6 space-y-6">
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-slate-800 gap-4">
@@ -567,6 +635,45 @@
                 </div>
             </section>
 
+            <!-- TAB: LANDLORD ANNUAL MATRIX & PAYMENT EDITOR -->
+            <section id="tab-landlord-report" class="space-y-6 hidden">
+                <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm p-6 space-y-6">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-slate-800 gap-4">
+                        <div>
+                            <h2 class="text-base font-bold text-white">Landlord Annual Payment Matrix (Full Year Report)</h2>
+                            <p class="text-xs text-slate-400">Complete month-by-month payment tracking for all tenants. Click "Edit Payment" to record or modify payments directly.</p>
+                        </div>
+                        <button onclick="openLandlordPaymentEditor()" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm flex items-center">
+                            <i class="fa-solid fa-pen-to-square mr-1.5"></i> Landlord Edit / Encode Payment
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-slate-800 text-left text-[11px]">
+                            <thead class="bg-slate-950 font-semibold text-slate-400 uppercase">
+                                <tr>
+                                    <th class="px-3 py-3">Tenant Name</th>
+                                    <th class="px-3 py-3">Room</th>
+                                    <th class="px-3 py-3 text-center">Jan</th>
+                                    <th class="px-3 py-3 text-center">Feb</th>
+                                    <th class="px-3 py-3 text-center">Mar</th>
+                                    <th class="px-3 py-3 text-center">Apr</th>
+                                    <th class="px-3 py-3 text-center">May</th>
+                                    <th class="px-3 py-3 text-center">Jun</th>
+                                    <th class="px-3 py-3 text-center">Jul</th>
+                                    <th class="px-3 py-3 text-center">Aug</th>
+                                    <th class="px-3 py-3 text-center">Sep</th>
+                                    <th class="px-3 py-3 text-center">Oct</th>
+                                    <th class="px-3 py-3 text-center">Nov</th>
+                                    <th class="px-3 py-3 text-center">Dec</th>
+                                </tr>
+                            </thead>
+                            <tbody id="landlord-annual-matrix-body" class="divide-y divide-slate-800 bg-slate-900 text-slate-300"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
             <!-- TAB 5: TENANT APPLICATIONS -->
             <section id="tab-applications" class="space-y-6 hidden">
                 <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm overflow-hidden">
@@ -637,8 +744,8 @@
                 <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm overflow-hidden">
                     <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
                         <div>
-                            <h2 class="text-base font-bold text-white">Maintenance Log</h2>
-                            <p class="text-xs text-slate-400">Track property repairs and upkeep</p>
+                            <h2 class="text-base font-bold text-white">Maintenance Log & Repair Requests</h2>
+                            <p class="text-xs text-slate-400">Track property repairs and tenant repair tickets</p>
                         </div>
                         <button onclick="openAddMaintenanceModal()" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center">
                             <i class="fa-solid fa-plus mr-1.5"></i> Log Repair Ticket
@@ -822,6 +929,48 @@
                 <div class="flex justify-end space-x-3 pt-4 border-t border-slate-800">
                     <button type="button" onclick="closeAddRoomModal()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-xs">Cancel</button>
                     <button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-medium">Save Room</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Landlord Payment Editor Modal -->
+    <div id="landlord-payment-editor-modal" class="fixed inset-0 bg-slate-950 bg-opacity-80 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-xl max-w-md w-full overflow-hidden text-slate-100">
+            <div class="px-6 py-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
+                <h3 class="text-base font-bold">Landlord: Edit / Encode Payment</h3>
+                <button onclick="closeLandlordPaymentEditor()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="landlord-payment-editor-form" onsubmit="saveLandlordPaymentEdit(event)" class="p-6 space-y-4 text-sm">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Select Tenant *</label>
+                    <select id="lp-tenant-select" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></select>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Month *</label>
+                        <select id="lp-month-select" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                            <option value="January">January</option><option value="February">February</option><option value="March">March</option>
+                            <option value="April">April</option><option value="May">May</option><option value="June">June</option>
+                            <option value="July">July</option><option value="August">August</option><option value="September">September</option>
+                            <option value="October" selected>October</option><option value="November">November</option><option value="December">December</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Status *</label>
+                        <select id="lp-status-select" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                            <option value="PAID">PAID</option>
+                            <option value="OVERDUE">OVERDUE / UNPAID</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Amount Settled (₱)</label>
+                    <input type="number" step="any" id="lp-amount" required placeholder="5000" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
+                </div>
+                <div class="flex justify-end space-x-3 pt-4 border-t border-slate-800">
+                    <button type="button" onclick="closeLandlordPaymentEditor()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-xs">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-medium">Save Payment Record</button>
                 </div>
             </form>
         </div>
@@ -1091,6 +1240,7 @@
         let applications = [];
         let pendingPayments = [];
         let pendingExpenses = [];
+        let annualPayments = {};
 
         const monthlyFinancials = [
             { month: "January 2026", rent: 0, expense: 0 },
@@ -1108,7 +1258,7 @@
         ];
 
         function saveToStorage() {
-            const payload = { tenants, rooms, utilities, maintenance, applications, pendingPayments, pendingExpenses };
+            const payload = { tenants, rooms, utilities, maintenance, applications, pendingPayments, pendingExpenses, annualPayments };
             db.ref('celouPropertyData').set(payload);
         }
 
@@ -1121,6 +1271,12 @@
                 document.getElementById('main-content-panel').classList.add('md:col-span-5');
                 switchTab('apply');
                 populatePublicRoomDropdown();
+            } else if(window.location.hash === '#repair') {
+                document.getElementById('sidebar-nav').classList.add('hidden');
+                document.getElementById('admin-header-actions').classList.add('hidden');
+                document.getElementById('main-content-panel').classList.remove('md:col-span-4');
+                document.getElementById('main-content-panel').classList.add('md:col-span-5');
+                switchTab('repair');
             } else {
                 document.getElementById('sidebar-nav').classList.remove('hidden');
                 document.getElementById('admin-header-actions').classList.remove('hidden');
@@ -1136,8 +1292,15 @@
             });
         }
 
+        function copyPublicRepairLink() {
+            const link = window.location.origin + window.location.pathname + '#repair';
+            navigator.clipboard.writeText(link).then(() => {
+                alert("Public Repair Request Link copied to clipboard!\n\n" + link);
+            });
+        }
+
         function switchTab(tabId) {
-            ['dashboard', 'tenants', 'rooms', 'contracts', 'caretaker', 'applications', 'utilities', 'maintenance', 'soa', 'finances', 'apply'].forEach(t => {
+            ['dashboard', 'tenants', 'rooms', 'contracts', 'caretaker', 'applications', 'utilities', 'maintenance', 'landlord-report', 'soa', 'finances', 'apply', 'repair'].forEach(t => {
                 const el = document.getElementById(`tab-${t}`);
                 if(el) el.classList.add('hidden');
                 const nav = document.getElementById(`nav-${t}`);
@@ -1163,11 +1326,16 @@
             if(tabId === 'maintenance') renderMaintenanceTable();
             if(tabId === 'applications') renderApplicationTable();
             if(tabId === 'caretaker') { renderCaretakerTenantStatus(); renderPendingPaymentsTable(); renderPendingExpensesTable(); }
+            if(tabId === 'landlord-report') renderLandlordAnnualMatrix();
             if(tabId === 'finances') { updateFinancialView(); }
             if(tabId === 'apply') { 
                 document.getElementById('public-form-card').classList.remove('hidden');
                 document.getElementById('public-success-card').classList.add('hidden');
                 populatePublicRoomDropdown(); 
+            }
+            if(tabId === 'repair') {
+                document.getElementById('repair-form-card').classList.remove('hidden');
+                document.getElementById('repair-success-card').classList.add('hidden');
             }
         }
 
@@ -1221,7 +1389,6 @@
             img.classList.remove('hidden');
             document.getElementById('con-sig-placeholder').classList.add('hidden');
             
-            // Save signed contract backup to local JSON download
             const contractBackup = {
                 tenantName: t ? t.name : 'Unknown',
                 room: t ? t.room : 'Unknown',
@@ -1259,6 +1426,24 @@
                 renderAll();
                 alert(`Contract successfully terminated. Room ${tenant.room} is now available for new applicants!`);
             }
+        }
+
+        function submitPublicRepair(e) {
+            e.preventDefault();
+            maintenance.push({
+                id: maintenance.length ? Math.max(...maintenance.map(m => m.id)) + 1 : 1,
+                date: "October 7, 2026",
+                unit: `${document.getElementById('rep-unit').value} (${document.getElementById('rep-room').value})`,
+                issue: document.getElementById('rep-issue').value,
+                action: "Pending inspection",
+                cost: 0,
+                status: "PENDING",
+                notes: `Submitted by Tenant: ${document.getElementById('rep-name').value} (${document.getElementById('rep-contact').value})`
+            });
+
+            saveToStorage();
+            document.getElementById('repair-form-card').classList.add('hidden');
+            document.getElementById('repair-success-card').classList.remove('hidden');
         }
 
         function toggleStudentFields() {
@@ -1337,6 +1522,7 @@
             renderTenantTable();
             renderRoomsTable();
             renderCaretakerTenantStatus();
+            renderLandlordAnnualMatrix();
             renderPendingPaymentsTable();
             renderPendingExpensesTable();
             renderApplicationTable();
@@ -1348,10 +1534,11 @@
             checkURLHash();
         }
 
-        function isTenantPaid(tenantName) {
-            // Check if tenant has an approved payment for October 2026
-            const paidMatch = pendingPayments.some(p => p.tenantName.toLowerCase() === tenantName.toLowerCase() && p.status === 'APPROVED' && p.month.toLowerCase().includes('october'));
-            // Hardcoded initial paid list or check storage
+        function isTenantPaid(tenantName, month = 'October') {
+            if (annualPayments[tenantName] && annualPayments[tenantName][month]) {
+                return annualPayments[tenantName][month] === 'PAID';
+            }
+            const paidMatch = pendingPayments.some(p => p.tenantName.toLowerCase() === tenantName.toLowerCase() && p.status === 'APPROVED' && p.month.toLowerCase().includes(month.toLowerCase()));
             return paidMatch || tenantName === 'Arriane G. Costales' || tenantName === 'Lory Jean';
         }
 
@@ -1359,7 +1546,7 @@
             const tbody = document.getElementById('dashboard-tenant-list');
             tbody.innerHTML = '';
             tenants.forEach(t => {
-                const paid = isTenantPaid(t.name);
+                const paid = isTenantPaid(t.name, 'October');
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-800/50 transition">
                         <td class="px-6 py-3.5 font-medium text-white">${t.name}</td>
@@ -1401,7 +1588,7 @@
             if(!tbody) return;
             tbody.innerHTML = '';
             tenants.forEach(t => {
-                const paid = isTenantPaid(t.name);
+                const paid = isTenantPaid(t.name, 'October');
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-800/50 transition">
                         <td class="px-4 py-3 font-medium text-white">${t.name}</td>
@@ -1412,6 +1599,52 @@
                     </tr>
                 `;
             });
+        }
+
+        function renderLandlordAnnualMatrix() {
+            const tbody = document.getElementById('landlord-annual-matrix-body');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            
+            tenants.forEach(t => {
+                let rowHtml = `<tr class="hover:bg-slate-800/50 transition"><td class="px-3 py-2.5 font-medium text-white">${t.name}</td><td class="px-3 py-2.5 text-slate-300">${t.room}</td>`;
+                months.forEach(m => {
+                    const paid = isTenantPaid(t.name, m);
+                    rowHtml += `<td class="px-2 py-2.5 text-center"><span class="px-1.5 py-0.5 ${paid ? 'bg-emerald-950 text-emerald-400 border border-emerald-900' : 'bg-slate-800 text-slate-500'} rounded text-[10px] font-bold">${paid ? 'PAID' : '-'}</span></td>`;
+                });
+                rowHtml += `</tr>`;
+                tbody.innerHTML += rowHtml;
+            });
+        }
+
+        function openLandlordPaymentEditor() {
+            const pass = prompt("Enter Landlord PIN to edit payment matrix:");
+            if(pass !== LANDLORD_PASSWORD) { alert("Incorrect PIN! Access denied."); return; }
+
+            const select = document.getElementById('lp-tenant-select');
+            select.innerHTML = '';
+            tenants.forEach(t => { select.innerHTML += `<option value="${t.name}">${t.name} (${t.room}) - ₱${t.rent.toLocaleString()}</option>`; });
+            document.getElementById('landlord-payment-editor-modal').classList.remove('hidden');
+        }
+
+        function closeLandlordPaymentEditor() {
+            document.getElementById('landlord-payment-editor-modal').classList.add('hidden');
+        }
+
+        function saveLandlordPaymentEdit(e) {
+            e.preventDefault();
+            const tenantName = document.getElementById('lp-tenant-select').value;
+            const month = document.getElementById('lp-month-select').value;
+            const status = document.getElementById('lp-status-select').value;
+
+            if(!annualPayments[tenantName]) { annualPayments[tenantName] = {}; }
+            annualPayments[tenantName][month] = status;
+
+            saveToStorage();
+            closeLandlordPaymentEditor();
+            renderAll();
+            alert(`Payment record for ${tenantName} (${month}) updated to ${status} successfully!`);
         }
 
         function populatePublicRoomDropdown() {
@@ -1598,461 +1831,40 @@
             clearSignature();
         }
 
-        function renderPendingPaymentsTable() {
-            const tbody = document.getElementById('pending-payment-table-body');
-            tbody.innerHTML = '';
-            if(pendingPayments.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-6 text-center text-slate-500">No pending caretaker payment entries.</td></tr>`;
-                return;
-            }
-            pendingPayments.forEach(p => {
-                let actionHtml = '';
-                if(p.status === 'PENDING') {
-                    actionHtml = `<button onclick="approvePayment(${p.id})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-semibold shadow">Landlord Approve</button>`;
-                } else {
-                    actionHtml = `<span class="text-xs text-emerald-400 font-medium">Approved by Landlord</span>`;
-                }
-                tbody.innerHTML += `
-                    <tr class="hover:bg-slate-800/50 transition">
-                        <td class="px-4 py-3 text-slate-300">${p.date}</td>
-                        <td class="px-4 py-3 font-medium text-white">${p.tenantName}</td>
-                        <td class="px-4 py-3 text-slate-300">${p.room}</td>
-                        <td class="px-4 py-3 text-slate-300">${p.month}</td>
-                        <td class="px-4 py-3 font-bold text-brand-400">₱${p.amount.toLocaleString()}.00</td>
-                        <td class="px-4 py-3 text-slate-300">${p.method}</td>
-                        <td class="px-4 py-3 text-right space-x-2">${actionHtml} <button onclick="deletePayment(${p.id})" class="text-rose-400 hover:text-rose-300 ml-1"><i class="fa-solid fa-trash"></i></button></td>
-                    </tr>
-                `;
-            });
-        }
-
-        function renderPendingExpensesTable() {
-            const tbody = document.getElementById('pending-expense-table-body');
-            tbody.innerHTML = '';
-            if(pendingExpenses.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="px-4 py-6 text-center text-slate-500">No expense receipts.</td></tr>`;
-                return;
-            }
-            pendingExpenses.forEach(e => {
-                tbody.innerHTML += `
-                    <tr class="hover:bg-slate-800/50 transition">
-                        <td class="px-4 py-3 text-slate-300">${e.date}</td>
-                        <td class="px-4 py-3 text-blue-400 font-semibold">${e.category}</td>
-                        <td class="px-4 py-3 font-medium text-white">${e.description}</td>
-                        <td class="px-4 py-3 font-bold text-rose-400">₱${e.amount.toLocaleString()}.00</td>
-                        <td class="px-4 py-3 text-slate-300">${e.paidBy}</td>
-                        <td class="px-4 py-3 text-right space-x-2">
-                            ${e.status === 'PENDING' ? `<button onclick="approveExpense(${e.id})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-semibold shadow">Landlord Approve</button>` : `<span class="text-xs text-emerald-400 font-medium">Approved</span>`}
-                            <button onclick="deleteExpense(${e.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-
-        function renderApplicationTable() {
-            const tbody = document.getElementById('application-table-body');
-            tbody.innerHTML = '';
-            if(applications.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="px-4 py-6 text-center text-slate-500">No pending tenant applications.</td></tr>`;
-                return;
-            }
-            applications.forEach(app => {
-                tbody.innerHTML += `
-                    <tr class="hover:bg-slate-800/50 transition">
-                        <td class="px-4 py-3 font-medium text-white">${app.name}</td>
-                        <td class="px-4 py-3 text-slate-300">${app.contact}</td>
-                        <td class="px-4 py-3 text-slate-300">${app.unit} - ${app.room}</td>
-                        <td class="px-4 py-3 text-slate-300">${app.statusDetail || 'N/A'}</td>
-                        <td class="px-4 py-3 text-slate-400 text-[11px]">Prev: ${app.prevAddress || 'N/A'}<br>Reason: ${app.reason || 'N/A'}</td>
-                        <td class="px-4 py-3 text-slate-300">${app.emergency || 'N/A'}</td>
-                        <td class="px-4 py-3"><span class="px-2 py-1 bg-amber-950 text-amber-400 border border-amber-900 rounded text-xs">${app.status}</span></td>
-                        <td class="px-4 py-3 text-right space-x-2">
-                            ${app.status === 'PENDING' ? `<button onclick="approveApplication(${app.id})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-semibold shadow">Landlord Approve</button>` : `<span class="text-xs text-emerald-400 font-medium">Approved</span>`}
-                            <button onclick="deleteApplication(${app.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-
-        function approveApplication(id) {
-            const pass = prompt("Enter Landlord PIN to approve tenant application:");
-            if(pass !== LANDLORD_PASSWORD) { alert("Incorrect password! Access denied. Only the Landlord can approve applications."); return; }
-
-            const app = applications.find(a => a.id === id);
-            if(!app) return;
-            app.status = 'APPROVED';
-
-            tenants.push({
-                id: tenants.length ? Math.max(...tenants.map(t => t.id)) + 1 : 1,
-                name: app.name,
-                contact: app.contact,
-                movein: app.movein,
-                unit: app.unit,
-                room: app.room,
-                rent: app.rent,
-                advance: "1 Mo. Adv, 2 Mo. Dep",
-                notes: `Screened. ${app.statusDetail}`
-            });
-
-            const matchingRoom = rooms.find(r => r.unit === app.unit && r.name === app.room);
-            if(matchingRoom) { matchingRoom.status = 'Occupied'; }
-
-            saveToStorage(); renderAll();
-            alert(`Application for ${app.name} approved by Landlord & successfully enrolled into Tenant Database!`);
-        }
-
-        function deleteApplication(id) {
-            if(confirm("Delete this application?")) { applications = applications.filter(a => a.id !== id); saveToStorage(); renderAll(); }
-        }
-
-        function renderUtilityTable() {
-            const tbody = document.getElementById('utility-table-body');
-            tbody.innerHTML = '';
-            if(utilities.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" class="px-4 py-6 text-center text-slate-500">No utility readings recorded.</td></tr>`;
-                return;
-            }
-            utilities.forEach(u => {
-                tbody.innerHTML += `
-                    <tr class="hover:bg-slate-800/50 transition">
-                        <td class="px-4 py-3 font-medium text-white">${u.tenantName}</td>
-                        <td class="px-4 py-3 text-slate-300">${u.room}</td>
-                        <td class="px-4 py-3 text-blue-400 font-semibold">${u.type}</td>
-                        <td class="px-4 py-3 text-slate-300">${u.month}</td>
-                        <td class="px-4 py-3 text-slate-300">${u.prev}</td>
-                        <td class="px-4 py-3 text-slate-300">${u.new}</td>
-                        <td class="px-4 py-3 text-slate-200">${u.usage}</td>
-                        <td class="px-4 py-3 font-bold text-brand-400">₱${u.amount.toLocaleString()}.00</td>
-                        <td class="px-4 py-3 text-right"><button onclick="deleteUtility(${u.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button></td>
-                    </tr>
-                `;
-            });
-        }
-
-        function openAddUtilityModal() {
-            const select = document.getElementById('utility-tenant-select');
-            select.innerHTML = '';
-            tenants.forEach(t => { select.innerHTML += `<option value="${t.id}" data-room="${t.room}">${t.name} (${t.room})</option>`; });
-            document.getElementById('utility-modal').classList.remove('hidden');
-        }
-        function closeAddUtilityModal() { document.getElementById('utility-modal').classList.add('hidden'); }
-
-        function saveUtility(e) {
-            e.preventDefault();
-            const tenantId = parseInt(document.getElementById('utility-tenant-select').value);
-            const t = tenants.find(item => item.id === tenantId);
-            if(!t) return;
-
-            const prevVal = parseFloat(document.getElementById('util-prev').value) || 0;
-            const newVal = parseFloat(document.getElementById('util-new').value) || 0;
-            const usageVal = newVal >= prevVal ? newVal - prevVal : 0;
-
-            utilities.push({
-                id: utilities.length ? Math.max(...utilities.map(u => u.id)) + 1 : 1,
-                tenantName: t.name,
-                room: t.room,
-                type: document.getElementById('util-type').value,
-                month: document.getElementById('util-month').value,
-                prev: prevVal,
-                new: newVal,
-                usage: usageVal,
-                amount: parseFloat(document.getElementById('util-amount').value) || 0
-            });
-
-            saveToStorage();
-            closeAddUtilityModal();
-            renderUtilityTable();
-            alert("Utility reading saved successfully!");
-        }
-
-        function deleteUtility(id) {
-            if(confirm("Delete this utility reading?")) {
-                utilities = utilities.filter(u => u.id !== id);
-                saveToStorage();
-                renderUtilityTable();
-            }
-        }
-
-        function renderMaintenanceTable() {
-            const tbody = document.getElementById('maintenance-table-body');
-            tbody.innerHTML = '';
-            if(maintenance.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="px-4 py-6 text-center text-slate-500">No repair tickets logged.</td></tr>`;
-                return;
-            }
-            maintenance.forEach(m => {
-                tbody.innerHTML += `
-                    <tr class="hover:bg-slate-800/50 transition">
-                        <td class="px-4 py-3 text-slate-300">${m.date}</td>
-                        <td class="px-4 py-3 text-white font-medium">${m.unit}</td>
-                        <td class="px-4 py-3 text-slate-300">${m.issue}</td>
-                        <td class="px-4 py-3 text-slate-300">${m.action}</td>
-                        <td class="px-4 py-3 text-rose-400 font-semibold">₱${parseFloat(m.cost).toLocaleString()}.00</td>
-                        <td class="px-4 py-3"><span class="px-2 py-1 bg-emerald-950 text-emerald-400 border border-emerald-900 rounded text-xs">${m.status}</span></td>
-                        <td class="px-4 py-3 text-slate-400">${m.notes}</td>
-                        <td class="px-4 py-3 text-right"><button onclick="deleteMaintenance(${m.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button></td>
-                    </tr>
-                `;
-            });
-        }
-
-        function openAddMaintenanceModal() {
-            document.getElementById('maintenance-form').reset();
-            document.getElementById('maint-date').value = "October 7, 2026";
-            document.getElementById('maintenance-modal').classList.remove('hidden');
-        }
-        function closeAddMaintenanceModal() { document.getElementById('maintenance-modal').classList.add('hidden'); }
-
-        function saveMaintenance(e) {
-            e.preventDefault();
-            maintenance.push({
-                id: maintenance.length ? Math.max(...maintenance.map(m => m.id)) + 1 : 1,
-                date: document.getElementById('maint-date').value,
-                unit: document.getElementById('maint-unit').value,
-                issue: document.getElementById('maint-issue').value,
-                action: document.getElementById('maint-action').value || 'Pending action',
-                cost: parseFloat(document.getElementById('maint-cost').value) || 0,
-                status: document.getElementById('maint-status').value,
-                notes: document.getElementById('maint-notes').value || 'Logged via portal'
-            });
-
-            saveToStorage();
-            closeAddMaintenanceModal();
-            renderMaintenanceTable();
-            alert("Repair ticket logged successfully!");
-        }
-
-        function deleteMaintenance(id) {
-            if(confirm("Delete this maintenance ticket?")) {
-                maintenance = maintenance.filter(m => m.id !== id);
-                saveToStorage();
-                renderMaintenanceTable();
-            }
-        }
-
-        function renderFinancialTable() {
-            const tbody = document.getElementById('monthly-financial-table');
-            tbody.innerHTML = '';
-            monthlyFinancials.forEach(m => {
-                const net = m.rent - m.expense;
-                tbody.innerHTML += `
-                    <tr class="hover:bg-slate-800/50">
-                        <td class="px-3 py-2.5 font-medium text-slate-200">${m.month}</td>
-                        <td class="px-3 py-2.5 text-right font-semibold text-emerald-400">₱${m.rent.toLocaleString()}.00</td>
-                        <td class="px-3 py-2.5 text-right text-rose-400">₱${m.expense.toLocaleString()}</td>
-                        <td class="px-3 py-2.5 text-right font-bold ${net >= 0 ? 'text-brand-400' : 'text-rose-400'}">₱${net.toLocaleString()}</td>
-                    </tr>
-                `;
-            });
-        }
-
-        function openCaretakerPaymentModal() {
-            const select = document.getElementById('pay-tenant-select');
-            select.innerHTML = '';
-            tenants.forEach(t => { select.innerHTML += `<option value="${t.id}">${t.name} (${t.room})</option>`; });
-            document.getElementById('caretaker-payment-modal').classList.remove('hidden');
-        }
-        function closeCaretakerPaymentModal() { document.getElementById('caretaker-payment-modal').classList.add('hidden'); }
-
-        function openCaretakerExpenseModal() {
-            document.getElementById('caretaker-expense-modal').classList.remove('hidden');
-        }
-        function closeCaretakerExpenseModal() { document.getElementById('caretaker-expense-modal').classList.add('hidden'); }
-
-        function submitCaretakerPayment(e) {
-            e.preventDefault();
-            const tenantId = parseInt(document.getElementById('pay-tenant-select').value);
-            const t = tenants.find(item => item.id === tenantId);
-            if(!t) return;
-
-            pendingPayments.push({
-                id: pendingPayments.length ? Math.max(...pendingPayments.map(p => p.id)) + 1 : 1,
-                tenantName: t.name, room: t.room,
-                month: document.getElementById('pay-month').value,
-                amount: parseFloat(document.getElementById('pay-amount').value),
-                method: document.getElementById('pay-method').value,
-                date: document.getElementById('pay-date').value,
-                notes: document.getElementById('pay-notes').value || 'Caretaker payment',
-                status: 'PENDING'
-            });
-
-            saveToStorage(); closeCaretakerPaymentModal(); renderAll();
-            alert("Payment submitted successfully! Awaiting Landlord password approval.");
-        }
-
-        function submitCaretakerExpense(e) {
-            e.preventDefault();
-            pendingExpenses.push({
-                id: pendingExpenses.length ? Math.max(...pendingExpenses.map(e => e.id)) + 1 : 1,
-                date: document.getElementById('exp-date').value,
-                category: document.getElementById('exp-category').value,
-                description: document.getElementById('exp-desc').value,
-                amount: parseFloat(document.getElementById('exp-amount').value),
-                paidBy: document.getElementById('exp-paidby').value,
-                notes: document.getElementById('exp-notes').value || 'Caretaker expense',
-                status: 'PENDING'
-            });
-
-            saveToStorage(); closeCaretakerExpenseModal(); renderAll();
-            alert("Expense receipt submitted successfully! Awaiting Landlord password approval.");
-        }
-
         function approvePayment(id) {
-            const pass = prompt("Enter Landlord Password to Approve Payment:");
-            if(pass !== LANDLORD_PASSWORD) { alert("Incorrect password! Access denied."); return; }
+            const pass = prompt("Enter Landlord PIN to approve caretaker payment:");
+            if(pass !== LANDLORD_PASSWORD) { alert("Incorrect PIN! Access denied."); return; }
 
-            const payment = pendingPayments.find(p => p.id === id);
-            if(!payment) return;
-            payment.status = 'APPROVED';
+            const p = pendingPayments.find(item => item.id === id);
+            if(!p) return;
+            p.status = 'APPROVED';
 
-            const matchMonth = monthlyFinancials.find(m => m.month.toLowerCase().includes(payment.month.toLowerCase().split(' ')[0]));
-            if(matchMonth) { matchMonth.rent += payment.amount; }
+            const matchMonth = monthlyFinancials.find(m => m.month.toLowerCase().includes(p.month.toLowerCase().split(' ')[0]));
+            if(matchMonth) { matchMonth.rent += p.amount; }
 
-            saveToStorage(); renderAll();
-            alert(`Payment of ₱${payment.amount.toLocaleString()} approved & recorded!`);
+            const monthName = p.month.split(' ')[0];
+            if(!annualPayments[p.tenantName]) annualPayments[p.tenantName] = {};
+            annualPayments[p.tenantName][monthName] = 'PAID';
+
+            saveToStorage();
+            renderAll();
+            alert(`Payment of ₱${p.amount.toLocaleString()} for ${p.tenantName} approved and recorded successfully!`);
         }
 
         function approveExpense(id) {
-            const pass = prompt("Enter Landlord Password to Approve Expense:");
-            if(pass !== LANDLORD_PASSWORD) { alert("Incorrect password! Access denied."); return; }
+            const pass = prompt("Enter Landlord PIN to approve expense:");
+            if(pass !== LANDLORD_PASSWORD) { alert("Incorrect PIN! Access denied."); return; }
 
-            const expense = pendingExpenses.find(e => e.id === id);
-            if(!expense) return;
-            expense.status = 'APPROVED';
+            const exp = pendingExpenses.find(item => item.id === id);
+            if(!exp) return;
+            exp.status = 'APPROVED';
 
-            const matchMonth = monthlyFinancials.find(m => m.month.toLowerCase().includes(expense.date.toLowerCase().split(' ')[0]));
-            if(matchMonth) { matchMonth.expense += expense.amount; }
+            const matchMonth = monthlyFinancials.find(m => m.month.toLowerCase().includes(exp.date.toLowerCase().split(' ')[0]));
+            if(matchMonth) { matchMonth.expense += exp.amount; }
 
-            saveToStorage(); renderAll();
-            alert(`Expense receipt of ₱${expense.amount.toLocaleString()} approved & recorded into ledger!`);
-        }
-
-        function deletePayment(id) {
-            if(confirm("Delete payment entry?")) { pendingPayments = pendingPayments.filter(p => p.id !== id); saveToStorage(); renderAll(); }
-        }
-        function deleteExpense(id) {
-            if(confirm("Delete expense entry?")) { pendingExpenses = pendingExpenses.filter(e => e.id !== id); saveToStorage(); renderAll(); }
-        }
-
-        function openAddTenantModal() {
-            const pass = prompt("Enter Landlord PIN to register new tenant:");
-            if(pass !== LANDLORD_PASSWORD) { alert("Incorrect password! Access denied."); return; }
-
-            document.getElementById('modal-title').innerText = "Register New Tenant";
-            document.getElementById('tenant-form').reset();
-            document.getElementById('edit-tenant-id').value = "";
-            document.getElementById('tenant-modal').classList.remove('hidden');
-        }
-        function closeAddTenantModal() { document.getElementById('tenant-modal').classList.add('hidden'); }
-
-        function saveTenant(e) {
-            e.preventDefault();
-            const idVal = document.getElementById('edit-tenant-id').value;
-            const tenantObj = {
-                id: idVal ? parseInt(idVal) : (tenants.length ? Math.max(...tenants.map(t => t.id)) + 1 : 1),
-                name: document.getElementById('form-name').value,
-                contact: document.getElementById('form-contact').value,
-                unit: document.getElementById('form-unit').value,
-                room: document.getElementById('form-room').value,
-                rent: parseFloat(document.getElementById('form-rent').value),
-                advance: document.getElementById('form-advance').value,
-                movein: document.getElementById('form-movein').value,
-                notes: document.getElementById('form-notes').value
-            };
-            if(idVal) {
-                const index = tenants.findIndex(t => t.id === tenantObj.id);
-                if(index !== -1) tenants[index] = tenantObj;
-            } else { tenants.push(tenantObj); }
-            saveToStorage(); closeAddTenantModal(); renderAll();
-        }
-
-        function editTenant(id) {
-            const pass = prompt("Enter Landlord PIN to edit tenant record:");
-            if(pass !== LANDLORD_PASSWORD) { alert("Incorrect password! Access denied."); return; }
-
-            const t = tenants.find(item => item.id === id);
-            if(!t) return;
-            document.getElementById('modal-title').innerText = "Edit Tenant Record";
-            document.getElementById('edit-tenant-id').value = t.id;
-            document.getElementById('form-name').value = t.name;
-            document.getElementById('form-contact').value = t.contact;
-            document.getElementById('form-unit').value = t.unit;
-            document.getElementById('form-room').value = t.room;
-            document.getElementById('form-rent').value = t.rent;
-            document.getElementById('form-advance').value = t.advance;
-            document.getElementById('form-movein').value = t.movein;
-            document.getElementById('form-notes').value = t.notes;
-            document.getElementById('tenant-modal').classList.remove('hidden');
-        }
-
-        function deleteTenant(id) {
-            const pass = prompt("Enter Landlord PIN to delete tenant record:");
-            if(pass !== LANDLORD_PASSWORD) { alert("Incorrect password! Access denied."); return; }
-
-            if(confirm("Delete tenant record?")) { tenants = tenants.filter(t => t.id !== id); saveToStorage(); renderAll(); }
-        }
-
-        function filterTenants() {
-            const query = document.getElementById('tenant-search').value.toLowerCase();
-            const tbody = document.getElementById('full-tenant-table-body');
-            tbody.innerHTML = '';
-            tenants.filter(t => t.name.toLowerCase().includes(query) || t.room.toLowerCase().includes(query) || t.unit.toLowerCase().includes(query)).forEach(t => {
-                tbody.innerHTML += `
-                    <tr class="hover:bg-slate-800/50 transition">
-                        <td class="px-4 py-3 font-semibold text-slate-400">#${t.id}</td>
-                        <td class="px-4 py-3 font-medium text-white">${t.name}</td>
-                        <td class="px-4 py-3 text-slate-300">${t.contact}</td>
-                        <td class="px-4 py-3 text-slate-300">${t.movein}</td>
-                        <td class="px-4 py-3 text-slate-300">${t.unit}</td>
-                        <td class="px-4 py-3 font-medium text-slate-200">${t.room}</td>
-                        <td class="px-4 py-3 font-bold text-brand-400">₱${t.rent.toLocaleString()}.00</td>
-                        <td class="px-4 py-3 text-slate-300">${t.advance}</td>
-                        <td class="px-4 py-3 text-slate-400">${t.notes}</td>
-                        <td class="px-4 py-3 text-right space-x-2">
-                            <button onclick="editTenant(${t.id})" class="text-blue-400 hover:text-blue-300" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button onclick="terminateTenantContract(${t.id})" class="bg-rose-950 text-rose-400 border border-rose-900 hover:bg-rose-900 px-2.5 py-1 rounded text-xs font-semibold" title="End / Terminate Contract"><i class="fa-solid fa-ban mr-1"></i> Terminate</button>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-
-        function populateSOASelect() {
-            const select = document.getElementById('soa-tenant-select');
-            select.innerHTML = '';
-            tenants.forEach(t => { select.innerHTML += `<option value="${t.id}">${t.name} (${t.unit} - ${t.room})</option>`; });
-            generateSOA();
-        }
-
-        function generateSOA() {
-            const tenantId = parseInt(document.getElementById('soa-tenant-select').value);
-            const t = tenants.find(item => item.id === tenantId);
-            if(!t) return;
-            const tenantUtils = utilities.filter(u => u.tenantName === t.name);
-            let elecAmt = tenantUtils.filter(u => u.type.includes('Meralco')).reduce((acc, curr) => acc + curr.amount, 0);
-            let waterAmt = tenantUtils.filter(u => u.type.includes('Maynilad')).reduce((acc, curr) => acc + curr.amount, 0);
-
-            document.getElementById('soa-tenant-name').innerText = t.name;
-            document.getElementById('soa-contact').innerText = t.contact;
-            document.getElementById('soa-room').innerText = `${t.unit} - ${t.room}`;
-            document.getElementById('soa-rent-amount').innerText = `₱${t.rent.toLocaleString()}.00`;
-            document.getElementById('soa-charge-rent').innerText = `₱${t.rent.toLocaleString()}.00`;
-            document.getElementById('soa-charge-elec').innerText = `₱${elecAmt.toLocaleString()}.00`;
-            document.getElementById('soa-charge-water').innerText = `₱${waterAmt.toLocaleString()}.00`;
-            document.getElementById('soa-total-due').innerText = `₱${(t.rent + elecAmt + waterAmt + 1000).toLocaleString()}.00`;
-        }
-
-        function backupData() {
-            const backupObj = { tenants, rooms, utilities, maintenance, applications, pendingPayments, pendingExpenses };
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupObj, null, 2));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", "Celou_Rental_Property_Backup.json");
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
+            saveToStorage();
+            renderAll();
+            alert("Expense approved successfully!");
         }
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -2061,11 +1873,12 @@
                 if (serverData) {
                     tenants = serverData.tenants || defaultTenants;
                     rooms = serverData.rooms || defaultRooms;
-                    utilities = serverData.utilities || utilities;
-                    maintenance = serverData.maintenance || maintenance;
+                    utilities = serverData.utilities || [];
+                    maintenance = serverData.maintenance || [];
                     applications = serverData.applications || [];
                     pendingPayments = serverData.pendingPayments || [];
                     pendingExpenses = serverData.pendingExpenses || [];
+                    annualPayments = serverData.annualPayments || {};
                 }
                 renderAll();
                 checkURLHash();
@@ -2084,6 +1897,7 @@
                     applications = serverData.applications || applications;
                     pendingPayments = serverData.pendingPayments || pendingPayments;
                     pendingExpenses = serverData.pendingExpenses || pendingExpenses;
+                    annualPayments = serverData.annualPayments || annualPayments;
                     renderAll();
                 }
             });
