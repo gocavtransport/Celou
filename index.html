@@ -441,7 +441,7 @@
                 <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm overflow-hidden">
                     <div class="px-6 py-4 border-b border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                         <div>
-                            <h2 class="text-base font-bold text-white">Tenant Database & Investigation Sheets</h2>
+                            <h2 class="text-base font-bold text-white">Tenant Database & Information Sheets</h2>
                             <p class="text-xs text-slate-400">Complete records of all active tenants, occupants, vehicles, and emergency contacts</p>
                         </div>
                         <div class="flex items-center space-x-3 w-full sm:w-auto">
@@ -477,7 +477,7 @@
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-slate-800 gap-4">
                         <div>
                             <h2 class="text-base font-bold text-white">Rooms & Rates Manager</h2>
-                            <p class="text-xs text-slate-400">Add or edit rooms, studio types, apartments, and monthly rental rates (Requires Landlord PIN).</p>
+                            <p class="text-xs text-slate-400">Add or edit rooms, studio types, apartments, and monthly rental rates.</p>
                         </div>
                         <button onclick="openAddRoomModal()" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm flex items-center">
                             <i class="fa-solid fa-plus mr-1.5"></i> Add New Room
@@ -506,7 +506,7 @@
                 <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm p-6 space-y-6">
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-slate-800 gap-4 no-print">
                         <div>
-                            <h2 class="text-base font-bold text-white">Professional Lease Contract & E-Signature Generator</h2>
+                            <h2 class="text-base font-bold text-white">Lease Contract & E-Signature Generator</h2>
                             <p class="text-xs text-slate-400">Select tenant, sign electronically, and save agreement to online storage.</p>
                         </div>
                         <div class="flex items-center space-x-3">
@@ -517,39 +517,26 @@
                         </div>
                     </div>
 
-                    <!-- Printable Professional Contract Area -->
+                    <!-- Printable Contract Area -->
                     <div id="printable-contract" class="bg-white text-slate-900 p-10 rounded-xl shadow-md space-y-6 max-w-3xl mx-auto text-xs leading-relaxed">
                         <div class="text-center border-b border-slate-300 pb-4">
                             <h1 class="text-lg font-extrabold text-emerald-900 tracking-wide">CELOU RENTAL PROPERTY</h1>
                             <p class="text-xs text-slate-600 font-medium">BF Resort Village &bull; GreenMark Homes &bull; GreenPlace Homes 3</p>
-                            <h2 class="text-sm font-bold uppercase tracking-wider text-slate-800 mt-3">PROFESSIONAL RESIDENTIAL LEASE AGREEMENT</h2>
+                            <h2 class="text-sm font-bold uppercase tracking-wider text-slate-800 mt-3">RESIDENTIAL LEASE AGREEMENT</h2>
                         </div>
                         <div class="space-y-3">
                             <p><span class="font-bold">This Residential Lease Agreement</span> is made and entered into as of <span id="con-date" class="font-semibold">October 7, 2026</span>, by and between:</p>
                             <p class="pl-4"><span class="font-semibold">Landlord:</span> Tuhamie A. Dimanang and/or Maria Lee A. Dimanang</p>
                             <p class="pl-4"><span class="font-semibold">Tenant:</span> <span id="con-tenant-name" class="font-bold uppercase text-slate-900">-</span> (Contact: <span id="con-contact">-</span>)</p>
                         </div>
-                        
                         <div class="space-y-2">
                             <h3 class="font-bold uppercase tracking-wider text-slate-800">1. PREMISES & OCCUPANTS</h3>
-                            <p>Landlord hereby leases property located at Unit: <span id="con-unit" class="font-semibold">-</span>, Room: <span id="con-room" class="font-semibold">-</span> to Tenant and <span id="con-occupants" class="font-semibold">1</span> registered occupant(s). Subleasing is strictly prohibited.</p>
+                            <p>Landlord hereby leases property located at Unit: <span id="con-unit" class="font-semibold">-</span>, Room: <span id="con-room" class="font-semibold">-</span> to Tenant and <span id="con-occupants" class="font-semibold">1</span> registered occupant(s).</p>
                         </div>
-
                         <div class="space-y-2">
-                            <h3 class="font-bold uppercase tracking-wider text-slate-800">2. TERM & RENT PAYMENT</h3>
-                            <p>Monthly rent is <span id="con-rent" class="font-bold text-emerald-800">-</span>. Rental payments are strictly on an <span class="font-bold underline">advance basis</span> payable on or before the agreed monthly due date without demand.</p>
+                            <h3 class="font-bold uppercase tracking-wider text-slate-800">2. TERM & RENT</h3>
+                            <p>Monthly rent is <span id="con-rent" class="font-bold text-emerald-800">-</span> payable on or before due date.</p>
                         </div>
-
-                        <div class="space-y-2">
-                            <h3 class="font-bold uppercase tracking-wider text-slate-800">3. ADVANCE RENT & SECURITY DEPOSIT TERMS</h3>
-                            <p>Upon execution of this Agreement, Tenant shall pay:</p>
-                            <ul class="list-disc pl-5 space-y-1">
-                                <li><span class="font-semibold">1 Month Advance Rent:</span> Applied to the first month's rental.</li>
-                                <li class="text-rose-900 font-semibold"><span class="font-semibold">2 Months Security Deposit:</span> Strictly maintained as a security bond. <span class="underline">This deposit CANNOT be used by the Tenant to cover or offset monthly rental payments.</span> It shall be held by the Landlord to cover unpaid utility bills, damages, or violations upon lease termination.</li>
-                                <li class="text-rose-900 font-semibold"><span class="font-semibold">Non-Refundability Clause:</span> The 2-month security deposit is <span class="underline">STRICTLY NON-REFUNDABLE</span> if the 1-year contract term is terminated prematurely or not fully completed by the Tenant.</li>
-                            </ul>
-                        </div>
-
                         <div class="grid grid-cols-2 gap-12 pt-8 border-t border-slate-300 text-center items-end">
                             <div>
                                 <div class="border-b border-slate-400 pb-2 mb-2 font-bold uppercase text-slate-800">Tuhamie A. Dimanang</div>
@@ -642,10 +629,10 @@
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-slate-800 gap-4">
                         <div>
                             <h2 class="text-base font-bold text-white">Landlord Annual Payment Matrix (Active from May 2026 Takeover)</h2>
-                            <p class="text-xs text-slate-400">Complete month-by-month payment tracking with neon indicators (Green: Paid, Red: Overdue, Blue: Ongoing/Future, N/A: Before Move-in).</p>
+                            <p class="text-xs text-slate-400">Complete month-by-month payment tracking.</p>
                         </div>
                         <button onclick="openLandlordPaymentEditor()" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm flex items-center">
-                            <i class="fa-solid fa-pen-to-square mr-1.5"></i> Edit / Correct Payment Status
+                            <i class="fa-solid fa-pen-to-square mr-1.5"></i> Edit / Encode Payment
                         </button>
                     </div>
                     <div class="overflow-x-auto">
@@ -702,7 +689,7 @@
                         <table class="min-w-full divide-y divide-slate-800 text-left text-xs">
                             <thead class="bg-slate-950 font-semibold text-slate-400 uppercase">
                                 <tr>
-                                    <th class="px-4 py-3">Tenant Name</th><th class="px-4 py-3">Room #</th><th class="px-4 py-3">Utility Provider</th><th class="px-4 py-3">Month / Year</th><th class="px-4 py-3">Prev Reading</th><th class="px-4 py-3">New Reading</th><th class="px-4 py-3">Usage</th><th class="px-4 py-3">Amount Due</th><th class="px-4 py-3 text-right">Actions</th>
+                                    <th class="px-4 py-3">Tenant Name</th><th class="px-4 py-3">Room #</th><th class="px-4 py-3">Utility Provider</th><th class="px-4 py-3">Month</th><th class="px-4 py-3">Prev Reading</th><th class="px-4 py-3">New Reading</th><th class="px-4 py-3">Usage</th><th class="px-4 py-3">Amount Due</th><th class="px-4 py-3 text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="utility-table-body" class="divide-y divide-slate-800 bg-slate-900 text-slate-300"></tbody>
@@ -806,21 +793,17 @@
                     </button>
                 </div>
                 <div id="finances-unlocked-content" class="space-y-6 hidden">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-base font-bold text-white">Financial Dashboard & Itemized Expenses</h2>
-                        <div class="space-x-3">
-                            <button onclick="exportFinancialsCSV()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg text-xs font-medium shadow inline-flex items-center">
-                                <i class="fa-solid fa-file-csv mr-1.5"></i> Download CSV
-                            </button>
-                            <button onclick="lockFinancials()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-4 py-2 rounded-lg text-xs font-medium shadow inline-flex items-center">
-                                <i class="fa-solid fa-lock mr-1.5"></i> Lock
-                            </button>
-                        </div>
+                    <div class="flex justify-end space-x-3">
+                        <button onclick="exportFinancialsCSV()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg text-xs font-medium shadow flex items-center">
+                            <i class="fa-solid fa-file-csv mr-1.5"></i> Download CSV Spreadsheet
+                        </button>
+                        <button onclick="lockFinancials()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-4 py-2 rounded-lg text-xs font-medium shadow flex items-center">
+                            <i class="fa-solid fa-lock mr-1.5"></i> Lock Financials
+                        </button>
                     </div>
-
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
-                            <h3 class="text-sm font-bold text-white mb-4">Monthly Financial Summary (May 2026 Onward)</h3>
+                            <h2 class="text-base font-bold text-white mb-4">Monthly Financials (May 2026 Takeover Onward)</h2>
                             <div class="overflow-x-auto">
                                 <table class="min-w-full divide-y divide-slate-800 text-xs">
                                     <thead class="bg-slate-950 text-slate-400 uppercase">
@@ -832,38 +815,16 @@
                         </div>
                         <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 flex flex-col justify-between">
                             <div>
-                                <h3 class="text-sm font-bold text-white mb-4">Financial Totals (YTD)</h3>
+                                <h2 class="text-base font-bold text-white mb-4">Financial Totals (YTD)</h2>
                                 <div class="space-y-4">
                                     <div class="bg-slate-950 p-4 rounded-lg flex items-center justify-between border border-slate-800">
                                         <div><p class="text-xs text-slate-400">Total Collected</p><h4 id="fin-total-revenue" class="text-xl font-bold text-emerald-400 mt-1">₱199,000.00</h4></div>
                                     </div>
                                     <div class="bg-slate-950 p-4 rounded-lg flex items-center justify-between border border-slate-800">
-                                        <div><p class="text-xs text-slate-400">Total Expenses</p><h4 id="fin-total-expense" class="text-xl font-bold text-rose-400 mt-1">₱159,234.95</h4></div>
+                                        <div><p class="text-xs text-slate-400">Total Expenses</p><h4 id="fin-total-expense" class="text-xl font-bold text-rose-400 mt-1">₱134,034.95</h4></div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Itemized Expenses Table -->
-                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-sm font-bold text-white"><i class="fa-solid fa-receipt mr-2 text-brand-400"></i> Itemized Expense Records & Receipts</h3>
-                            <span class="text-xs text-slate-400">All approved caretaker & landlord expense receipts</span>
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-slate-800 text-left text-xs">
-                                <thead class="bg-slate-950 font-semibold text-slate-400 uppercase">
-                                    <tr>
-                                        <th class="px-4 py-3">Date</th>
-                                        <th class="px-4 py-3">Category</th>
-                                        <th class="px-4 py-3">Description / Vendor</th>
-                                        <th class="px-4 py-3">Paid By</th>
-                                        <th class="px-4 py-3 text-right">Amount</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="itemized-expense-table-body" class="divide-y divide-slate-800 text-slate-300"></tbody>
-                            </table>
                         </div>
                     </div>
                 </div>
@@ -895,40 +856,21 @@
         </div>
     </div>
 
-    <!-- Landlord Payment Correction Modal -->
+    <!-- Landlord Payment Editor Modal -->
     <div id="landlord-payment-editor-modal" class="fixed inset-0 bg-slate-950 bg-opacity-80 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-xl max-w-md w-full overflow-hidden text-slate-100">
             <div class="px-6 py-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
-                <h3 class="text-base font-bold">Landlord: Correct / Encode Payment Status</h3>
+                <h3 class="text-base font-bold">Landlord: Edit / Encode Payment</h3>
                 <button onclick="closeLandlordPaymentEditor()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <form id="landlord-payment-editor-form" onsubmit="saveLandlordPaymentEdit(event)" class="p-6 space-y-4 text-sm">
                 <div><label class="block text-xs font-semibold text-slate-300 mb-1">Select Tenant *</label><select id="lp-tenant-select" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></select></div>
                 <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">Month *</label>
-                        <select id="lp-month-select" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
-                            <option value="May">May</option>
-                            <option value="June">June</option>
-                            <option value="July">July</option>
-                            <option value="August">August</option>
-                            <option value="September">September</option>
-                            <option value="October" selected>October</option>
-                            <option value="November">November</option>
-                            <option value="December">December</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">Status *</label>
-                        <select id="lp-status-select" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
-                            <option value="PAID">PAID</option>
-                            <option value="OVERDUE">OVERDUE / UNPAID</option>
-                            <option value="ONGOING">ONGOING / FUTURE</option>
-                        </select>
-                    </div>
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Month *</label><select id="lp-month-select" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"><option value="May" selected>May</option><option value="June">June</option><option value="July">July</option><option value="August">August</option><option value="September">September</option><option value="October">October</option><option value="November">November</option><option value="December">December</option></select></div>
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Status *</label><select id="lp-status-select" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"><option value="PAID">PAID</option><option value="OVERDUE">OVERDUE / UNPAID</option></select></div>
                 </div>
-                <div><label class="block text-xs font-semibold text-slate-300 mb-1">Amount Settled (₱) [Optional for tracking]</label><input type="number" step="any" id="lp-amount" placeholder="5000" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
-                <div class="flex justify-end space-x-3 pt-4 border-t border-slate-800"><button type="button" onclick="closeLandlordPaymentEditor()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-xs">Cancel</button><button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-medium">Save Payment Correction</button></div>
+                <div><label class="block text-xs font-semibold text-slate-300 mb-1">Amount Settled (₱)</label><input type="number" step="any" id="lp-amount" required placeholder="5000" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                <div class="flex justify-end space-x-3 pt-4 border-t border-slate-800"><button type="button" onclick="closeLandlordPaymentEditor()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-xs">Cancel</button><button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-medium">Save Payment Record</button></div>
             </form>
         </div>
     </div>
@@ -943,19 +885,7 @@
             <form id="caretaker-payment-form" onsubmit="submitCaretakerPayment(event)" class="p-6 space-y-4 text-sm">
                 <div><label class="block text-xs font-semibold text-slate-300 mb-1">Select Tenant *</label><select id="pay-tenant-select" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></select></div>
                 <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">Month Covered *</label>
-                        <select id="pay-month" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
-                            <option value="May 2026">May 2026</option>
-                            <option value="June 2026">June 2026</option>
-                            <option value="July 2026">July 2026</option>
-                            <option value="August 2026">August 2026</option>
-                            <option value="September 2026">September 2026</option>
-                            <option value="October 2026" selected>October 2026</option>
-                            <option value="November 2026">November 2026</option>
-                            <option value="December 2026">December 2026</option>
-                        </select>
-                    </div>
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Month Covered *</label><input type="text" id="pay-month" value="October 2026" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
                     <div><label class="block text-xs font-semibold text-slate-300 mb-1">Amount Paid (₱) *</label><input type="number" step="any" id="pay-amount" required placeholder="5000" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
@@ -1005,27 +935,27 @@
                     <div><label class="block text-xs font-semibold text-slate-300 mb-1">Contact Number *</label><input type="text" id="form-contact" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
-                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Email Address</label><input type="email" id="form-email" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white" placeholder="email@address.com"></div>
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Email Address *</label><input type="email" id="form-email" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
                     <div><label class="block text-xs font-semibold text-slate-300 mb-1">Unit *</label><select id="form-unit" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"><option value="BF Resort Village">BF Resort Village</option><option value="GreenMark Homes">GreenMark Homes</option><option value="GreenPlace Homes 3">GreenPlace Homes 3</option></select></div>
                 </div>
                 <div class="grid grid-cols-3 gap-4">
                     <div><label class="block text-xs font-semibold text-slate-300 mb-1">Room *</label><input type="text" id="form-room" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
                     <div><label class="block text-xs font-semibold text-slate-300 mb-1">Rent (₱) *</label><input type="number" id="form-rent" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
-                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">No. Occupants</label><input type="number" id="form-occupants" value="1" min="1" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">No. Occupants *</label><input type="number" id="form-occupants" value="1" min="1" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div><label class="block text-xs font-semibold text-slate-300 mb-1">Vehicle / Motorcycle Plate #</label><input type="text" id="form-vehicle" placeholder="e.g. ABC 1234" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
                     <div><label class="block text-xs font-semibold text-slate-300 mb-1">Move-in Date</label><input type="text" id="form-movein" value="October 2026" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
-                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Primary Emergency Contact Name</label><input type="text" id="form-emerg-name" placeholder="Full Name" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
-                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Primary Emergency Contact Number</label><input type="text" id="form-emerg-contact" placeholder="0912..." class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Primary Emergency Contact Name *</label><input type="text" id="form-emerg-name" required placeholder="Full Name" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Primary Emergency Contact Number *</label><input type="text" id="form-emerg-contact" required placeholder="0912..." class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div><label class="block text-xs font-semibold text-slate-300 mb-1">Secondary Emergency Contact Name</label><input type="text" id="form-emerg-name2" placeholder="Optional" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
                     <div><label class="block text-xs font-semibold text-slate-300 mb-1">Secondary Emergency Contact Number</label><input type="text" id="form-emerg-contact2" placeholder="Optional" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
                 </div>
-                <div><label class="block text-xs font-semibold text-slate-300 mb-1">Employer / School & Monthly Income</label><input type="text" id="form-employer" placeholder="Company Name & Est. Income" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
+                <div><label class="block text-xs font-semibold text-slate-300 mb-1">Employer / School & Monthly Income *</label><input type="text" id="form-employer" required placeholder="Company Name & Est. Income" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
                 <div><label class="block text-xs font-semibold text-slate-300 mb-1">Notes / Terms</label><input type="text" id="form-notes" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
                 <div class="flex justify-end space-x-3 pt-4 border-t border-slate-800"><button type="button" onclick="closeAddTenantModal()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-xs">Cancel</button><button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-medium">Save Tenant Profile</button></div>
             </form>
@@ -1046,19 +976,7 @@
                         <label class="block text-xs font-semibold text-slate-300 mb-1">Utility Provider *</label>
                         <select id="util-type" onchange="onUtilityTypeChanged()" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"><option value="Meralco (Electricity)">Meralco (Electricity)</option><option value="Maynilad (Water)">Maynilad (Water)</option><option value="Wifi">Wifi</option></select>
                     </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">Billing Month & Year *</label>
-                        <select id="util-month" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white">
-                            <option value="May 2026">May 2026</option>
-                            <option value="June 2026">June 2026</option>
-                            <option value="July 2026">July 2026</option>
-                            <option value="August 2026">August 2026</option>
-                            <option value="September 2026">September 2026</option>
-                            <option value="October 2026" selected>October 2026</option>
-                            <option value="November 2026">November 2026</option>
-                            <option value="December 2026">December 2026</option>
-                        </select>
-                    </div>
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Month *</label><input type="text" id="util-month" value="October 2026" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
                 </div>
                 <div id="util-meter-fields" class="grid grid-cols-2 gap-4">
                     <div><label class="block text-xs font-semibold text-slate-300 mb-1">Prev Reading</label><input type="number" step="any" id="util-prev" value="0" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></div>
@@ -1126,19 +1044,19 @@
         let isFinancialsUnlocked = false;
 
         const defaultTenants = [
-            { id: 1, name: "Hanna Gene Villame", contact: "0919 481 6171", email: "hannagene@email.com", dob: "1995-05-12", civil: "Single", jobtitle: "Staff", workaddress: "Muntinlupa", income: "25000", occupants: 1, vehicle: "None", emergName: "Parent", emergContact: "09170000000", emergName2: "", emergContact2: "", employer: "Employed", movein: "May 15, 2026", unit: "BF Resort Village", room: "Room No. 3", rent: 5000, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "TurnOver June 2026", signedContractUrl: "" },
-            { id: 2, name: "Christy Iyo", contact: "0905 498 5934", email: "christyiyo@email.com", dob: "1994-08-20", civil: "Single", jobtitle: "Staff", workaddress: "Las Piñas", income: "20000", occupants: 1, vehicle: "None", emergName: "Sibling", emergContact: "09180000000", emergName2: "", emergContact2: "", employer: "Employed", movein: "May 15 2026", unit: "BF Resort Village", room: "Room No. 6", rent: 2500, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "TurnOver June 2026", signedContractUrl: "" },
-            { id: 3, name: "Jover torres", contact: "0999 142 2545", email: "jovertorres@email.com", dob: "1990-02-14", civil: "Married", jobtitle: "Technician", workaddress: "Parañaque", income: "28000", occupants: 1, vehicle: "None", emergName: "Spouse", emergContact: "09190000000", emergName2: "", emergContact2: "", employer: "Employed", movein: "May 15, 2026", unit: "BF Resort Village", room: "Room No. 1", rent: 2500, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "TurnOver June 2026", signedContractUrl: "" },
-            { id: 4, name: "Markphil & Angel Montiel", contact: "0966 184 0895", email: "montiel@email.com", dob: "1988-11-05", civil: "Married", jobtitle: "Supervisor", workaddress: "Alabang", income: "45000", occupants: 2, vehicle: "Car ABC 123", emergName: "Parent", emergContact: "09200000000", emergName2: "", emergContact2: "", employer: "Employed", movein: "June 30, 2026", unit: "BF Resort Village", room: "Apartment-B", rent: 8000, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "TurnOver June 2026", signedContractUrl: "" },
-            { id: 5, name: "Raniel Torrie Campo", contact: "0921 861 9794", email: "raniel@email.com", dob: "1996-03-30", civil: "Single", jobtitle: "Staff", workaddress: "Las Piñas", income: "22000", occupants: 1, vehicle: "None", emergName: "Parent", emergContact: "09210000000", emergName2: "", emergContact2: "", employer: "Employed", movein: "July 19, 2026", unit: "BF Resort Village", room: "Room No. 5", rent: 5000, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "TurnOver july 2026", signedContractUrl: "" },
-            { id: 6, name: "Jiucy Montiel Estares", contact: "0995 061 5314", email: "jiucy@email.com", dob: "1992-07-15", civil: "Single", jobtitle: "Staff", workaddress: "Cavite", income: "25000", occupants: 1, vehicle: "None", emergName: "Parent", emergContact: "09220000000", emergName2: "", emergContact2: "", employer: "Employed", movein: "May 25, 2026", unit: "BF Resort Village", room: "Room No. 4", rent: 3500, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "TurnOver June 2026", signedContractUrl: "" },
-            { id: 7, name: "Clarie Molina", contact: "0995 638 1726", email: "clarie@email.com", dob: "1997-12-01", civil: "Single", jobtitle: "Staff", workaddress: "Las Piñas", income: "24000", occupants: 1, vehicle: "None", emergName: "Parent", emergContact: "09230000000", emergName2: "", emergContact2: "", employer: "Employed", movein: "May 29 2026", unit: "BF Resort Village", room: "Room No. 7", rent: 4500, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "End Contract July 2026", signedContractUrl: "" },
-            { id: 8, name: "Resalyn Dasig", contact: "0961 182 5686", email: "resalyn@email.com", dob: "1991-04-10", civil: "Married", jobtitle: "Staff", workaddress: "Las Piñas", income: "30000", occupants: 1, vehicle: "None", emergName: "Spouse", emergContact: "09240000000", emergName2: "", emergContact2: "", employer: "Employed", movein: "May 15, 2026", unit: "GreenMark Homes", room: "B1L28", rent: 8000, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "TurnOver June 2026", signedContractUrl: "" },
-            { id: 9, name: "Arriane G. Costales", contact: "0917 140 1888", email: "arriane@email.com", dob: "1989-09-22", civil: "Single", jobtitle: "Professional", workaddress: "Makati", income: "50000", occupants: 1, vehicle: "None", emergName: "Parent", emergContact: "09250000000", emergName2: "", emergContact2: "", employer: "Employed", movein: "April 10, 2026", unit: "GreenMark Homes", room: "B1L30", rent: 10000, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "30K paid on apr 7,2026", signedContractUrl: "" },
-            { id: 10, name: "Lory Jean", contact: "0961 951 7983", email: "loryjean@email.com", dob: "1993-06-18", civil: "Single", jobtitle: "Staff", workaddress: "Las Piñas", income: "22000", occupants: 1, vehicle: "None", emergName: "Parent", emergContact: "09260000000", emergName2: "", emergContact2: "", employer: "Employed", movein: "February 20, 2026", unit: "GreenPlace Homes 3", room: "B1L36-B", rent: 4000, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "12k paid on Feb 19 2026", signedContractUrl: "" },
-            { id: 11, name: "Marianne Agravante", contact: "0909 631 7918", email: "marianne@email.com", dob: "1994-10-11", civil: "Single", jobtitle: "Staff", workaddress: "Las Piñas", income: "23000", occupants: 1, vehicle: "None", emergName: "Parent", emergContact: "09270000000", emergName2: "", emergContact2: "", employer: "Employed", movein: "May 30, 2026", unit: "GreenPlace Homes 3", room: "B1L36-A", rent: 4000, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "TurnOver June 2026", signedContractUrl: "" },
-            { id: 12, name: "Laurence Gonzales", contact: "0908 652 6672", email: "laurence@email.com", dob: "1990-12-05", civil: "Single", jobtitle: "Engineer", workaddress: "Alabang", income: "40000", occupants: 1, vehicle: "None", emergName: "Parent", emergContact: "09280000000", emergName2: "", emergContact2: "", employer: "Employed", movein: "May 28, 2026", unit: "GreenPlace Homes 3", room: "B1L36-MAIN", rent: 8000, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "TurnOver June 2026", signedContractUrl: "" },
-            { id: 13, name: "Jescel & Sharmaine macalisang", contact: "09205075110", email: "", dob: "1992-01-01", civil: "Married", jobtitle: "Business", workaddress: "Las Piñas", income: "45000", occupants: 2, vehicle: "None", emergName: "Parent", emergContact: "09290000000", emergName2: "", emergContact2: "", employer: "Employed", movein: "September 1, 2026", unit: "BF Resort Village", room: "Apartment-A", rent: 10000, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "20k deposit paid 7/24/26", signedContractUrl: "" }
+            { id: 1, name: "Hanna Gene Villame", contact: "0919 481 6171", email: "hannagene@email.com", occupants: 1, vehicle: "None", emergName: "Parent", emergContact: "09170000000", emergName2: "", emergContact2: "", employer: "Employed", movein: "May 15, 2026", unit: "BF Resort Village", room: "Room No. 3", rent: 5000, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "TurnOver June 2026", signedContractUrl: "" },
+            { id: 2, name: "Christy Iyo", contact: "0905 498 5934", email: "christyiyo@email.com", occupants: 1, vehicle: "None", emergName: "Sibling", emergContact: "09180000000", emergName2: "", emergContact2: "", employer: "Employed", movein: "May 15 2026", unit: "BF Resort Village", room: "Room No. 6", rent: 2500, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "TurnOver June 2026", signedContractUrl: "" },
+            { id: 3, name: "Jover torres", contact: "0999 142 2545", email: "jovertorres@email.com", occupants: 1, vehicle: "None", emergName: "Spouse", emergContact: "09190000000", emergName2: "", emergContact2: "", employer: "Employed", movein: "May 15, 2026", unit: "BF Resort Village", room: "Room No. 1", rent: 2500, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "TurnOver June 2026", signedContractUrl: "" },
+            { id: 4, name: "Markphil & Angel Montiel", contact: "0966 184 0895", email: "montiel@email.com", occupants: 2, vehicle: "Car ABC 123", emergName: "Parent", emergContact: "09200000000", emergName2: "", emergContact2: "", employer: "Employed", movein: "June 30, 2026", unit: "BF Resort Village", room: "Apartment-B", rent: 8000, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "TurnOver June 2026", signedContractUrl: "" },
+            { id: 5, name: "Raniel Torrie Campo", contact: "0921 861 9794", email: "raniel@email.com", occupants: 1, vehicle: "None", emergName: "Parent", emergContact: "09210000000", emergName2: "", emergContact2: "", employer: "Employed", movein: "July 19, 2026", unit: "BF Resort Village", room: "Room No. 5", rent: 5000, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "TurnOver july 2026", signedContractUrl: "" },
+            { id: 6, name: "Jiucy Montiel Estares", contact: "0995 061 5314", email: "jiucy@email.com", occupants: 1, vehicle: "None", emergName: "Parent", emergContact: "09220000000", emergName2: "", emergContact2: "", employer: "Employed", movein: "May 25, 2026", unit: "BF Resort Village", room: "Room No. 4", rent: 3500, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "TurnOver June 2026", signedContractUrl: "" },
+            { id: 7, name: "Clarie Molina", contact: "0995 638 1726", email: "clarie@email.com", occupants: 1, vehicle: "None", emergName: "Parent", emergContact: "09230000000", emergName2: "", emergContact2: "", employer: "Employed", movein: "May 29 2026", unit: "BF Resort Village", room: "Room No. 7", rent: 4500, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "End Contract July 2026", signedContractUrl: "" },
+            { id: 8, name: "Resalyn Dasig", contact: "0961 182 5686", email: "resalyn@email.com", occupants: 1, vehicle: "None", emergName: "Spouse", emergContact: "09240000000", emergName2: "", emergContact2: "", employer: "Employed", movein: "May 15, 2026", unit: "GreenMark Homes", room: "B1L28", rent: 8000, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "TurnOver June 2026", signedContractUrl: "" },
+            { id: 9, name: "Arriane G. Costales", contact: "0917 140 1888", email: "arriane@email.com", occupants: 1, vehicle: "None", emergName: "Parent", emergContact: "09250000000", emergName2: "", emergContact2: "", employer: "Employed", movein: "April 10, 2026", unit: "GreenMark Homes", room: "B1L30", rent: 10000, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "30K paid on apr 7,2026", signedContractUrl: "" },
+            { id: 10, name: "Lory Jean", contact: "0961 951 7983", email: "loryjean@email.com", occupants: 1, vehicle: "None", emergName: "Parent", emergContact: "09260000000", emergName2: "", emergContact2: "", employer: "Employed", movein: "February 20, 2026", unit: "GreenPlace Homes 3", room: "B1L36-B", rent: 4000, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "12k paid on Feb 19 2026", signedContractUrl: "" },
+            { id: 11, name: "Marianne Agravante", contact: "0909 631 7918", email: "marianne@email.com", occupants: 1, vehicle: "None", emergName: "Parent", emergContact: "09270000000", emergName2: "", emergContact2: "", employer: "Employed", movein: "May 30, 2026", unit: "GreenPlace Homes 3", room: "B1L36-A", rent: 4000, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "TurnOver June 2026", signedContractUrl: "" },
+            { id: 12, name: "Laurence Gonzales", contact: "0908 652 6672", email: "laurence@email.com", occupants: 1, vehicle: "None", emergName: "Parent", emergContact: "09280000000", emergName2: "", emergContact2: "", employer: "Employed", movein: "May 28, 2026", unit: "GreenPlace Homes 3", room: "B1L36-MAIN", rent: 8000, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "TurnOver June 2026", signedContractUrl: "" },
+            { id: 13, name: "Jescel & Sharmaine macalisang", contact: "09205075110", email: "", occupants: 2, vehicle: "None", emergName: "Parent", emergContact: "09290000000", emergName2: "", emergContact2: "", employer: "Employed", movein: "September 1, 2026", unit: "BF Resort Village", room: "Apartment-A", rent: 10000, advance: "1 Mo. Adv, 2 Mo. Dep", notes: "20k deposit paid 7/24/26", signedContractUrl: "" }
         ];
 
         let defaultRooms = [
@@ -1166,7 +1084,6 @@
         let applications = [];
         let pendingPayments = [];
         let pendingExpenses = [];
-        let takeoverAudits = [];
         let annualPayments = {};
 
         const monthlyFinancials = [
@@ -1185,7 +1102,7 @@
         ];
 
         function saveToStorage() {
-            const payload = { tenants, rooms, utilities, maintenance, applications, pendingPayments, pendingExpenses, takeoverAudits, annualPayments };
+            const payload = { tenants, rooms, utilities, maintenance, applications, pendingPayments, pendingExpenses, annualPayments };
             db.ref('celouPropertyData').set(payload);
         }
 
@@ -1199,10 +1116,7 @@
                 document.getElementById('main-content-panel').classList.remove('md:col-span-4');
                 document.getElementById('main-content-panel').classList.add('w-full', 'max-w-2xl', 'mx-auto');
                 
-                ['apply', 'repair', 'update-info'].forEach(t => {
-                    const el = document.getElementById(`tab-${t}`);
-                    if(el) el.classList.add('hidden');
-                });
+                ['apply', 'repair', 'update-info'].forEach(t => document.getElementById(`tab-${t}`).classList.add('hidden'));
                 if(hash === '#apply') {
                     switchTab('apply');
                     populatePublicRoomDropdown();
@@ -1218,9 +1132,7 @@
                 document.getElementById('admin-layout').classList.add('grid-cols-1', 'md:grid-cols-5');
                 document.getElementById('main-content-panel').classList.add('md:col-span-4');
                 document.getElementById('main-content-panel').classList.remove('max-w-2xl', 'mx-auto');
-                if(!window.initialLoadDone) {
-                    switchTab('dashboard');
-                }
+                switchTab('dashboard');
             }
         }
 
@@ -1236,7 +1148,7 @@
 
         function copyPublicUpdateLink() {
             const link = window.location.origin + window.location.pathname + '#update-info';
-            navigator.clipboard.writeText(link).then(() => alert("Tenant Investigation & Takeover Audit Link copied to clipboard!\nSend this link to ANY tenant (new or old) to submit their move-in date and previous owner deposit details.\n\n" + link));
+            navigator.clipboard.writeText(link).then(() => alert("Tenant Information Sheet Link copied to clipboard!\nSend this link to ANY tenant (new or old) to fill up or update their complete data profile.\n\n" + link));
         }
 
         function populateUpdateTenantSelect() {
@@ -1244,27 +1156,19 @@
             if(!select) return;
             select.innerHTML = '<option value="">-- Select Your Name --</option>';
             tenants.forEach(t => {
-                select.innerHTML += `<option value="${t.id}" data-name="${t.name || ''}" data-movein="${t.movein || ''}" data-contact="${t.contact || ''}" data-email="${t.email || ''}" data-dob="${t.dob || ''}" data-civil="${t.civil || 'Single'}" data-employer="${t.employer || ''}" data-jobtitle="${t.jobtitle || ''}" data-workaddress="${t.workaddress || ''}" data-income="${t.income || ''}" data-occupants="${t.occupants || 1}" data-vehicle="${t.vehicle || ''}" data-emergname="${t.emergName || ''}" data-emergcontact="${t.emergContact || ''}" data-emergname2="${t.emergName2 || ''}" data-emergcontact2="${t.emergContact2 || ''}">${t.name} (${t.room})</option>`;
+                select.innerHTML += `<option value="${t.id}" data-contact="${t.contact || ''}" data-email="${t.email || ''}" data-occupants="${t.occupants || 1}" data-vehicle="${t.vehicle || ''}" data-emergname="${t.emergName || ''}" data-emergcontact="${t.emergContact || ''}" data-emergname2="${t.emergName2 || ''}" data-emergcontact2="${t.emergContact2 || ''}" data-employer="${t.employer || ''}">${t.name} (${t.room})</option>`;
             });
             select.onchange = function() {
                 const opt = select.options[select.selectedIndex];
-                if(!opt || !opt.dataset.contact) return;
-                document.getElementById('upd-name').value = opt.dataset.name || '';
-                document.getElementById('upd-movein').value = opt.dataset.movein || '';
                 document.getElementById('upd-contact').value = opt.dataset.contact || '';
                 document.getElementById('upd-email').value = opt.dataset.email || '';
-                document.getElementById('upd-dob').value = opt.dataset.dob || '';
-                document.getElementById('upd-civil').value = opt.dataset.civil || 'Single';
-                document.getElementById('upd-employer').value = opt.dataset.employer || '';
-                document.getElementById('upd-jobtitle').value = opt.dataset.jobtitle || '';
-                document.getElementById('upd-workaddress').value = opt.dataset.workaddress || '';
-                document.getElementById('upd-income').value = opt.dataset.income || '';
                 document.getElementById('upd-occupants').value = opt.dataset.occupants || 1;
                 document.getElementById('upd-vehicle').value = opt.dataset.vehicle || '';
                 document.getElementById('upd-emerg-name').value = opt.dataset.emergname || '';
                 document.getElementById('upd-emerg-contact').value = opt.dataset.emergcontact || '';
                 document.getElementById('upd-emerg-name2').value = opt.dataset.emergname2 || '';
                 document.getElementById('upd-emerg-contact2').value = opt.dataset.emergcontact2 || '';
+                document.getElementById('upd-employer').value = opt.dataset.employer || '';
             };
         }
 
@@ -1274,90 +1178,19 @@
             const tenant = tenants.find(t => t.id === tenantId);
             if(!tenant) return;
 
-            const claimedMoveIn = document.getElementById('upd-movein').value;
-            const prevOwner = document.getElementById('upd-prevowner').value;
-            const prevPaid = document.getElementById('upd-prevpaid').value;
-            const prevNotes = document.getElementById('upd-prevnotes').value;
-
-            takeoverAudits.push({
-                id: takeoverAudits.length ? Math.max(...takeoverAudits.map(a => a.id)) + 1 : 1,
-                tenantId: tenant.id,
-                tenantName: tenant.name,
-                room: tenant.room,
-                claimedMoveIn: claimedMoveIn,
-                prevOwner: prevOwner,
-                prevPaid: prevPaid,
-                prevNotes: prevNotes,
-                status: 'PENDING'
-            });
-
-            if(claimedMoveIn) tenant.movein = claimedMoveIn;
-            tenant.name = document.getElementById('upd-name').value;
             tenant.contact = document.getElementById('upd-contact').value;
             tenant.email = document.getElementById('upd-email').value;
-            tenant.dob = document.getElementById('upd-dob').value;
-            tenant.civil = document.getElementById('upd-civil').value;
-            tenant.employer = document.getElementById('upd-employer').value;
-            tenant.jobtitle = document.getElementById('upd-jobtitle').value;
-            tenant.workaddress = document.getElementById('upd-workaddress').value;
-            tenant.income = document.getElementById('upd-income').value;
             tenant.occupants = parseInt(document.getElementById('upd-occupants').value) || 1;
             tenant.vehicle = document.getElementById('upd-vehicle').value;
             tenant.emergName = document.getElementById('upd-emerg-name').value;
             tenant.emergContact = document.getElementById('upd-emerg-contact').value;
             tenant.emergName2 = document.getElementById('upd-emerg-name2').value;
             tenant.emergContact2 = document.getElementById('upd-emerg-contact2').value;
+            tenant.employer = document.getElementById('upd-employer').value;
 
             saveToStorage();
             document.getElementById('update-form-card').classList.add('hidden');
             document.getElementById('update-success-card').classList.remove('hidden');
-        }
-
-        function renderAuditQueueTable() {
-            const tbody = document.getElementById('audit-queue-table-body');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-            if(takeoverAudits.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="px-4 py-6 text-center text-slate-500">No pending takeover audits.</td></tr>`;
-                return;
-            }
-            takeoverAudits.forEach(a => {
-                let actionHtml = a.status === 'PENDING' ? 
-                    `<button onclick="approveAudit(${a.id})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-semibold shadow">Verify & Approve</button>` : 
-                    `<span class="text-xs text-emerald-400 font-bold">Verified & Approved</span>`;
-                tbody.innerHTML += `
-                    <tr class="hover:bg-slate-800/50 transition">
-                        <td class="px-4 py-3 font-medium text-white">${a.tenantName}</td>
-                        <td class="px-4 py-3 text-slate-300">${a.room}</td>
-                        <td class="px-4 py-3 text-brand-400 font-semibold">${a.claimedMoveIn}</td>
-                        <td class="px-4 py-3 text-slate-300">Owner: ${a.prevOwner}<br>Claimed Paid: <span class="text-emerald-400 font-bold">${a.prevPaid}</span><br><span class="text-[10px] text-slate-400">${a.prevNotes || ''}</span></td>
-                        <td class="px-4 py-3"><span class="px-2 py-1 ${a.status === 'APPROVED' ? 'bg-emerald-950 text-emerald-400 border border-emerald-900' : 'bg-amber-950 text-amber-400 border border-amber-900'} rounded text-xs">${a.status}</span></td>
-                        <td class="px-4 py-3 text-right space-x-2">${actionHtml} <button onclick="deleteAudit(${a.id})" class="text-rose-400"><i class="fa-solid fa-trash"></i></button></td>
-                    </tr>
-                `;
-            });
-        }
-
-        function approveAudit(id) {
-            const pass = prompt("Enter Landlord PIN to verify and approve this tenant's takeover audit:");
-            if(pass !== LANDLORD_PASSWORD) { alert("Incorrect PIN!"); return; }
-
-            const audit = takeoverAudits.find(a => a.id === id);
-            if(!audit) return;
-            audit.status = 'APPROVED';
-
-            const tenant = tenants.find(t => t.id === audit.tenantId);
-            if(tenant && audit.claimedMoveIn) {
-                tenant.movein = audit.claimedMoveIn;
-            }
-
-            saveToStorage();
-            renderAll();
-            alert(`Takeover audit for ${audit.tenantName} successfully verified and approved into master record!`);
-        }
-
-        function deleteAudit(id) {
-            if(confirm("Delete audit record?")) { takeoverAudits = takeoverAudits.filter(a => a.id !== id); saveToStorage(); renderAuditQueueTable(); }
         }
 
         function sendTenantEmailReminder(tenantId = null) {
@@ -1394,7 +1227,7 @@
         }
 
         function switchTab(tabId) {
-            ['dashboard', 'tenants', 'rooms', 'contracts', 'caretaker', 'applications', 'audit-queue', 'utilities', 'maintenance', 'landlord-report', 'soa', 'finances', 'apply', 'repair', 'update-info'].forEach(t => {
+            ['dashboard', 'tenants', 'rooms', 'contracts', 'caretaker', 'applications', 'utilities', 'maintenance', 'landlord-report', 'soa', 'finances', 'apply', 'repair', 'update-info'].forEach(t => {
                 const el = document.getElementById(`tab-${t}`);
                 if(el) el.classList.add('hidden');
                 const nav = document.getElementById(`nav-${t}`);
@@ -1419,10 +1252,9 @@
             if(tabId === 'utilities') renderUtilityTable();
             if(tabId === 'maintenance') renderMaintenanceTable();
             if(tabId === 'applications') renderApplicationTable();
-            if(tabId === 'audit-queue') renderAuditQueueTable();
             if(tabId === 'caretaker') { renderCaretakerTenantStatus(); renderPendingPaymentsTable(); renderPendingExpensesTable(); }
             if(tabId === 'landlord-report') renderLandlordAnnualMatrix();
-            if(tabId === 'finances') { updateFinancialView(); renderItemizedExpensesTable(); }
+            if(tabId === 'finances') { updateFinancialView(); }
             if(tabId === 'apply') { 
                 document.getElementById('public-form-card').classList.remove('hidden');
                 document.getElementById('public-success-card').classList.add('hidden');
@@ -1555,7 +1387,6 @@
             if(pass === LANDLORD_PASSWORD) {
                 isFinancialsUnlocked = true;
                 updateFinancialView();
-                renderItemizedExpensesTable();
                 alert("Financial records unlocked successfully!");
             } else {
                 alert("Incorrect PIN!");
@@ -1586,38 +1417,13 @@
                 dashYtd.innerText = `₱${totalRev.toLocaleString()}`;
                 dashNet.innerText = `₱${netProfit.toLocaleString()}`;
                 document.getElementById('fin-total-revenue').innerText = `₱${totalRev.toLocaleString()}.00`;
-                document.getElementById('fin-total-expense').innerText = `₱${totalExp.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                document.getElementById('fin-total-expense').innerText = `₱${totalExp.toLocaleString()}.00`;
             } else {
                 lockedBanner.classList.remove('hidden');
                 unlockedContent.classList.add('hidden');
                 dashYtd.innerText = "🔒 Locked";
                 dashNet.innerText = "🔒 Locked";
             }
-        }
-
-        function renderItemizedExpensesTable() {
-            const tbody = document.getElementById('itemized-expense-table-body');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-            
-            // Combine approved pending expenses and standard historical expenses
-            let allExpenses = [...pendingExpenses.filter(e => e.status === 'APPROVED')];
-            if(allExpenses.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-6 text-center text-slate-500">No itemized expense receipts approved yet. (Approve caretaker receipts in Caretaker Portal)</td></tr>`;
-                return;
-            }
-
-            allExpenses.forEach(exp => {
-                tbody.innerHTML += `
-                    <tr class="hover:bg-slate-800/50 transition">
-                        <td class="px-4 py-3 text-slate-300">${exp.date}</td>
-                        <td class="px-4 py-3 text-blue-400 font-semibold">${exp.category}</td>
-                        <td class="px-4 py-3 font-medium text-white">${exp.description} <br><span class="text-[10px] text-slate-400">${exp.notes || ''}</span></td>
-                        <td class="px-4 py-3 text-slate-300">${exp.paidBy}</td>
-                        <td class="px-4 py-3 text-right font-bold text-rose-400">₱${parseFloat(exp.amount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                    </tr>
-                `;
-            });
         }
 
         function exportFinancialsCSV() {
@@ -1644,15 +1450,13 @@
             renderPendingPaymentsTable();
             renderPendingExpensesTable();
             renderApplicationTable();
-            renderAuditQueueTable();
             renderUtilityTable();
             renderMaintenanceTable();
             updateFinancialView();
-            renderItemizedExpensesTable();
             populateSOASelect();
             populateContractSelect();
-            populateUpdateTenantSelect();
             checkMissingContractsAndEmails();
+            checkURLHash();
         }
 
         function checkMissingContractsAndEmails() {
@@ -1670,52 +1474,18 @@
                 if(alertBanner) alertBanner.classList.add('hidden');
                 if(badge) badge.classList.add('hidden');
             }
-
-            const pendingAuditsCount = takeoverAudits.filter(a => a.status === 'PENDING').length;
-            const auditBadge = document.getElementById('pending-audit-badge');
-            if(auditBadge) {
-                if(pendingAuditsCount > 0) {
-                    auditBadge.innerText = pendingAuditsCount;
-                    auditBadge.classList.remove('hidden');
-                } else {
-                    auditBadge.classList.add('hidden');
-                }
-            }
         }
 
-        function getTenantPaymentStatus(tenant, monthName) {
+        function isTenantPaid(tenantName, month = 'October') {
             const monthMap = { "January": 0, "February": 1, "March": 2, "April": 3, "May": 4, "June": 5, "July": 6, "August": 7, "September": 8, "October": 9, "November": 10, "December": 11 };
-            const mIndex = monthMap[monthName];
-            
-            let moveInMonthIndex = 4; // Default to May
-            if (tenant.movein) {
-                const moveInLower = tenant.movein.toLowerCase();
-                for (let key in monthMap) {
-                    if (moveInLower.includes(key.toLowerCase())) {
-                        moveInMonthIndex = monthMap[key];
-                        break;
-                    }
-                }
-            }
+            const mIndex = monthMap[month];
+            if (mIndex < 4) return 'N/A';
 
-            if (mIndex < moveInMonthIndex) {
-                return 'N/A';
+            if (annualPayments[tenantName] && annualPayments[tenantName][month]) {
+                return annualPayments[tenantName][month] === 'PAID';
             }
-
-            if (annualPayments[tenant.name] && annualPayments[tenant.name][monthName]) {
-                return annualPayments[tenant.name][monthName];
-            }
-
-            const paidMatch = pendingPayments.some(p => p.tenantName.toLowerCase() === tenant.name.toLowerCase() && p.status === 'APPROVED' && p.month.toLowerCase().includes(monthName.toLowerCase()));
-            if (paidMatch) {
-                return 'PAID';
-            }
-
-            if (mIndex > 9) {
-                return 'ONGOING';
-            }
-
-            return 'OVERDUE';
+            const paidMatch = pendingPayments.some(p => p.tenantName.toLowerCase() === tenantName.toLowerCase() && p.status === 'APPROVED' && p.month.toLowerCase().includes(month.toLowerCase()));
+            return paidMatch || tenantName === 'Arriane G. Costales' || tenantName === 'Lory Jean';
         }
 
         function renderDashboardSummary() {
@@ -1723,7 +1493,7 @@
             if(!tbody) return;
             tbody.innerHTML = '';
             tenants.forEach(t => {
-                const status = getTenantPaymentStatus(t, 'October');
+                const paid = isTenantPaid(t.name, 'October');
                 const emailBadge = t.email ? `<span class="block text-[11px] text-slate-400">${t.email}</span>` : `<span class="block text-[11px] text-amber-400">⚠️ No Email</span>`;
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-800/50 transition">
@@ -1731,7 +1501,7 @@
                         <td class="px-6 py-3.5 text-slate-300">${t.room}</td>
                         <td class="px-6 py-3.5 font-semibold text-brand-400">₱${t.rent.toLocaleString()}.00</td>
                         <td class="px-6 py-3.5 text-slate-300">${t.contact} ${emailBadge}</td>
-                        <td class="px-6 py-3.5"><span class="px-2.5 py-1 ${status === 'PAID' ? 'bg-emerald-950 text-emerald-400 border border-emerald-900' : 'bg-rose-950 text-rose-400 border border-rose-900'} rounded text-xs font-bold">${status}</span></td>
+                        <td class="px-6 py-3.5"><span class="px-2.5 py-1 ${paid === true ? 'bg-emerald-950 text-emerald-400 border border-emerald-900' : 'bg-rose-950 text-rose-400 border border-rose-900'} rounded text-xs font-bold">${paid === true ? 'PAID' : 'OVERDUE'}</span></td>
                         <td class="px-6 py-3.5 text-right">
                             <button onclick="sendTenantEmailReminder(${t.id})" class="bg-indigo-600 hover:bg-indigo-500 text-white px-2.5 py-1 rounded text-xs font-medium shadow flex items-center ml-auto" title="Send Email Reminder"><i class="fa-solid fa-envelope mr-1"></i> Remind</button>
                         </td>
@@ -1764,7 +1534,7 @@
             if(!tbody) return;
             tbody.innerHTML = '';
             tenants.forEach(t => {
-                const status = getTenantPaymentStatus(t, 'October');
+                const paid = isTenantPaid(t.name, 'October');
                 const emailBadge = t.email ? `<span class="block text-[11px] text-slate-400">${t.email}</span>` : `<span class="block text-[11px] text-amber-400">⚠️ No Email</span>`;
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-800/50 transition">
@@ -1772,7 +1542,7 @@
                         <td class="px-4 py-3 text-slate-300">${t.room}</td>
                         <td class="px-4 py-3 font-semibold text-brand-400">₱${t.rent.toLocaleString()}.00</td>
                         <td class="px-4 py-3 text-slate-300">${t.contact} ${emailBadge}</td>
-                        <td class="px-4 py-3"><span class="px-2.5 py-1 ${status === 'PAID' ? 'bg-emerald-950 text-emerald-400 border border-emerald-900' : 'bg-rose-950 text-rose-400 border border-rose-900'} rounded text-xs font-bold">${status === 'PAID' ? 'PAID (Settled)' : 'NOT YET PAID (Overdue)'}</span></td>
+                        <td class="px-4 py-3"><span class="px-2.5 py-1 ${paid === true ? 'bg-emerald-950 text-emerald-400 border border-emerald-900' : 'bg-rose-950 text-rose-400 border border-rose-900'} rounded text-xs font-bold">${paid === true ? 'PAID (Settled)' : 'NOT YET PAID (Overdue)'}</span></td>
                         <td class="px-4 py-3 text-right">
                             <button onclick="sendTenantEmailReminder(${t.id})" class="bg-indigo-600 hover:bg-indigo-500 text-white px-2.5 py-1 rounded text-xs font-medium shadow inline-flex items-center"><i class="fa-solid fa-envelope mr-1"></i> Remind</button>
                         </td>
@@ -1789,16 +1559,12 @@
             
             tenants.forEach(t => {
                 let rowHtml = `<tr class="hover:bg-slate-800/50 transition"><td class="px-3 py-2.5 font-medium text-white">${t.name}</td><td class="px-3 py-2.5 text-slate-300">${t.room}</td>`;
-                months.forEach((m) => {
-                    const status = getTenantPaymentStatus(t, m);
-                    if(status === 'N/A') {
+                months.forEach((m, idx) => {
+                    if (idx < 4) {
                         rowHtml += `<td class="px-2 py-2.5 text-center"><span class="px-1.5 py-0.5 bg-slate-950 text-slate-600 rounded text-[10px]">N/A</span></td>`;
-                    } else if(status === 'PAID') {
-                        rowHtml += `<td class="px-2 py-2.5 text-center"><span class="px-2 py-1 bg-emerald-950 text-emerald-300 border border-emerald-500 rounded text-[10px] font-extrabold animate-pulse shadow-[0_0_10px_#22c55e]">PAID</span></td>`;
-                    } else if(status === 'ONGOING') {
-                        rowHtml += `<td class="px-2 py-2.5 text-center"><span class="px-2 py-1 bg-blue-950 text-blue-300 border border-blue-500 rounded text-[10px] font-extrabold animate-pulse shadow-[0_0_10px_#3b82f6]">ONGOING</span></td>`;
                     } else {
-                        rowHtml += `<td class="px-2 py-2.5 text-center"><span class="px-2 py-1 bg-rose-950 text-rose-300 border border-rose-500 rounded text-[10px] font-extrabold animate-pulse shadow-[0_0_10px_#ef4444]">OVERDUE</span></td>`;
+                        const paid = isTenantPaid(t.name, m);
+                        rowHtml += `<td class="px-2 py-2.5 text-center"><span class="px-1.5 py-0.5 ${paid === true ? 'bg-emerald-950 text-emerald-400 border border-emerald-900' : 'bg-slate-800 text-slate-400'} rounded text-[10px] font-bold">${paid === true ? 'PAID' : 'OVERDUE'}</span></td>`;
                     }
                 });
                 rowHtml += `</tr>`;
@@ -1825,7 +1591,7 @@
             const amount = parseFloat(document.getElementById('lp-amount').value) || 0;
 
             if(!annualPayments[tenantName]) { annualPayments[tenantName] = {}; }
-            annualPayments[tenantName][month] = status;
+            annualPayments[tenantName][month] = (status === 'PAID');
 
             if(status === 'PAID' && amount > 0) {
                 const matchMonth = monthlyFinancials.find(m => m.month.toLowerCase().includes(month.toLowerCase()));
@@ -1835,7 +1601,7 @@
             saveToStorage();
             closeLandlordPaymentEditor();
             renderAll();
-            alert(`Payment status for ${tenantName} (${month}) corrected to ${status} successfully!`);
+            alert(`Payment record for ${tenantName} (${month}) updated successfully!`);
         }
 
         function populatePublicRoomDropdown() {
@@ -1901,8 +1667,8 @@
                         <td class="px-4 py-3 font-semibold text-brand-400">₱${r.rate.toLocaleString()}.00</td>
                         <td class="px-4 py-3"><span class="px-2 py-1 ${r.status === 'Available' ? 'bg-emerald-950 text-emerald-400 border border-emerald-900' : 'bg-slate-800 text-slate-400'} rounded text-xs font-semibold">${r.status}</span></td>
                         <td class="px-4 py-3 text-right space-x-2">
-                            <button onclick="editRoom(${r.id})" class="text-blue-400 hover:text-blue-300" title="Edit Room / Rate"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button onclick="deleteRoom(${r.id})" class="text-rose-400 hover:text-rose-300" title="Delete Room"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="editRoom(${r.id})" class="text-blue-400"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="deleteRoom(${r.id})" class="text-rose-400"><i class="fa-solid fa-trash"></i></button>
                         </td>
                     </tr>
                 `;
@@ -1935,15 +1701,14 @@
                 if(index !== -1) rooms[index] = roomObj;
             } else { rooms.push(roomObj); }
             saveToStorage(); closeAddRoomModal(); renderAll();
-            alert("Room and rental rate saved successfully!");
         }
 
         function editRoom(id) {
-            const pass = prompt("Enter Landlord PIN to edit room rate or details:");
-            if(pass !== LANDLORD_PASSWORD) { alert("Incorrect Landlord PIN!"); return; }
+            const pass = prompt("Enter Landlord PIN to edit room:");
+            if(pass !== LANDLORD_PASSWORD) { alert("Incorrect password!"); return; }
             const r = rooms.find(item => item.id === id);
             if(!r) return;
-            document.getElementById('room-modal-title').innerText = "Edit Room & Rental Rate";
+            document.getElementById('room-modal-title').innerText = "Edit Room";
             document.getElementById('edit-room-id').value = r.id;
             document.getElementById('room-unit').value = r.unit;
             document.getElementById('room-name').value = r.name;
@@ -2009,6 +1774,7 @@
             document.getElementById('con-unit').innerText = t.unit;
             document.getElementById('con-room').innerText = t.room;
             document.getElementById('con-occupants').innerText = t.occupants || 1;
+            document.getElementById('con-movein').innerText = t.movein;
             document.getElementById('con-rent').innerText = `₱${t.rent.toLocaleString()}.00`;
             
             if(t.signedContractUrl && t.signedContractUrl.trim() !== "") {
@@ -2021,470 +1787,7 @@
             }
         }
 
-        function renderPendingPaymentsTable() {
-            const tbody = document.getElementById('pending-payment-table-body');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-            if(pendingPayments.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-6 text-center text-slate-500">No pending caretaker payment entries.</td></tr>`;
-                return;
-            }
-            pendingPayments.forEach(p => {
-                let actionHtml = p.status === 'PENDING' ? `<button onclick="approvePayment(${p.id})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-semibold shadow">Approve</button>` : `<span class="text-xs text-emerald-400">Approved</span>`;
-                tbody.innerHTML += `
-                    <tr class="hover:bg-slate-800/50 transition">
-                        <td class="px-4 py-3 text-slate-300">${p.date}</td>
-                        <td class="px-4 py-3 font-medium text-white">${p.tenantName}</td>
-                        <td class="px-4 py-3 text-slate-300">${p.room}</td>
-                        <td class="px-4 py-3 text-slate-300">${p.month}</td>
-                        <td class="px-4 py-3 font-bold text-brand-400">₱${p.amount.toLocaleString()}.00</td>
-                        <td class="px-4 py-3 text-slate-300">${p.method}</td>
-                        <td class="px-4 py-3 text-right space-x-2">${actionHtml} <button onclick="deletePayment(${p.id})" class="text-rose-400"><i class="fa-solid fa-trash"></i></button></td>
-                    </tr>
-                `;
-            });
-        }
-
-        function renderPendingExpensesTable() {
-            const tbody = document.getElementById('pending-expense-table-body');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-            if(pendingExpenses.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="px-4 py-6 text-center text-slate-500">No expense receipts.</td></tr>`;
-                return;
-            }
-            pendingExpenses.forEach(e => {
-                tbody.innerHTML += `
-                    <tr class="hover:bg-slate-800/50 transition">
-                        <td class="px-4 py-3 text-slate-300">${e.date}</td>
-                        <td class="px-4 py-3 text-blue-400 font-semibold">${e.category}</td>
-                        <td class="px-4 py-3 font-medium text-white">${e.description}</td>
-                        <td class="px-4 py-3 font-bold text-rose-400">₱${parseFloat(e.amount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                        <td class="px-4 py-3 text-slate-300">${e.paidBy}</td>
-                        <td class="px-4 py-3 text-right space-x-2">
-                            ${e.status === 'PENDING' ? `<button onclick="approveExpense(${e.id})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-semibold">Approve</button>` : `<span class="text-xs text-emerald-400">Approved</span>`}
-                            <button onclick="deleteExpense(${e.id})" class="text-rose-400"><i class="fa-solid fa-trash"></i></button>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-
-        function renderApplicationTable() {
-            const tbody = document.getElementById('application-table-body');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-            if(applications.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-6 text-center text-slate-500">No pending tenant applications.</td></tr>`;
-                return;
-            }
-            applications.forEach(app => {
-                tbody.innerHTML += `
-                    <tr class="hover:bg-slate-800/50 transition">
-                        <td class="px-4 py-3 font-medium text-white">${app.name}</td>
-                        <td class="px-4 py-3 text-slate-300">${app.contact} <br><span class="text-slate-400 text-[11px]">${app.email || ''}</span></td>
-                        <td class="px-4 py-3 text-slate-300">${app.unit} - ${app.room}</td>
-                        <td class="px-4 py-3 text-slate-300">Occupants: ${app.occupants || 1}<br>Vehicle: ${app.vehicle || 'None'}</td>
-                        <td class="px-4 py-3 text-slate-300">${app.emergName || 'N/A'}: <br>${app.emergContact || 'N/A'}</td>
-                        <td class="px-4 py-3"><span class="px-2 py-1 bg-amber-950 text-amber-400 border border-amber-900 rounded text-xs">${app.status}</span></td>
-                        <td class="px-4 py-3 text-right space-x-2">
-                            ${app.status === 'PENDING' ? `<button onclick="approveApplication(${app.id})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-semibold">Approve</button>` : `<span class="text-xs text-emerald-400">Approved</span>`}
-                            <button onclick="deleteApplication(${app.id})" class="text-rose-400"><i class="fa-solid fa-trash"></i></button>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-
-        function approveApplication(id) {
-            const pass = prompt("Enter Landlord PIN to approve tenant application:");
-            if(pass !== LANDLORD_PASSWORD) { alert("Incorrect password!"); return; }
-
-            const app = applications.find(a => a.id === id);
-            if(!app) return;
-            app.status = 'APPROVED';
-
-            tenants.push({
-                id: tenants.length ? Math.max(...tenants.map(t => t.id)) + 1 : 1,
-                name: app.name,
-                contact: app.contact,
-                email: app.email || "",
-                occupants: app.occupants || 1,
-                vehicle: app.vehicle || "None",
-                emergName: app.emergName || "",
-                emergContact: app.emergContact || "",
-                emergName2: "",
-                emergContact2: "",
-                employer: "Employed",
-                movein: app.movein || "October 2026",
-                unit: app.unit,
-                room: app.room,
-                rent: app.rent,
-                advance: "1 Mo. Adv, 2 Mo. Dep",
-                notes: `Screened.`,
-                signedContractUrl: ""
-            });
-
-            const matchingRoom = rooms.find(r => r.unit === app.unit && r.name === app.room);
-            if(matchingRoom) matchingRoom.status = 'Occupied';
-
-            saveToStorage(); renderAll();
-            alert(`Application for ${app.name} approved and enrolled into Tenant Database!`);
-        }
-
-        function deleteApplication(id) {
-            if(confirm("Delete application?")) { applications = applications.filter(a => a.id !== id); saveToStorage(); renderAll(); }
-        }
-
-        function renderUtilityTable() {
-            const tbody = document.getElementById('utility-table-body');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-            if(utilities.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" class="px-4 py-6 text-center text-slate-500">No utility readings recorded.</td></tr>`;
-                return;
-            }
-            utilities.forEach(u => {
-                tbody.innerHTML += `
-                    <tr class="hover:bg-slate-800/50 transition">
-                        <td class="px-4 py-3 font-medium text-white">${u.tenantName}</td>
-                        <td class="px-4 py-3 text-slate-300">${u.room}</td>
-                        <td class="px-4 py-3 text-blue-400 font-semibold">${u.type}</td>
-                        <td class="px-4 py-3 text-slate-300">${u.month}</td>
-                        <td class="px-4 py-3 text-slate-300">${u.prev}</td>
-                        <td class="px-4 py-3 text-slate-300">${u.new}</td>
-                        <td class="px-4 py-3 text-slate-200">${u.usage}</td>
-                        <td class="px-4 py-3 font-bold text-brand-400">₱${u.amount.toLocaleString()}.00</td>
-                        <td class="px-4 py-3 text-right"><button onclick="deleteUtility(${u.id})" class="text-rose-400"><i class="fa-solid fa-trash"></i></button></td>
-                    </tr>
-                `;
-            });
-        }
-
-        function openAddUtilityModal() {
-            const select = document.getElementById('utility-tenant-select');
-            if(!select) return;
-            select.innerHTML = '';
-            tenants.forEach(t => { select.innerHTML += `<option value="${t.id}" data-room="${t.room}">${t.name} (${t.room})</option>`; });
-            document.getElementById('util-type').value = "Meralco (Electricity)";
-            onUtilityTypeChanged();
-            document.getElementById('utility-modal').classList.remove('hidden');
-        }
-        function closeAddUtilityModal() { document.getElementById('utility-modal').classList.add('hidden'); }
-
-        function onUtilityTypeChanged() {
-            const type = document.getElementById('util-type').value;
-            const meterFields = document.getElementById('util-meter-fields');
-            const amountInput = document.getElementById('util-amount');
-            if(type === 'Wifi') {
-                meterFields.classList.add('hidden');
-                amountInput.value = "1000";
-                amountInput.readOnly = true;
-            } else {
-                meterFields.classList.remove('hidden');
-                amountInput.value = "";
-                amountInput.readOnly = false;
-            }
-        }
-
-        function saveUtility(e) {
-            e.preventDefault();
-            const tenantId = parseInt(document.getElementById('utility-tenant-select').value);
-            const t = tenants.find(item => item.id === tenantId);
-            if(!t) return;
-
-            const typeVal = document.getElementById('util-type').value;
-            let prevVal = 0, newVal = 0, usageVal = 0, amountVal = 0;
-
-            if(typeVal === 'Wifi') {
-                amountVal = 1000;
-                prevVal = '-';
-                newVal = '-';
-                usageVal = 'Fixed Monthly';
-            } else {
-                prevVal = parseFloat(document.getElementById('util-prev').value) || 0;
-                newVal = parseFloat(document.getElementById('util-new').value) || 0;
-                usageVal = newVal >= prevVal ? newVal - prevVal : 0;
-                amountVal = parseFloat(document.getElementById('util-amount').value) || 0;
-            }
-
-            utilities.push({
-                id: utilities.length ? Math.max(...utilities.map(u => u.id)) + 1 : 1,
-                tenantName: t.name, room: t.room, type: typeVal,
-                month: document.getElementById('util-month').value,
-                prev: prevVal, new: newVal, usage: usageVal, amount: amountVal
-            });
-
-            saveToStorage(); closeAddUtilityModal(); renderUtilityTable();
-            alert("Utility reading saved successfully!");
-        }
-
-        function deleteUtility(id) {
-            if(confirm("Delete reading?")) { utilities = utilities.filter(u => u.id !== id); saveToStorage(); renderUtilityTable(); }
-        }
-
-        function renderMaintenanceTable() {
-            const tbody = document.getElementById('maintenance-table-body');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-            if(maintenance.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-6 text-center text-slate-500">No repair tickets logged.</td></tr>`;
-                return;
-            }
-            maintenance.forEach(m => {
-                tbody.innerHTML += `
-                    <tr class="hover:bg-slate-800/50 transition">
-                        <td class="px-4 py-3 text-slate-300">${m.date}</td>
-                        <td class="px-4 py-3 text-white font-medium">${m.unit}</td>
-                        <td class="px-4 py-3 text-slate-300">${m.issue}</td>
-                        <td class="px-4 py-3 text-slate-300">${m.action}</td>
-                        <td class="px-4 py-3 text-rose-400 font-semibold">₱${parseFloat(m.cost).toLocaleString()}.00</td>
-                        <td class="px-4 py-3"><span class="px-2 py-1 bg-emerald-950 text-emerald-400 border border-emerald-900 rounded text-xs">${m.status}</span></td>
-                        <td class="px-4 py-3 text-right"><button onclick="deleteMaintenance(${m.id})" class="text-rose-400"><i class="fa-solid fa-trash"></i></button></td>
-                    </tr>
-                `;
-            });
-        }
-
-        function openAddMaintenanceModal() {
-            document.getElementById('maintenance-form').reset();
-            document.getElementById('maint-date').valueAsDate = new Date();
-            document.getElementById('maintenance-modal').classList.remove('hidden');
-        }
-        function closeAddMaintenanceModal() { document.getElementById('maintenance-modal').classList.add('hidden'); }
-
-        function saveMaintenance(e) {
-            e.preventDefault();
-            maintenance.push({
-                id: maintenance.length ? Math.max(...maintenance.map(m => m.id)) + 1 : 1,
-                date: document.getElementById('maint-date').value,
-                unit: document.getElementById('maint-unit').value,
-                issue: document.getElementById('maint-issue').value,
-                action: document.getElementById('maint-action').value || 'Pending action',
-                cost: parseFloat(document.getElementById('maint-cost').value) || 0,
-                status: document.getElementById('maint-status').value,
-                notes: document.getElementById('maint-notes').value || 'Logged via portal'
-            });
-            saveToStorage(); closeAddMaintenanceModal(); renderMaintenanceTable();
-            alert("Repair ticket logged successfully!");
-        }
-
-        function deleteMaintenance(id) {
-            if(confirm("Delete ticket?")) { maintenance = maintenance.filter(m => m.id !== id); saveToStorage(); renderMaintenanceTable(); }
-        }
-
-        function renderFinancialTable() {
-            const tbody = document.getElementById('monthly-financial-table');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-            monthlyFinancials.filter(m => m.active).forEach(m => {
-                const net = m.rent - m.expense;
-                tbody.innerHTML += `
-                    <tr class="hover:bg-slate-800/50">
-                        <td class="px-3 py-2.5 font-medium text-slate-200">${m.month}</td>
-                        <td class="px-3 py-2.5 text-right font-semibold text-emerald-400">₱${m.rent.toLocaleString()}.00</td>
-                        <td class="px-3 py-2.5 text-right text-rose-400">₱${m.expense.toLocaleString()}</td>
-                        <td class="px-3 py-2.5 text-right font-bold ${net >= 0 ? 'text-brand-400' : 'text-rose-400'}">₱${net.toLocaleString()}</td>
-                    </tr>
-                `;
-            });
-        }
-
-        function openCaretakerPaymentModal() {
-            const select = document.getElementById('pay-tenant-select');
-            if(!select) return;
-            select.innerHTML = '';
-            tenants.forEach(t => { select.innerHTML += `<option value="${t.id}">${t.name} (${t.room})</option>`; });
-            document.getElementById('pay-date').valueAsDate = new Date();
-            document.getElementById('caretaker-payment-modal').classList.remove('hidden');
-        }
-        function closeCaretakerPaymentModal() { document.getElementById('caretaker-payment-modal').classList.add('hidden'); }
-
-        function openCaretakerExpenseModal() {
-            document.getElementById('exp-date').valueAsDate = new Date();
-            document.getElementById('caretaker-expense-modal').classList.remove('hidden');
-        }
-        function closeCaretakerExpenseModal() { document.getElementById('caretaker-expense-modal').classList.add('hidden'); }
-
-        function submitCaretakerPayment(e) {
-            e.preventDefault();
-            const tenantId = parseInt(document.getElementById('pay-tenant-select').value);
-            const t = tenants.find(item => item.id === tenantId);
-            if(!t) return;
-
-            pendingPayments.push({
-                id: pendingPayments.length ? Math.max(...pendingPayments.map(p => p.id)) + 1 : 1,
-                tenantName: t.name, room: t.room,
-                month: document.getElementById('pay-month').value,
-                amount: parseFloat(document.getElementById('pay-amount').value),
-                method: document.getElementById('pay-method').value,
-                date: document.getElementById('pay-date').value,
-                notes: document.getElementById('pay-notes').value || 'Caretaker payment',
-                status: 'PENDING'
-            });
-            saveToStorage(); closeCaretakerPaymentModal(); renderAll();
-            alert("Payment submitted successfully! Awaiting Landlord approval.");
-        }
-
-        function submitCaretakerExpense(e) {
-            e.preventDefault();
-            pendingExpenses.push({
-                id: pendingExpenses.length ? Math.max(...pendingExpenses.map(e => e.id)) + 1 : 1,
-                date: document.getElementById('exp-date').value,
-                category: document.getElementById('exp-category').value,
-                description: document.getElementById('exp-desc').value,
-                amount: parseFloat(document.getElementById('exp-amount').value),
-                paidBy: document.getElementById('exp-paidby').value,
-                notes: document.getElementById('exp-notes').value || 'Caretaker expense',
-                status: 'PENDING'
-            });
-            saveToStorage(); closeCaretakerExpenseModal(); renderAll();
-            alert("Expense receipt submitted successfully! Awaiting Landlord approval.");
-        }
-
-        function deletePayment(id) {
-            if(confirm("Delete payment?")) { pendingPayments = pendingPayments.filter(p => p.id !== id); saveToStorage(); renderAll(); }
-        }
-        function deleteExpense(id) {
-            if(confirm("Delete expense?")) { pendingExpenses = pendingExpenses.filter(e => e.id !== id); saveToStorage(); renderAll(); }
-        }
-
-        function openAddTenantModal() {
-            const pass = prompt("Enter Landlord PIN to register new tenant:");
-            if(pass !== LANDLORD_PASSWORD) { alert("Incorrect password!"); return; }
-            document.getElementById('modal-title').innerText = "Register New Tenant Profile";
-            document.getElementById('tenant-form').reset();
-            document.getElementById('edit-tenant-id').value = "";
-            document.getElementById('tenant-modal').classList.remove('hidden');
-        }
-        function closeAddTenantModal() { document.getElementById('tenant-modal').classList.add('hidden'); }
-
-        function saveTenant(e) {
-            e.preventDefault();
-            const idVal = document.getElementById('edit-tenant-id').value;
-            const tenantObj = {
-                id: idVal ? parseInt(idVal) : (tenants.length ? Math.max(...tenants.map(t => t.id)) + 1 : 1),
-                name: document.getElementById('form-name').value,
-                contact: document.getElementById('form-contact').value,
-                email: document.getElementById('form-email').value,
-                unit: document.getElementById('form-unit').value,
-                room: document.getElementById('form-room').value,
-                rent: parseFloat(document.getElementById('form-rent').value),
-                occupants: parseInt(document.getElementById('form-occupants').value) || 1,
-                vehicle: document.getElementById('form-vehicle').value || 'None',
-                emergName: document.getElementById('form-emerg-name').value,
-                emergContact: document.getElementById('form-emerg-contact').value,
-                emergName2: document.getElementById('form-emerg-name2').value,
-                emergContact2: document.getElementById('form-emerg-contact2').value,
-                employer: document.getElementById('form-employer').value,
-                advance: "1 Mo. Adv, 2 Mo. Dep",
-                movein: document.getElementById('form-movein').value,
-                notes: document.getElementById('form-notes').value,
-                signedContractUrl: ""
-            };
-            if(idVal) {
-                const existing = tenants.find(t => t.id === tenantObj.id);
-                if(existing) tenantObj.signedContractUrl = existing.signedContractUrl || "";
-                const index = tenants.findIndex(t => t.id === tenantObj.id);
-                if(index !== -1) tenants[index] = tenantObj;
-            } else { tenants.push(tenantObj); }
-            saveToStorage(); closeAddTenantModal(); renderAll();
-            alert("Tenant profile saved successfully!");
-        }
-
-        function editTenant(id) {
-            const pass = prompt("Enter Landlord PIN to edit tenant profile:");
-            if(pass !== LANDLORD_PASSWORD) { alert("Incorrect password!"); return; }
-            const t = tenants.find(item => item.id === id);
-            if(!t) return;
-            document.getElementById('modal-title').innerText = "Edit Tenant Profile";
-            document.getElementById('edit-tenant-id').value = t.id;
-            document.getElementById('form-name').value = t.name;
-            document.getElementById('form-contact').value = t.contact;
-            document.getElementById('form-email').value = t.email || "";
-            document.getElementById('form-unit').value = t.unit;
-            document.getElementById('form-room').value = t.room;
-            document.getElementById('form-rent').value = t.rent;
-            document.getElementById('form-occupants').value = t.occupants || 1;
-            document.getElementById('form-vehicle').value = t.vehicle || "";
-            document.getElementById('form-emerg-name').value = t.emergName || "";
-            document.getElementById('form-emerg-contact').value = t.emergContact || "";
-            document.getElementById('form-emerg-name2').value = t.emergName2 || "";
-            document.getElementById('form-emerg-contact2').value = t.emergContact2 || "";
-            document.getElementById('form-employer').value = t.employer || "";
-            document.getElementById('form-movein').value = t.movein;
-            document.getElementById('form-notes').value = t.notes;
-            document.getElementById('tenant-modal').classList.remove('hidden');
-        }
-
-        function filterTenants() {
-            const query = document.getElementById('tenant-search').value.toLowerCase();
-            const tbody = document.getElementById('full-tenant-table-body');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-            tenants.filter(t => t.name.toLowerCase().includes(query) || t.room.toLowerCase().includes(query) || t.unit.toLowerCase().includes(query)).forEach(t => {
-                const hasContract = t.signedContractUrl && t.signedContractUrl.trim() !== "";
-                const hasEmail = t.email && t.email.trim() !== "";
-                tbody.innerHTML += `
-                    <tr class="hover:bg-slate-800/50 transition">
-                        <td class="px-4 py-3 font-semibold text-slate-400">#${t.id}</td>
-                        <td class="px-4 py-3 font-medium text-white">${t.name} <br><span class="text-slate-400 text-[11px]">Occupants: ${t.occupants || 1}</span>
-                            ${!hasContract ? '<span class="ml-1 px-1.5 py-0.5 bg-rose-950 text-rose-400 border border-rose-900 rounded text-[10px]">No Contract</span>' : ''}
-                        </td>
-                        <td class="px-4 py-3 text-slate-300">${t.contact} <br>${hasEmail ? '<span class="text-slate-400 text-[11px]">' + t.email + '</span>' : '<span class="text-amber-400 text-[11px]">⚠️ Missing Email</span>'}</td>
-                        <td class="px-4 py-3 text-slate-300">${t.unit} <br><span class="font-bold text-slate-200">${t.room}</span></td>
-                        <td class="px-4 py-3 text-slate-300">${t.vehicle || 'None'}</td>
-                        <td class="px-4 py-3 text-slate-300">${t.emergName || 'N/A'}: <br><span class="font-semibold text-slate-200">${t.emergContact || 'N/A'}</span></td>
-                        <td class="px-4 py-3 font-bold text-brand-400">₱${t.rent.toLocaleString()}.00</td>
-                        <td class="px-4 py-3 text-right space-x-1">
-                            <button onclick="sendTenantEmailReminder(${t.id})" class="text-indigo-400 hover:text-indigo-300" title="Send Email Reminder"><i class="fa-solid fa-envelope"></i></button>
-                            <button onclick="editTenant(${t.id})" class="text-blue-400 hover:text-blue-300" title="Edit Profile"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button onclick="terminateTenantContract(${t.id})" class="bg-rose-950 text-rose-400 border border-rose-900 hover:bg-rose-900 px-2 py-1 rounded text-xs" title="Terminate"><i class="fa-solid fa-ban"></i></button>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-
-        function populateSOASelect() {
-            const select = document.getElementById('soa-tenant-select');
-            if(!select) return;
-            select.innerHTML = '';
-            tenants.forEach(t => { select.innerHTML += `<option value="${t.id}">${t.name} (${t.unit} - ${t.room})</option>`; });
-            generateSOA();
-        }
-
-        function generateSOA() {
-            const tenantId = parseInt(document.getElementById('soa-tenant-select').value);
-            const t = tenants.find(item => item.id === tenantId);
-            if(!t) return;
-            const tenantUtils = utilities.filter(u => u.tenantName === t.name);
-            let elecAmt = tenantUtils.filter(u => u.type.includes('Meralco')).reduce((acc, curr) => acc + curr.amount, 0);
-            let waterAmt = tenantUtils.filter(u => u.type.includes('Maynilad')).reduce((acc, curr) => acc + curr.amount, 0);
-
-            document.getElementById('soa-tenant-name').innerText = t.name;
-            document.getElementById('soa-contact').innerText = `${t.contact} / ${t.email || 'No email'}`;
-            document.getElementById('soa-room').innerText = `${t.unit} - ${t.room}`;
-            document.getElementById('soa-rent-amount').innerText = `₱${t.rent.toLocaleString()}.00`;
-            document.getElementById('soa-charge-rent').innerText = `₱${t.rent.toLocaleString()}.00`;
-            document.getElementById('soa-charge-elec').innerText = `₱${elecAmt.toLocaleString()}.00`;
-            document.getElementById('soa-charge-water').innerText = `₱${waterAmt.toLocaleString()}.00`;
-            document.getElementById('soa-total-due').innerText = `₱${(t.rent + elecAmt + waterAmt + 1000).toLocaleString()}.00`;
-        }
-
-        function backupData() {
-            const backupObj = { tenants, rooms, utilities, maintenance, applications, pendingPayments, pendingExpenses, takeoverAudits, annualPayments };
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupObj, null, 2));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", "Celou_Rental_Property_Backup.json");
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
-        }
-
         window.addEventListener('DOMContentLoaded', () => {
-            window.initialLoadDone = false;
             db.ref('celouPropertyData').once('value').then((snapshot) => {
                 const serverData = snapshot.val();
                 if (serverData) {
@@ -2495,21 +1798,18 @@
                     applications = serverData.applications || [];
                     pendingPayments = serverData.pendingPayments || [];
                     pendingExpenses = serverData.pendingExpenses || [];
-                    takeoverAudits = serverData.takeoverAudits || [];
                     annualPayments = serverData.annualPayments || {};
                 }
                 renderAll();
-                window.initialLoadDone = true;
                 checkURLHash();
             }).catch(() => {
                 renderAll();
-                window.initialLoadDone = true;
                 checkURLHash();
             });
 
             db.ref('celouPropertyData').on('value', (snapshot) => {
                 const serverData = snapshot.val();
-                if (serverData && window.initialLoadDone) {
+                if (serverData) {
                     tenants = serverData.tenants || tenants;
                     rooms = serverData.rooms || rooms;
                     utilities = serverData.utilities || utilities;
@@ -2517,7 +1817,6 @@
                     applications = serverData.applications || applications;
                     pendingPayments = serverData.pendingPayments || pendingPayments;
                     pendingExpenses = serverData.pendingExpenses || pendingExpenses;
-                    takeoverAudits = serverData.takeoverAudits || takeoverAudits;
                     annualPayments = serverData.annualPayments || annualPayments;
                     renderAll();
                 }
