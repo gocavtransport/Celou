@@ -1275,7 +1275,7 @@
 
         function copyPublicUpdateLink() {
 			const link = "https://docs.google.com/forms/d/e/1FAIpQLSeRaTMUbTi8B9pnPG31rpUKZn6UAHiKs8t2Ru8vHGEdCZYf3A/viewform";
-			window.open(link, '_blank');
+			navigator.clipboard.writeText(link).then(() => alert("Tenant Update Link copied to clipboard!\n\n" + link));
 		}
 
         function populateUpdateTenantSelect() {
