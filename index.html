@@ -1519,40 +1519,46 @@
             document.getElementById('con-sig-placeholder').classList.remove('hidden');
         }
 
-        function applySignature() {
-            const tenantId = parseInt(document.getElementById('contract-tenant-select').value);
-            const t = tenants.find(item => item.id === tenantId);
-            const dataURL = canvas.toDataURL();
-            const img = document.getElementById('con-sig-img');
-            img.src = dataURL;
-            img.classList.remove('hidden');
-            document.getElementById('con-sig-placeholder').classList.add('hidden');
-            
-            if(t) {
-                t.signedContractUrl = dataURL;
-                saveToStorage();
-            }
+       function applySignature() {
+    const tenantId = parseInt(document.getElementById('contract-tenant-select').value);
+    const t = tenants.find(item => item.id === tenantId);
+    const dataURL = canvas.toDataURL();
+    const img = document.getElementById('con-sig-img');
+    img.src = dataURL;
+    img.classList.remove('hidden');
+    document.getElementById('con-sig-placeholder').classList.add('hidden');
+    
+    if(t) {
+        t.signedContractUrl = dataURL;
+        saveToStorage();
+    }
 
-            const contractBackup = {
-                tenantName: t ? t.name : 'Unknown',
-                room: t ? t.room : 'Unknown',
-                unit: t ? t.unit : 'Unknown',
-                rent: t ? t.rent : 0,
-                occupants: t ? t.occupants : 1,
-                dateSigned: "October 7, 2026",
-                signatureDataUrl: dataURL
-            };
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(contractBackup, null, 2));
-            const dlAnchor = document.createElement('a');
-            dlAnchor.setAttribute("href", dataStr);
-            dlAnchor.setAttribute("download", `Signed_Contract_${contractBackup.tenantName.replace(/\s+/g, '_')}.json`);
-            document.body.appendChild(dlAnchor);
-            dlAnchor.click();
-            dlAnchor.remove();
+    const contractBackup = {
+        tenantName: t ? t.name : 'Unknown',
+        room: t ? t.room : 'Unknown',
+        unit: t ? t.unit : 'Unknown',
+        rent: t ? t.rent : 0,
+        occupants: t ? t.occupants : 1,
+        dateSigned: "October 7, 2026",
+        signatureDataUrl: dataURL
+    };
+    
+    // 1. Download JSON backup locally to your computer
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(contractBackup, null, 2));
+    const dlAnchor = document.createElement('a');
+    dlAnchor.setAttribute("href", dataStr);
+    dlAnchor.setAttribute("download", `Signed_Contract_${contractBackup.tenantName.replace(/\s+/g, '_')}.json`);
+    document.body.appendChild(dlAnchor);
+    dlAnchor.click();
+    dlAnchor.remove();
 
-            renderAll();
-            alert("Electronic signature applied and saved to online storage successfully!");
-        }
+    renderAll();
+    
+    // 2. Prompt and open your Google Drive Contract Upload Form automatically
+    if(confirm("Signature applied and local backup saved!\n\nWould you like to open your Google Drive Contract Upload Form now to attach and store this file?")) {
+        window.open("https://docs.google.com/forms/d/1er10p5fDzqP5d0AzrADG9MxhWXhnASLTcqpeixOsfTc/edit", "_blank");
+    }
+}
 
         function terminateTenantContract(id) {
             const pass = prompt("Enter Landlord PIN to terminate this tenant contract:");
